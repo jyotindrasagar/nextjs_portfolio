@@ -10,6 +10,7 @@ interface HoverVideoPlayerProps {
   baseGrayscale?: string;
   alwaysPlay?: boolean;
   loadDelay?: number;
+  volume?: number;
   children?: React.ReactNode;
 }
 
@@ -21,6 +22,7 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
   baseGrayscale = "grayscale",
   alwaysPlay = false,
   loadDelay = 0,
+  volume = 0.4,
   children
 }: HoverVideoPlayerProps) {
   const [isHovered, setIsHovered] = useState(false);
@@ -108,9 +110,9 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.volume = 0.4;
+      videoRef.current.volume = volume;
     }
-  }, [hasBeenInView]);
+  }, [hasBeenInView, volume]);
 
   const handleMouseEnter = () => {
     if (hoverTimeoutRef.current) {

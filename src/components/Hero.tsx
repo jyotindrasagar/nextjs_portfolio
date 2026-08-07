@@ -189,6 +189,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     baseGrayscale="grayscale-[40%]"
                     alwaysPlay={isDesktop}
                     loadDelay={500}
+                    volume={0.88}
                   >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
                     <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[2].title}</span>
