@@ -53,31 +53,18 @@ export function Feedback() {
         </h2>
       </AnimatedSection>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-30">
-        {testimonials.map((t, idx) => (
-          <div 
-            key={idx} 
-            className="flex flex-col justify-between p-8 border border-foreground/5 bg-panels/15 hover:bg-panels/30 hover:border-foreground/15 transition-all duration-300 relative group"
-          >
-            {/* Visual technical ticks */}
-            <div className="absolute top-0 left-6 w-[1px] h-3 bg-accent opacity-50"></div>
-            
-            <div className="flex-1">
-              <p className="font-sans font-light text-sm md:text-base leading-relaxed text-foreground/80 mb-8 italic">
-                "{t.quote}"
-              </p>
-            </div>
-
-            <div className="border-t border-foreground/10 pt-4 font-mono text-[9px] uppercase tracking-widest text-foreground/60">
-              <div className="font-bold text-foreground mb-1">{t.author}</div>
-              <div className="opacity-70">{t.role}</div>
-              <div className="opacity-70 text-accent">{t.company}</div>
-              <div className="mt-2 text-[8px] opacity-40">{t.project}</div>
-            </div>
-          </div>
-        ))}
+      <div className="flex flex-col items-center justify-center p-12 md:p-24 border border-foreground/5 bg-panels/15 relative z-30 text-center">
+        {/* Visual technical ticks */}
+        <div className="absolute top-0 left-6 w-[1px] h-3 bg-accent opacity-50"></div>
+        <div className="absolute bottom-0 right-6 w-[1px] h-3 bg-accent opacity-50"></div>
+        
+        <h3 className="font-mono text-sm md:text-base tracking-[0.2em] text-accent uppercase mb-4 font-bold">
+          Update in Progress
+        </h3>
+        <p className="font-sans font-light text-sm md:text-base leading-relaxed text-foreground/70 max-w-lg">
+          The feedback page is currently undergoing updates. Please check back in a few days to view client testimonials and collaborator feedback.
+        </p>
       </div>
     </section>
   );
 }
-

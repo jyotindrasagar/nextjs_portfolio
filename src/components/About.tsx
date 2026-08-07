@@ -94,15 +94,17 @@ export function About() {
             </div>
           </div>
 
-          <img 
-            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" 
-            alt="Dieablo Studio Portrait" 
-            loading="lazy"
-            className="w-full h-full object-cover opacity-80 dark:opacity-75 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700 rounded-sm"
+          <video 
+            src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/about%20me.webm" 
+            title="Dieablo Studio Portrait" 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
           />
         </div>
       </div>
     </section>
   );
 }
-
