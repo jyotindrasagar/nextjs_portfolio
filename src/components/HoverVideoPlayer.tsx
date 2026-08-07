@@ -141,7 +141,14 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
       className="relative w-full h-full overflow-hidden cursor-pointer"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={() => setIsUserPaused(!isUserPaused)}
+      onClick={() => {
+        if (videoRef.current && (videoRef.current.paused || !isVideoPlaying)) {
+          setIsUserPaused(false);
+          setIsHovered(true);
+        } else {
+          setIsUserPaused(true);
+        }
+      }}
     >
       {/* Video Element (Behind Image) */}
       {hasBeenInView && videoUrl && !videoUrl.includes('youtu') && (
