@@ -319,15 +319,25 @@ export function Contact() {
                 {/* Row 5 - References */}
                 <div className="flex flex-col gap-3">
                   <label htmlFor="references" className="text-[10px] font-mono tracking-widest uppercase text-foreground/80 font-bold">PROJECT ASSETS (WE TRANSFER, DROPBOX, ETC)</label>
-                  <input
-                    type="text"
-                    id="references"
-                    name="references"
-                    value={formData.references}
-                    onChange={handleChange}
-                    placeholder="Paste link to your files here..."
-                    className="bg-transparent border border-foreground/15 px-4 py-3.5 text-sm font-mono focus:border-foreground/40 focus:outline-none transition-colors placeholder:text-foreground/30"
-                  />
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="text"
+                      id="references"
+                      name="references"
+                      value={formData.references}
+                      onChange={handleChange}
+                      placeholder="Paste link to your files here..."
+                      className="w-full bg-transparent border border-foreground/15 px-4 py-3.5 text-sm font-mono focus:border-foreground/40 focus:outline-none transition-colors placeholder:text-foreground/30"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => document.getElementById('references')?.focus()}
+                      className="flex items-center gap-2 self-start text-[10px] font-mono font-bold tracking-widest uppercase text-foreground/60 hover:text-foreground transition-colors group"
+                    >
+                      <Paperclip size={14} className="opacity-50 group-hover:opacity-100" />
+                      <span>ATTACH FILES</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Status Messages */}
@@ -346,16 +356,7 @@ export function Contact() {
                 )}
 
                 {/* Submit Row */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => document.getElementById('references')?.focus()}
-                    className="flex items-center gap-3 text-[10px] font-mono font-bold tracking-widest uppercase text-foreground/70 hover:text-foreground transition-colors group"
-                  >
-                    <Paperclip size={14} className="opacity-50 group-hover:opacity-100" />
-                    <span>ATTACH FILES</span>
-                  </button>
-
+                <div className="flex justify-end pt-4">
                   <button
                     type="submit"
                     disabled={status === 'loading'}

@@ -245,16 +245,17 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         {/* Action button & theme toggle */}
         <div className="flex-1 flex justify-end items-center gap-3 sm:gap-4">
 
-          {/* View All Work Button */}
+          {/* Watch Showreel Button */}
           <button 
             onClick={(e) => {
               handleScroll(e, 'work');
               setActiveSection('work');
+              window.dispatchEvent(new CustomEvent('openShowreel'));
             }}
-            className="hidden md:flex text-[9px] font-mono uppercase tracking-[0.2em] border border-foreground/15 px-4 sm:px-6 py-2 sm:py-2.5 hover:bg-foreground hover:text-background transition-colors duration-300 items-center gap-2 sm:gap-3 mr-0 sm:mr-2"
+            className="hidden md:flex bg-accent text-white px-5 py-2.5 text-[9px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 items-center gap-4 group hover:bg-accent/90 mr-2"
           >
-            <span>View All Work</span>
-            <span className="text-[10px]">↗</span>
+            <span>Watch Showreel</span>
+            <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-sm leading-none font-light">↗</span>
           </button>
 
 
@@ -335,16 +336,18 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               </a>
             ))}
             
-            <button 
-              onClick={(e) => {
-                handleScroll(e, 'work');
-                setActiveSection('work');
-              }}
-              className="mt-4 text-[10px] font-mono uppercase tracking-[0.2em] border border-foreground/20 px-8 py-3 hover:bg-foreground hover:text-background transition-colors flex items-center gap-3"
-            >
-              <span>View All Work</span>
-              <span>↗</span>
-            </button>
+          <button 
+            onClick={(e) => {
+              setMobileMenuOpen(false);
+              handleScroll(e, 'work');
+              setActiveSection('work');
+              window.dispatchEvent(new CustomEvent('openShowreel'));
+            }}
+            className="flex bg-accent text-white px-5 py-4 text-[10px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 items-center justify-between group hover:bg-accent/90 w-full"
+          >
+            <span>Watch Showreel</span>
+            <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-lg leading-none font-light">↗</span>
+          </button>
           </motion.div>
         )}
       </AnimatePresence>

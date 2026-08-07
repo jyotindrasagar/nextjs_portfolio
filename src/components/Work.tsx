@@ -43,6 +43,13 @@ export function Work() {
     setPlayingVideoId(null);
   }, [activeCategory]);
 
+  // Listen for navigation button click
+  useEffect(() => {
+    const handleOpenShowreel = () => setActiveCategory('SHOWREEL');
+    window.addEventListener('openShowreel', handleOpenShowreel);
+    return () => window.removeEventListener('openShowreel', handleOpenShowreel);
+  }, []);
+
   // Pagination
   const totalPages = Math.ceil(sortedProjects.length / ITEMS_PER_PAGE);
   const paginatedProjects = sortedProjects.slice(
@@ -241,9 +248,11 @@ export function Work() {
               />
             </motion.div>
           ) : (
-            <div className="flex flex-col gap-6">
-              {/* Top pagination */}
-              <PaginationControls />
+            <div className="relative w-full">
+              {/* Top pagination - absolutely positioned to not push the grid down */}
+              <div className="absolute -top-14 left-0 right-0 flex justify-center z-50">
+                <PaginationControls />
+              </div>
 
               {/* Grid — 2 rows × 3 cols desktop, 2 cols tablet, 1 col mobile */}
               <div className={`grid gap-3 md:gap-4 w-full ${activeCategory === 'SOCIAL'

@@ -2,10 +2,12 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useVelocity, useTransform, useSpring } from 'framer-motion';
+import { useTheme } from 'next-themes';
 
 type IdleState = 'active' | 'glowing' | 'white';
 
 export function CustomCursor() {
+  const { resolvedTheme } = useTheme();
   const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
   const [isVisible, setIsVisible] = useState(false);
   const [idleState, setIdleState] = useState<IdleState>('active');
@@ -98,6 +100,9 @@ export function CustomCursor() {
 
   const isWhite = idleState === 'white';
   const isGlowing = idleState === 'glowing';
+  const finalGlow = resolvedTheme === 'light' 
+    ? 'drop-shadow(0px 0px 25px rgba(225,29,72,0.8))' // Pinkish dark
+    : 'drop-shadow(0px 0px 25px rgba(186,230,253,0.8))'; // Bluish white
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
@@ -117,7 +122,7 @@ export function CustomCursor() {
             filter: isGlowing 
               ? ['drop-shadow(0px 0px 5px rgba(244,63,94,0.4))', 'drop-shadow(0px 0px 25px rgba(244,63,94,1))', 'drop-shadow(0px 0px 5px rgba(244,63,94,0.4))'] 
               : isWhite 
-                ? 'drop-shadow(0px 0px 25px rgba(255,255,255,1))' 
+                ? finalGlow 
                 : 'drop-shadow(0px 0px 0px rgba(244,63,94,0))'
           }}
           transition={{
