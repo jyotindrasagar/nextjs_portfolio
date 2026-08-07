@@ -5,17 +5,24 @@ export function FallingPetals() {
   // Render immediately (no timeout)
   // Hydration will happen on the client if dynamically imported.
   const [mounted, setMounted] = useState(false);
+  const [petalCount, setPetalCount] = useState(20);
 
   useEffect(() => {
     setMounted(true);
+    const handleResize = () => {
+      setPetalCount(window.innerWidth < 1024 ? 8 : 20); // 80% reduction for mobile (8), 50% reduction for PC (20)
+    };
+    handleResize(); // trigger on mount
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   if (!mounted) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden" aria-hidden="true">
-      {/* Generate 40 petals for a richer "wind blow" effect */}
-      {[...Array(40)].map((_, i) => {
+      {/* Generate dynamic number of petals based on screen size */}
+      {[...Array(petalCount)].map((_, i) => {
         const left = Math.random() * 100;
         
         // Some petals are caught in a "wind gust" (faster), some drift slowly
