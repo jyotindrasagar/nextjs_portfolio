@@ -19,19 +19,19 @@ export function About() {
         {/* Left narrative content */}
         <AnimatedSection className="flex-1 max-w-2xl z-10">
           <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground uppercase mb-8">
-            Visual Storytelling<br />
+            Visual Storytelling,<br />
             My Way
           </h2>
           
           <div className="space-y-6 text-foreground/80 font-light text-sm md:text-base leading-relaxed">
             <p>
-              I approach cinematic editing and motion design not merely as decoration, but as architectural construction. Every frame must support the narrative, every transition must carry the weight of spatial logic, and every color grade must structure emotional depth.
+              For me, editing has never been just about putting clips together. It's about understanding rhythm, emotion, pacing, and knowing when to let a moment breathe. Motion design and visual effects are simply extensions of that process—tools that help tell a story more effectively.
             </p>
             <p>
-              Under the moniker <strong className="font-semibold text-foreground">DieabloFX</strong>, I partner with forward-thinking brands, musicians, and directors to build high-end editorial experiences. Whether directing an abstract sequence or compiling a raw documentary narrative, the focus remains on visual excellence and structural integrity.
+              As Dieablo, I work under the creative identity <strong className="font-semibold text-foreground">DieabloFX</strong>, creating commercials, documentaries, motion graphics, 3D visuals, and branded content. I enjoy solving creative problems, learning new techniques, and pushing every project a little further than the last.
             </p>
             <p>
-              With over a decade of experience across commercial campaigns, music videos, and title sequences, my work lives at the intersection of classical storytelling and modern design technology.
+              I'm still growing as an artist, and that's something I value. Every project teaches me something new, and every challenge becomes part of the next piece of work. My focus is simple: keep learning, keep improving, and create visuals that people remember for the right reasons.
             </p>
           </div>
 
