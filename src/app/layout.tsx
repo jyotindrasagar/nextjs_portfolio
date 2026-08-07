@@ -133,7 +133,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark scrollbar-hide">
+    <html lang="en" className="dark scrollbar-hide" suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/svg+xml" href="/dieablofx.svg" />
         <link rel="apple-touch-icon" href="/dieablofx.svg" />
@@ -144,7 +144,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <CustomCursor />
         {children}
       </body>

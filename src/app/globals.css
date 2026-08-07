@@ -110,3 +110,23 @@ body::selection {
   0%, 100% { box-shadow: 0 0 5px rgba(255,255,255,0.8), 0 0 20px rgba(255,220,150,0.9); opacity: 0.3; }
   50% { box-shadow: 0 0 20px rgba(255,255,255,1), 0 0 40px rgba(255,220,150,1); opacity: 1; }
 }
+
+/* Hide native video controls that Safari injects */
+video::-webkit-media-controls {
+  display: none !important;
+}
+video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+video::-webkit-media-controls-panel {
+  display: none !important;
+}
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+}

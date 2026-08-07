@@ -1,10 +1,10 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projectsData } from '../data/projects';
 import { HoverVideoPlayer } from './HoverVideoPlayer';
 import { AnimatedSection } from './AnimatedSection';
-import { Clapperboard } from 'lucide-react';
+import { Clapperboard, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const categoryInfo: Record<string, { title: string; desc: string }> = {
   'SHOWREEL': { title: '2025 SHOWREEL', desc: 'A COMPILATION OF MY BEST DESIGIN, VISUAL EFFECTS AND EDITING WORK.' },
@@ -15,9 +15,13 @@ const categoryInfo: Record<string, { title: string; desc: string }> = {
   'DEMOS': { title: 'TRIALS & DEMOS', desc: 'EXPERIMENTAL CUTS AND TECHNICAL SHOWCASES.' },
 };
 
+// Items per page: 6 = 2 rows × 3 cols on desktop, fits nicely on all screens
+const ITEMS_PER_PAGE = 6;
+
 export function Work() {
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
   const categories = ['SHOWREEL', 'ALL', 'COMMERCIAL', 'DOCUMENTARY', 'SOCIAL', 'DEMOS'];
 
   const filteredProjects = activeCategory === 'ALL'
@@ -33,15 +37,46 @@ export function Work() {
     return 0;
   });
 
-  const getEmbedUrl = (url?: string) => {
+  // Reset page when category changes
+  useEffect(() => {
+    setCurrentPage(0);
+    setPlayingVideoId(null);
+  }, [activeCategory]);
+
+  // Pagination
+  const totalPages = Math.ceil(sortedProjects.length / ITEMS_PER_PAGE);
+  const paginatedProjects = sortedProjects.slice(
+    currentPage * ITEMS_PER_PAGE,
+    (currentPage + 1) * ITEMS_PER_PAGE
+  );
+
+  const goToPage = (page: number) => {
+    setPlayingVideoId(null);
+    setCurrentPage(Math.max(0, Math.min(page, totalPages - 1)));
+  };
+
+  const getEmbedUrl = (project: any) => {
+    const url = project?.videoUrl;
     if (!url) return '';
+
+    let embedUrl = '';
+    let videoId = '';
+
     if (url.includes('youtube.com/watch?v=')) {
-      return `https://www.youtube.com/embed/${url.split('v=')[1].split('&')[0]}?autoplay=1`;
+      videoId = url.split('v=')[1].split('&')[0];
+      embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    } else if (url.includes('youtu.be/')) {
+      videoId = url.split('youtu.be/')[1].split('?')[0];
+      embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    } else {
+      return url;
     }
-    if (url.includes('youtu.be/')) {
-      return `https://www.youtube.com/embed/${url.split('youtu.be/')[1].split('?')[0]}?autoplay=1`;
+
+    if (project.loop && videoId) {
+      embedUrl += `&loop=1&playlist=${videoId}`;
     }
-    return url;
+
+    return embedUrl;
   };
 
   const getThumbnailUrl = (project: any) => {
@@ -63,11 +98,51 @@ export function Work() {
     return undefined;
   };
 
+  // Pagination controls component (reused top and bottom)
+  const PaginationControls = () => {
+    if (totalPages <= 1) return null;
+    return (
+      <div className="flex items-center justify-center gap-4 font-mono text-xs">
+        <button
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 0}
+          className="flex items-center gap-1 px-4 py-1.5 bg-black/50 backdrop-blur-md border border-foreground/30 text-foreground/80 hover:text-white hover:bg-black/70 hover:border-foreground/60 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
+        >
+          <ChevronLeft size={14} />
+          <span className="tracking-widest">PREV</span>
+        </button>
+        <div className="flex items-center gap-2">
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i}
+              onClick={() => goToPage(i)}
+              className={`w-2 h-2 rounded-full transition-all cursor-pointer ${i === currentPage
+                  ? 'bg-accent scale-125'
+                  : 'bg-foreground/30 hover:bg-foreground/50'
+                }`}
+            />
+          ))}
+        </div>
+        <span className="text-foreground/40 tracking-widest">
+          {currentPage + 1} / {totalPages}
+        </span>
+        <button
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage >= totalPages - 1}
+          className="flex items-center gap-1 px-4 py-1.5 bg-black/50 backdrop-blur-md border border-foreground/30 text-foreground/80 hover:text-white hover:bg-black/70 hover:border-foreground/60 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
+        >
+          <span className="tracking-widest">NEXT</span>
+          <ChevronRight size={14} />
+        </button>
+      </div>
+    );
+  };
+
   return (
     <section className="relative pt-0 pb-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 overflow-hidden">
       {/* CAD reference label */}
       <div className="flex items-center gap-2 text-[9px] tracking-[0.25em] font-mono opacity-50 mb-4 uppercase relative z-10">
-        <span>âŒ–</span>
+        <span>⌖</span>
         <span>INDEX // SELECTED_WORK</span>
       </div>
 
@@ -77,6 +152,9 @@ export function Work() {
             <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground uppercase">
               Selected Work
             </h2>
+            <p className="sr-only">
+              Motion Designer and Video Editor specializing in high-end product advertisements, 3D animation, motion graphics, CGI, VFX compositing, documentaries, commercial videos, UI animation, camera tracking, and cinematic visual storytelling using Blender, After Effects, DaVinci Resolve, Premiere Pro, Unreal Engine, Substance 3D, SynthEyes, and Boris FX.
+            </p>
             <p className="text-foreground/50 text-[11px] font-mono uppercase tracking-widest mt-2">
               Selected projects & visual stories
             </p>
@@ -141,9 +219,7 @@ export function Work() {
               {categoryInfo[activeCategory]?.desc || 'SELECTED PROJECTS & VISUAL STORIES.'}
             </p>
 
-            <div className="mt-12 text-[9px] font-mono text-foreground/40 uppercase tracking-widest hidden lg:block">
-              SCROLL TO EXPLORE <br /><br /> â†“
-            </div>
+
           </AnimatedSection>
         </div>
 
@@ -165,90 +241,102 @@ export function Work() {
               />
             </motion.div>
           ) : (
-            <div className={`grid gap-4 md:gap-8 pb-8 relative z-30 w-full ${activeCategory === 'SOCIAL' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(400px,1fr))]'}`}>
-              <AnimatePresence mode="popLayout">
-                {sortedProjects.map((project) => (
-                  <motion.div
-                    initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                    style={{ willChange: "transform, opacity" }}
-                    key={project.id}
-                    aria-label={`View project: ${project.title}`}
-                    role="button"
-                    className={`group relative flex flex-col border border-foreground/10 overflow-hidden w-full cursor-pointer bg-background ${activeCategory === 'SOCIAL' ? 'aspect-[9/16]' : 'aspect-video'
-                      }`}
-                    onClick={() => {
-                      if (playingVideoId === project.id) return;
-                      setPlayingVideoId(project.id);
-                    }}
-                  >
-                    {playingVideoId === project.id ? (
-                      <div className="absolute inset-0 z-50 bg-black flex items-center justify-center">
-                        {project.videoUrl?.includes('youtu') ? (
-                          <iframe
-                            src={getEmbedUrl(project.videoUrl)}
-                            allow="autoplay; fullscreen"
-                            className="w-full h-full border-0"
-                          />
-                        ) : (
-                          <video
-                            src={project.videoUrl}
-                            controls
-                            autoPlay
-                            className="w-full h-full object-contain"
-                          />
-                        )}
-                      </div>
-                    ) : (
-                      <>
-                      {project.videoUrl && (
-                        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-                          "@context": "https://schema.org",
-                          "@type": "VideoObject",
-                          "name": project.title,
-                          "description": project.description,
-                          "thumbnailUrl": getThumbnailUrl(project) || "https://dieablo.com/og-image.png",
-                          "uploadDate": "2023-01-01T08:00:00+08:00",
-                          "contentUrl": project.videoUrl,
-                          "embedUrl": getEmbedUrl(project.videoUrl)
-                        }) }} />
-                      )}
-                      <HoverVideoPlayer
-                        imageUrl={getThumbnailUrl(project)}
-                        videoUrl={project.videoUrl}
-                        altText={project.title}
-                        baseOpacity="opacity-100"
-                        baseGrayscale="grayscale"
-                      >
-                        {/* Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500"></div>
+            <div className="flex flex-col gap-6">
+              {/* Top pagination */}
+              <PaginationControls />
 
-                        {/* Card Content */}
-                        <div className="relative h-full flex flex-col justify-between p-3 z-10">
-                          {/* Top Row: Icon */}
-                          <div className="flex items-center justify-between text-white/90 drop-shadow-md">
-                            <Clapperboard size={14} strokeWidth={2} />
-                          </div>
-
-                          {/* Bottom Row: Title and Subtitle */}
-                          <div className="flex flex-col items-start justify-end gap-1">
-                            <h3 className="font-display font-bold text-sm md:text-base tracking-tight text-white group-hover:text-accent transition-colors uppercase drop-shadow-md">
-                              {project.title}
-                            </h3>
-                            <p className="font-mono text-[8px] uppercase tracking-widest text-accent drop-shadow-md">
-                              {project.category}
-                            </p>
-                          </div>
+              {/* Grid — 2 rows × 3 cols desktop, 2 cols tablet, 1 col mobile */}
+              <div className={`grid gap-3 md:gap-4 w-full ${activeCategory === 'SOCIAL'
+                  ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'
+                  : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                }`}>
+                <AnimatePresence mode="popLayout">
+                  {paginatedProjects.map((project) => (
+                    <motion.div
+                      initial={{ opacity: 0, y: 30, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      style={{ willChange: "transform, opacity" }}
+                      key={project.id}
+                      aria-label={`View project: ${project.title}`}
+                      role="button"
+                      className={`group relative flex flex-col border border-foreground/10 overflow-hidden w-full cursor-pointer bg-background ${activeCategory === 'SOCIAL' ? 'aspect-[9/16]' : 'aspect-video'
+                        }`}
+                      onClick={() => {
+                        if (playingVideoId === project.id) return;
+                        setPlayingVideoId(project.id);
+                      }}
+                    >
+                      {playingVideoId === project.id ? (
+                        <div className="absolute inset-0 z-50 bg-black flex items-center justify-center">
+                          {project.videoUrl?.includes('youtu') ? (
+                            <iframe
+                              src={getEmbedUrl(project)}
+                              allow="autoplay; fullscreen; encrypted-media"
+                              allowFullScreen
+                              className="w-full h-full border-0"
+                            />
+                          ) : (
+                            <video
+                              src={project.videoUrl}
+                              controls
+                              autoPlay
+                              loop={project.loop}
+                              className="w-full h-full object-contain"
+                            />
+                          )}
                         </div>
-                      </HoverVideoPlayer>
-                      </>
-                    )}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                      ) : (
+                        <>
+                          {project.videoUrl && (
+                            <script type="application/ld+json" dangerouslySetInnerHTML={{
+                              __html: JSON.stringify({
+                                "@context": "https://schema.org",
+                                "@type": "VideoObject",
+                                "name": project.title,
+                                "description": project.description,
+                                "thumbnailUrl": getThumbnailUrl(project) || "https://dieablo.com/og-image.png",
+                                "uploadDate": "2023-01-01T08:00:00+08:00",
+                                "contentUrl": project.videoUrl,
+                                "embedUrl": getEmbedUrl(project)
+                              })
+                            }} />
+                          )}
+                          <HoverVideoPlayer
+                            imageUrl={getThumbnailUrl(project)}
+                            videoUrl={project.videoUrl}
+                            altText={project.title}
+                            baseOpacity="opacity-100"
+                            baseGrayscale="grayscale"
+                          >
+                            {/* Gradient Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500"></div>
+
+                            {/* Card Content */}
+                            <div className="relative h-full flex flex-col justify-between p-3 z-10">
+                              {/* Top Row: Icon */}
+                              <div className="flex items-center justify-between text-white/90 drop-shadow-md">
+                                <Clapperboard size={14} strokeWidth={2} />
+                              </div>
+
+                              {/* Bottom Row: Title and Subtitle */}
+                              <div className="flex flex-col items-start justify-end gap-1">
+                                <h3 className="font-display font-bold text-sm md:text-base tracking-tight text-white group-hover:text-accent transition-colors uppercase drop-shadow-md">
+                                  {project.title}
+                                </h3>
+                                <p className="font-mono text-[8px] uppercase tracking-widest text-accent drop-shadow-md">
+                                  {project.category}
+                                </p>
+                              </div>
+                            </div>
+                          </HoverVideoPlayer>
+                        </>
+                      )}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
             </div>
           )}
         </div>
@@ -256,4 +344,3 @@ export function Work() {
     </section>
   );
 }
-

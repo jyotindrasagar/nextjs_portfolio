@@ -36,7 +36,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
   const [volume, setVolume] = useState(0.2);
 
   useEffect(() => {
-    const audio = new Audio('/sun.aac');
+    const audio = new Audio('https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/sun.mp3');
     audioRef.current = audio;
     audio.volume = volume;
     audio.loop = false;

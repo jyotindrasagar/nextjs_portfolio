@@ -65,7 +65,7 @@ export function About() {
                   <span>BLENDER / UNREAL ENGINE</span>
                   <div className="flex gap-2">
                     <img src="https://cdn.simpleicons.org/blender/ea7600" className="w-5 h-5" alt="Blender" />
-                    <img src="https://cdn.simpleicons.org/unrealengine/white" className="w-5 h-5 opacity-80" alt="Unreal" />
+                    <img src="https://cdn.simpleicons.org/unrealengine" className="w-5 h-5 opacity-80 dark:invert" alt="Unreal" />
                   </div>
                 </li>
                 <li className="flex items-center justify-between">
