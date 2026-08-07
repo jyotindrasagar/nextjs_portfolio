@@ -178,7 +178,7 @@ export function Contact() {
                 </div>
 
                 {/* Timezone */}
-                <div className="flex flex-col gap-4">
+                <div className="hidden lg:flex flex-col gap-4">
                   <h4 className="text-accent tracking-widest">// TIMEZONE ENGINE</h4>
                   <div className="flex flex-col gap-1.5">
                     <span className="font-bold">LOCAL CLOCK // {time}</span>
