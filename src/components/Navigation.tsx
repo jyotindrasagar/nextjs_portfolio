@@ -41,31 +41,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
     audio.volume = volume;
     audio.loop = false;
 
-    // Attempt to autoplay
-    audio.play().then(() => {
-      setIsPlaying(true);
-    }).catch(() => {
-      // Autoplay blocked by browser, wait for user interaction to bypass
-      setIsPlaying(false);
-      
-      const playOnInteract = () => {
-        // Remove listeners immediately so it only triggers once
-        window.removeEventListener('click', playOnInteract);
-        window.removeEventListener('scroll', playOnInteract);
-        window.removeEventListener('touchstart', playOnInteract);
-        
-        if (audioRef.current && audioRef.current.paused) {
-          audioRef.current.play().then(() => {
-            setIsPlaying(true);
-            window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: 'bg-music' } }));
-          }).catch(() => {});
-        }
-      };
-
-      window.addEventListener('click', playOnInteract);
-      window.addEventListener('scroll', playOnInteract);
-      window.addEventListener('touchstart', playOnInteract);
-    });
+    // Start muted - music will only play when user explicitly toggles it via the music button.
 
     const handleEnded = () => setIsPlaying(false);
     audio.addEventListener('ended', handleEnded);

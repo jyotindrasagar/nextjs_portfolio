@@ -6,7 +6,7 @@ export function About() {
     <section id="about" className="relative pt-16 pb-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 border-t border-foreground/10 z-20 overflow-hidden">
       {/* Top Border constrained by padding */}
       <div className="absolute top-0 left-4 md:left-8 lg:left-12 xl:left-16 right-4 md:right-8 lg:right-12 xl:right-16 h-[1px] bg-foreground/10"></div>
-      
+
       {/* Dust Particles Removed for Performance */}
 
       {/* CAD reference label */}
@@ -22,7 +22,7 @@ export function About() {
             Visual Storytelling,<br />
             My Way
           </h2>
-          
+
           <div className="space-y-6 text-foreground/80 font-light text-sm md:text-base leading-relaxed">
             <p>
               For me, editing has never been just about putting clips together. It's about understanding rhythm, emotion, pacing, and knowing when to let a moment breathe. Motion design and visual effects are simply extensions of that process—tools that help tell a story more effectively.
@@ -94,12 +94,12 @@ export function About() {
             </div>
           </div>
 
-          <video 
-            src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/about%20me.webm" 
-            title="Dieablo Studio Portrait" 
-            autoPlay 
-            loop 
-            muted 
+          <video
+            src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/about%20me.webm"
+            title="Dieablo Studio Portrait"
+            autoPlay
+            loop
+            muted
             playsInline
             className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
           />

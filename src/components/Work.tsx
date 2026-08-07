@@ -255,12 +255,18 @@ export function Work() {
               </div>
 
               {/* Grid — 2 rows × 3 cols desktop, 2 cols tablet, 1 col mobile */}
-              <div className={`grid gap-3 md:gap-4 w-full ${activeCategory === 'SOCIAL'
+              <div className={`grid items-center gap-3 md:gap-4 w-full ${activeCategory === 'SOCIAL'
                   ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'
                   : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
                 }`}>
                 <AnimatePresence mode="popLayout">
-                  {paginatedProjects.map((project) => (
+                  {paginatedProjects.map((project) => {
+                    const isHOF = project.title.toUpperCase().includes('HOF');
+                    const aspectClass = activeCategory === 'SOCIAL' 
+                      ? 'aspect-[9/16]' 
+                      : (isHOF ? 'aspect-[2/1]' : 'aspect-video');
+                    
+                    return (
                     <motion.div
                       initial={{ opacity: 0, y: 30, scale: 0.97 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -270,8 +276,7 @@ export function Work() {
                       key={project.id}
                       aria-label={`View project: ${project.title}`}
                       role="button"
-                      className={`group relative flex flex-col border border-foreground/10 overflow-hidden w-full cursor-pointer bg-background ${activeCategory === 'SOCIAL' ? 'aspect-[9/16]' : 'aspect-video'
-                        }`}
+                      className={`group relative flex flex-col border border-foreground/10 overflow-hidden w-full cursor-pointer bg-background ${aspectClass}`}
                       onClick={() => {
                         if (playingVideoId === project.id) return;
                         setPlayingVideoId(project.id);
@@ -343,7 +348,8 @@ export function Work() {
                         </>
                       )}
                     </motion.div>
-                  ))}
+                  );
+                })}
                 </AnimatePresence>
               </div>
             </div>

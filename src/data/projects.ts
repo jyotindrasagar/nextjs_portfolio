@@ -62,7 +62,7 @@ const rawProjects: ProjectInput[] = [
     category: 'Demos',
     videoUrl: 'https://www.youtube.com/watch?v=7f6P3ts4peM',
     description: 'Discover the five science-based looksmaxing foundations that can improve facial aesthetics, confidence, grooming, and overall appearance with practical self-improvement tips for long-term results.',
-    pinPosition: 6
+    pinPosition: 8
   },
   {
     title: 'Kobe Bryant',
@@ -105,7 +105,22 @@ const rawProjects: ProjectInput[] = [
     videoUrl: 'https://www.youtube.com/watch?v=TefbTIfo4wo',
     description: '2D character animation sample created by dieablofx for L3G1T_DC showcasing Adobe After Effects animation, motion graphics, expressive character animation, visual storytelling, and professional motion design services.',
     pinPosition: 4
+  },
+  {
+    title: 'HOF Logo Animation',
+    category: 'Commercial',
+    videoUrl: 'https://www.youtube.com/watch?v=FY0C61ks3dM',
+    description: 'Premium logo animation created by DieabloFX for HOF India featuring elegant motion graphics, brand animation, commercial design, corporate identity, and 2D motion design.',
+    pinPosition: 4
+  },
+  {
+    title: 'HOF Brand Reveal',
+    category: 'Commercial',
+    videoUrl: 'https://www.youtube.com/watch?v=3kUKesOFciE',
+    description: 'Luxury brand reveal and logo animation created by DieabloFX for HOF India featuring premium motion graphics, corporate branding, elegant visual identity, commercial animation, and 2D motion design.',
+    pinPosition: 6
   }
+
 ];
 
 export const projectsData: Project[] = rawProjects.map(project => ({
