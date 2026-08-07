@@ -46,6 +46,21 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
     return () => window.removeEventListener('global-audio-play', handleGlobalAudio);
   }, [videoUrl]);
 
+  // Global video listener to pause this video if another video plays (specifically for mobile/tablet)
+  useEffect(() => {
+    const handleGlobalVideo = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail.source !== videoUrl) {
+        if (!alwaysPlay) {
+          setIsHovered(false);
+          setIsUserPaused(true);
+        }
+      }
+    };
+    window.addEventListener('global-video-play', handleGlobalVideo);
+    return () => window.removeEventListener('global-video-play', handleGlobalVideo);
+  }, [videoUrl, alwaysPlay]);
+
 
   useEffect(() => {
     if (document.readyState === 'complete') {
@@ -145,6 +160,7 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
         if (videoRef.current && (videoRef.current.paused || !isVideoPlaying)) {
           setIsUserPaused(false);
           setIsHovered(true);
+          window.dispatchEvent(new CustomEvent('global-video-play', { detail: { source: videoUrl } }));
         } else {
           setIsUserPaused(true);
         }
