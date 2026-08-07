@@ -2,18 +2,22 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
-// â”€â”€â”€ CONFIGURE RESPONSIVE VALUES INSIDE THE COMPONENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── CONFIGURE RESPONSIVE VALUES INSIDE THE COMPONENT ────────────
 
 export function CADOverlay({ loading = false, targetRef }: { loading?: boolean, targetRef?: React.RefObject<HTMLDivElement | null> }) {
-  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
 
   useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
+    const handleResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    handleResize(); // trigger on mount
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // â”€â”€â”€ TWEAK THESE VALUES FOR DIFFERENT SCREEN SIZES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const windowWidth = windowSize.width;
+  const windowHeight = windowSize.height;
+
+  // ─── TWEAK THESE VALUES FOR DIFFERENT SCREEN SIZES ────────────
   let TREE_ROTATION_DEG = 15;
   let TREE_TRANSLATE_X = 100;
   let TREE_TRANSLATE_Y = -120;
@@ -39,30 +43,25 @@ export function CADOverlay({ loading = false, targetRef }: { loading?: boolean, 
     TREE_TRANSLATE_X = 190;
     TREE_TRANSLATE_Y = -200;
   }
-  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ──────────────────────────────────────────────────────────────
 
   const { scrollY } = useScroll();
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    // "start end" = top of Feedback hits bottom of screen (starts fading)
-    // "end end" = bottom of Contact hits bottom of screen (fully faded out)
-    offset: ["start end", "end end"]
-  });
 
-  // LAYER 1 â€” Parallax: pure screen-space vertical movement.
-  // This wrapper has NO rotation, so Y always means "straight up on screen".
+  // LAYER 1 — Parallax: pure screen-space vertical movement.
   const parallaxY = useTransform(scrollY, [0, 6000], [0, -540]);
 
-  // Fallback if ref isn't ready, otherwise use scrollYProgress (1 at start end, 0 at center center)
-  const fallbackOpacityTree = useTransform(scrollY, [300, 1500], [1, 0]);
-  const targetOpacityTree = useTransform(scrollYProgress, [0, 1], [1, 0]);
-  const opacityTree = targetRef ? targetOpacityTree : fallbackOpacityTree;
+  // Bulletproof Fade Out:
+  // The first 3 sections (Hero, Work, About) are exactly 100vh each.
+  // Feedback starts at 300vh, Contact ends at 400vh.
+  const fadeStart = windowHeight * 3;
+  const fadeEnd = windowHeight * 4;
+  const opacityTree = useTransform(scrollY, [fadeStart, fadeEnd], [1, 0]);
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-      {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ────────────────────────────────────────────────────────────── */}
       {/* LAYER 1: Parallax scroll (screen-space, no rotation) */}
-      {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ────────────────────────────────────────────────────────────── */}
       <motion.div
         style={{
           y: parallaxY,
