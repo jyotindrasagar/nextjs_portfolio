@@ -41,7 +41,7 @@ function LazySection({ id, children, height = "100vh" }: { id: string, children:
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const aboutRef = useRef<HTMLDivElement>(null);
+  const fadeRef = useRef<HTMLDivElement>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function Home() {
   return (
     <>
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <CADOverlay loading={loading} targetRef={aboutRef} />
+        <CADOverlay loading={loading} targetRef={fadeRef} />
         <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/0 to-background/0 dark:from-background/90 dark:via-background/0 dark:to-background/0" />
         <FallingPetals />
       </div>
@@ -104,11 +104,11 @@ export default function Home() {
         <main className="relative w-full">
           <Hero loading={loading} />
           <LazySection id="work" height="100vh"><Work /></LazySection>
-          <div ref={aboutRef}>
-            <LazySection id="about" height="100vh"><About /></LazySection>
+          <LazySection id="about" height="100vh"><About /></LazySection>
+          <div ref={fadeRef}>
+            <LazySection id="feedback" height="50vh"><Feedback /></LazySection>
+            <LazySection id="contact" height="50vh"><Contact /></LazySection>
           </div>
-          <LazySection id="feedback" height="50vh"><Feedback /></LazySection>
-          <LazySection id="contact" height="50vh"><Contact /></LazySection>
         </main>
       </div>
     </>

@@ -1,5 +1,24 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono, Orbitron } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
+import { CustomCursor } from "@/components/CustomCursor";
+
+const display = Orbitron({ 
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ['400', '500', '600', '700', '800', '900']
+});
+
+const sans = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const mono = JetBrains_Mono({ 
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export const viewport: Viewport = {
   themeColor: "#0E1014",
@@ -37,7 +56,8 @@ export const metadata: Metadata = {
     siteName: "DieabloFX",
     images: [
       {
-        url: "/og-image.png",
+        // Change this URL to your CDN link, or replace public/og-image.png in your code!
+        url: "/og-image.png", 
       },
     ],
     locale: "en_US",
@@ -49,6 +69,7 @@ export const metadata: Metadata = {
     description: "Portfolio of DieabloFX — Creative Director, Video Editor, Motion Designer, and VFX Artist.",
     creator: "@dieablofx",
     site: "@dieablofx",
+    // Change this URL to match your openGraph image!
     images: ["/og-image.png"],
   },
 };
@@ -123,7 +144,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <CustomCursor />
+        {children}
+      </body>
     </html>
   );
 }

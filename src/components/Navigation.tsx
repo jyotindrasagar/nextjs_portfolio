@@ -1,7 +1,7 @@
 "use client";
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
-import { Sun, Moon, Menu, X } from 'lucide-react';
+import { Sun, Moon, Menu, X, Music } from 'lucide-react';
 const logoUrl = '/dieablofx.svg';
 
 interface NavigationProps {
@@ -30,6 +30,53 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
   const [activeSection, setActiveSection] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isScrollingRef = useRef(false);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.2);
+
+  useEffect(() => {
+    const audio = new Audio('/sun.aac');
+    audioRef.current = audio;
+    audio.volume = volume;
+    audio.loop = false;
+
+    // Attempt to autoplay
+    audio.play().then(() => {
+      setIsPlaying(true);
+    }).catch(() => {
+      // Autoplay blocked by browser
+      setIsPlaying(false);
+    });
+
+    const handleEnded = () => setIsPlaying(false);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('ended', handleEnded);
+      audio.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+      }
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVol = parseFloat(e.target.value);
+    setVolume(newVol);
+    if (audioRef.current) {
+      audioRef.current.volume = newVol;
+    }
+  };
 
   useEffect(() => {
     const navIds = navLinks.map(link => link.id);
@@ -177,6 +224,44 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
           </button>
 
 
+
+          {/* Music Button Container with Hover Slider */}
+          <div className="relative group/music flex flex-col items-center">
+            <button
+              onClick={toggleMusic}
+              className="relative w-8 h-8 sm:w-8 sm:h-8 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-all duration-300 group"
+              title={isPlaying ? "Mute Music" : "Play Music"}
+            >
+              {/* Dashed ring */}
+              <div className={`absolute inset-0 rounded-full border border-dashed border-foreground/30 transition-transform duration-[3000ms] ease-linear ${isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}></div>
+              
+              {/* Icon */}
+              <div className="relative">
+                <Music size={14} className={`transition-colors duration-300 ${isPlaying ? 'text-accent' : 'text-foreground/70 group-hover:text-foreground'}`} />
+                {!isPlaying && (
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-[1.5px] bg-foreground/70 -rotate-45 group-hover:bg-foreground transition-colors duration-300"></div>
+                )}
+              </div>
+              
+              {/* Subtle glow when playing */}
+              {isPlaying && (
+                <div className="absolute inset-0 rounded-full bg-accent/10 blur-md -z-10 animate-pulse"></div>
+              )}
+            </button>
+
+            {/* The Volume Slider (appears on hover, vertical dropdown) */}
+            <div className="absolute top-full mt-2 opacity-0 h-0 group-hover/music:opacity-100 group-hover/music:h-24 transition-all duration-300 overflow-hidden flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm border border-foreground/10 rounded-full w-8">
+              <input 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.05" 
+                value={volume}
+                onChange={handleVolumeChange}
+                className="w-16 h-1 bg-foreground/20 rounded-lg appearance-none cursor-pointer accent-accent -rotate-90 origin-center"
+              />
+            </div>
+          </div>
 
           {/* Theme (Day/Night) Toggle */}
           <button 
