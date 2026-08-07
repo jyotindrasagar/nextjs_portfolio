@@ -53,7 +53,7 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
       if (customEvent.detail.source !== videoUrl) {
         if (!alwaysPlay) {
           setIsHovered(false);
-          setIsUserPaused(true);
+          setIsUserPaused(false);
         }
       }
     };
