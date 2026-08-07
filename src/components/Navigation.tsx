@@ -52,8 +52,21 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
     const handleEnded = () => setIsPlaying(false);
     audio.addEventListener('ended', handleEnded);
 
+    // Listen for global audio play events to pause background music if another video is unmuted
+    const handleGlobalAudio = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail.source !== 'bg-music') {
+        if (audioRef.current && !audioRef.current.paused) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        }
+      }
+    };
+    window.addEventListener('global-audio-play', handleGlobalAudio);
+
     return () => {
       audio.removeEventListener('ended', handleEnded);
+      window.removeEventListener('global-audio-play', handleGlobalAudio);
       audio.pause();
       audioRef.current = null;
     };
@@ -65,7 +78,10 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         audioRef.current.pause();
         setIsPlaying(false);
       } else {
-        audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+        audioRef.current.play().then(() => {
+          setIsPlaying(true);
+          window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: 'bg-music' } }));
+        }).catch(() => {});
       }
     }
   };

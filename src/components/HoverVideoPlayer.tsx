@@ -1,5 +1,6 @@
-﻿"use client";
+"use client";
 import { useState, useRef, useEffect, memo } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 interface HoverVideoPlayerProps {
   imageUrl?: string;
@@ -29,9 +30,21 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
   const [isUserPaused, setIsUserPaused] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const [isDelayPassed, setIsDelayPassed] = useState(false);
-
+  const [isMuted, setIsMuted] = useState(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Global audio listener to mute this video if something else plays audio
+  useEffect(() => {
+    const handleGlobalAudio = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail.source !== videoUrl) {
+        setIsMuted(true);
+      }
+    };
+    window.addEventListener('global-audio-play', handleGlobalAudio);
+    return () => window.removeEventListener('global-audio-play', handleGlobalAudio);
+  }, [videoUrl]);
 
 
   useEffect(() => {
@@ -137,7 +150,7 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
           src={((alwaysPlay && isDelayPassed) || isHovered) ? videoUrl : undefined}
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out z-0 ${(isVideoPlaying || isUserPaused) ? 'opacity-100 grayscale-0' : 'opacity-0 grayscale'
             } ${isHovered ? 'scale-110' : 'scale-100'}`}
-          muted={true}
+          muted={isMuted}
           playsInline
           loop
           preload="none"
@@ -160,6 +173,24 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
               : `${baseOpacity} ${baseGrayscale}`
             } ${isHovered ? 'scale-110' : 'scale-100'}`}
         />
+      )}
+
+      {/* Mute/Unmute Button (Visible on hover) */}
+      {videoUrl && !videoUrl.includes('youtu') && isHovered && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (isMuted) {
+              setIsMuted(false);
+              window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: videoUrl } }));
+            } else {
+              setIsMuted(true);
+            }
+          }}
+          className="absolute top-4 right-4 z-30 p-2 rounded-full bg-background/50 backdrop-blur-md border border-foreground/10 text-foreground/80 hover:bg-background/80 hover:text-foreground transition-all"
+        >
+          {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+        </button>
       )}
 
       {/* Children Overlay */}
