@@ -171,7 +171,7 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
         <video
           ref={videoRef}
           src={((alwaysPlay && isDelayPassed) || isHovered) ? videoUrl : undefined}
-          className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out z-0 ${(isVideoPlaying || isUserPaused) ? 'opacity-100 grayscale-0' : 'opacity-0 grayscale'
+          className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out z-0 transform-gpu will-change-transform ${(isVideoPlaying || isUserPaused) ? 'opacity-100 grayscale-0' : 'opacity-0 grayscale'
             } ${isHovered ? 'scale-110' : 'scale-100'}`}
           muted={isMuted}
           playsInline
