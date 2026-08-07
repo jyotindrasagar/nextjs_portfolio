@@ -1,6 +1,6 @@
 "use client";
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const CountUpStat = ({ end, suffix, decimals = 0 }: { end: number, suffix: string, decimals?: number }) => {
   const rounded = end.toFixed(decimals);
@@ -30,6 +30,16 @@ const displayClients = baseClients.length > 0
 export function Hero({ loading = false }: { loading?: boolean }) {
   const { scrollY } = useScroll();
   const yImages = useTransform(scrollY, [0, 500], [0, -30]);
+  
+  const [windowWidth, setWindowWidth] = useState(1200);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  const isDesktop = windowWidth >= 1024;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -151,7 +161,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                   altText={heroVideosData[0].title}
                   baseOpacity="opacity-[0.99]"
                   baseGrayscale="grayscale-[40%]"
-                  alwaysPlay={true}
+                  alwaysPlay={isDesktop}
                   loadDelay={0}
                 >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
@@ -177,7 +187,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     altText={heroVideosData[2].title}
                     baseOpacity="opacity-[0.99]"
                     baseGrayscale="grayscale-[40%]"
-                    alwaysPlay={true}
+                    alwaysPlay={isDesktop}
                     loadDelay={500}
                   >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
@@ -200,7 +210,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     altText={heroVideosData[3].title}
                     baseOpacity="opacity-[0.99]"
                     baseGrayscale="grayscale-[40%]"
-                    alwaysPlay={true}
+                    alwaysPlay={isDesktop}
                     loadDelay={1000}
                   >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
@@ -229,7 +239,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                   altText={heroVideosData[1].title}
                   baseOpacity="opacity-[0.99]"
                   baseGrayscale="grayscale-[40%]"
-                  alwaysPlay={true}
+                  alwaysPlay={isDesktop}
                   loadDelay={1500}
                 >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
@@ -252,7 +262,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                   altText={heroVideosData[4].title}
                   baseOpacity="opacity-[0.99]"
                   baseGrayscale="grayscale-[40%]"
-                  alwaysPlay={true}
+                  alwaysPlay={isDesktop}
                   loadDelay={2000}
                 >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
