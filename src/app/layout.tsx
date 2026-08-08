@@ -29,9 +29,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://dieablo.com'),
   title: "DieabloFX | Creative Director, Motion Designer & VFX Artist",
-  description: "Portfolio of DieabloFX — Creative Director, Video Editor, Motion Designer, VFX Artist, and 3D Animator specializing in complex animations and visual storytelling.",
+  description: "Official portfolio of Jyotindra Narayan Kalyani, professionally known as Dieablo, featuring motion design, VFX, 3D animation, video editing, creative direction and visual storytelling under the personal creative brand DieabloFX.",
   keywords: ["dieablofx", "dieablo fx", "dieablo", "creative director", "motion designer", "video editor", "vfx artist", "3d motion designer", "animation", "visual storytelling"],
-  authors: [{ name: "DieabloFX" }],
+  authors: [{ name: "Jyotindra Narayan Kalyani", url: "https://dieablo.com" }],
   verification: {
     other: {
       "p:domain_verify": "31497cf6913db2b4c2df998f0c0c1faa"
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "DieabloFX | Creative Director & Motion Designer",
-    description: "Portfolio of DieabloFX — Creative Director, Video Editor, Motion Designer, and VFX Artist.",
+    description: "Official portfolio of Jyotindra Narayan Kalyani, professionally known as Dieablo, featuring motion design, VFX, 3D animation, video editing, creative direction and visual storytelling under the personal creative brand DieabloFX.",
     url: "https://dieablo.com/",
     siteName: "DieabloFX",
     images: [

@@ -52,27 +52,27 @@ export function About() {
               <ul className="space-y-3 font-semibold">
                 <li className="flex items-center justify-between">
                   <span>AFTER EFFECTS / AE</span>
-                  <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/AfterEffects.svg" className="w-6 h-6 object-contain" alt="After Effects" />
+                  <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/AfterEffects.svg" className="w-6 h-6 object-contain" alt="After Effects" loading="lazy" />
                 </li>
                 <li className="flex items-center justify-between">
                   <span>PREMIERE PRO / DAVINCI</span>
                   <div className="flex gap-2">
-                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/Premiere_Pro.svg" className="w-6 h-6 object-contain" alt="Premiere Pro" />
-                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/DaVinci_Resolve_Studio.png" className="w-6 h-6 object-contain" alt="DaVinci Resolve" />
+                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/Premiere_Pro.svg" className="w-6 h-6 object-contain" alt="Premiere Pro" loading="lazy" />
+                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/DaVinci_Resolve_Studio.png" className="w-6 h-6 object-contain" alt="DaVinci Resolve" loading="lazy" />
                   </div>
                 </li>
                 <li className="flex items-center justify-between">
                   <span>BLENDER / UNREAL ENGINE</span>
                   <div className="flex gap-2">
-                    <img src="https://cdn.simpleicons.org/blender/ea7600" className="w-6 h-6" alt="Blender" />
-                    <img src="https://cdn.simpleicons.org/unrealengine" className="w-6 h-6 opacity-80 dark:invert" alt="Unreal" />
+                    <img src="https://cdn.simpleicons.org/blender/ea7600" className="w-6 h-6" alt="Blender" loading="lazy" />
+                    <img src="https://cdn.simpleicons.org/unrealengine" className="w-6 h-6 opacity-80 dark:invert" alt="Unreal" loading="lazy" />
                   </div>
                 </li>
                 <li className="flex items-center justify-between">
                   <span>SYNTHEYES & MOCHA PRO</span>
                   <div className="flex gap-2">
-                    <img src="/syntheyes.png" className="w-6 h-6 object-cover rounded-sm" alt="Syntheyes" />
-                    <img src="/mochapro.jpg" className="w-6 h-6 object-cover rounded-sm" alt="Mocha Pro" />
+                    <img src="/syntheyes.png" className="w-6 h-6 object-cover rounded-sm" alt="Syntheyes" loading="lazy" />
+                    <img src="/mochapro.jpg" className="w-6 h-6 object-cover rounded-sm" alt="Mocha Pro" loading="lazy" />
                   </div>
                 </li>
               </ul>
