@@ -86,8 +86,8 @@ const jsonLd = {
     {
       "@type": "Person",
       "@id": "https://dieablo.com/#person",
-      "name": "Jyotindra Narayankalyani",
-      "alternateName": ["Dieablo", "DieabloFX"],
+      "name": "Dieablo",
+      "alternateName": ["DieabloFX", "Jyotindra Narayankalyani"],
       "url": "https://dieablo.com",
       "sameAs": [
         "https://instagram.com/dieablofx",
@@ -98,7 +98,7 @@ const jsonLd = {
         "https://pinterest.com/dieablofx"
       ],
       "jobTitle": ["Creative Director", "Motion Designer", "Video Editor", "VFX Artist", "3D Motion Designer"],
-      "description": "DieabloFX is a Creative Director, Video Editor, and Motion Designer specializing in VFX and 3D Motion Design.",
+      "description": "Dieablo is a Creative Director, Motion Designer, and VFX Artist working under the creative identity DieabloFX.",
       "knowsAbout": ["Video Editing", "Motion Design", "Visual Effects (VFX)", "3D Animation", "Creative Direction", "Visual Storytelling"]
     },
     {
