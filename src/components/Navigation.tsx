@@ -228,7 +228,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               setActiveSection('work');
               window.dispatchEvent(new CustomEvent('openShowreel'));
             }}
-            className="hidden md:flex bg-accent text-white px-6 py-3 font-display font-bold text-xs sm:text-sm uppercase tracking-[0.18em] transition-all duration-300 items-center gap-4 group hover:bg-accent/90 mr-2 shadow-sm"
+            className="hidden md:flex bg-accent text-white px-[22px] py-[11px] rounded-[2px] font-display font-bold text-[10px] sm:text-[11px] uppercase tracking-[0.18em] transition-all duration-300 items-center gap-4 group hover:bg-accent/90 mr-2 shadow-sm"
           >
             <span>Watch Showreel</span>
             <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-sm leading-none font-light">↗</span>
@@ -319,7 +319,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               setActiveSection('work');
               window.dispatchEvent(new CustomEvent('openShowreel'));
             }}
-            className="flex bg-accent text-white px-5 py-4 font-display font-bold text-xs sm:text-sm uppercase tracking-[0.18em] transition-all duration-300 items-center justify-between group hover:bg-accent/90 w-full"
+            className="flex bg-accent text-white px-[18px] py-[14px] rounded-[2px] font-display font-bold text-[10px] sm:text-[11px] uppercase tracking-[0.18em] transition-all duration-300 items-center justify-between group hover:bg-accent/90 w-full"
           >
             <span>Watch Showreel</span>
             <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-lg leading-none font-light">↗</span>
