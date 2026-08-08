@@ -51,21 +51,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://dieablo.com/"
   },
-  icons: {
-    icon: [
-      {
-        url: '/icon-light',
-        media: '(prefers-color-scheme: light)',
-        type: 'image/png',
-      },
-      {
-        url: '/icon-dark',
-        media: '(prefers-color-scheme: dark)',
-        type: 'image/png',
-      },
-    ],
-    apple: '/apple-icon',
-  },
   openGraph: {
     title: "DieabloFX | Creative Director & Motion Designer",
     description: "Official portfolio of Jyotindra Narayan Kalyani, professionally known as Dieablo, featuring motion design, VFX, 3D animation, video editing, creative direction and visual storytelling under the personal creative brand DieabloFX.",
