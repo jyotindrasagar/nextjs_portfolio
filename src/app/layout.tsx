@@ -220,8 +220,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scrollbar-hide" suppressHydrationWarning>
       <head>
-        <link rel="icon" type="image/svg+xml" href="/dieablofx.svg" />
-        <link rel="apple-touch-icon" href="/dieablofx.svg" />
         <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
         <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async defer></script>
         <script
