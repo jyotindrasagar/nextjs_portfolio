@@ -4,18 +4,18 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { CustomCursor } from "@/components/CustomCursor";
 
-const display = Orbitron({ 
+const display = Orbitron({
   subsets: ["latin"],
   variable: "--font-display",
   weight: ['400', '500', '600', '700', '800', '900']
 });
 
-const sans = Inter({ 
+const sans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
 });
 
-const mono = JetBrains_Mono({ 
+const mono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 });
@@ -82,54 +82,131 @@ export const metadata: Metadata = {
 
 const jsonLd = {
   "@context": "https://schema.org",
+
   "@graph": [
     {
       "@type": "Person",
       "@id": "https://dieablo.com/#person",
-      "name": "Dieablo",
-      "alternateName": ["DieabloFX", "Jyotindra Narayankalyani"],
-      "url": "https://dieablo.com",
+
+      "name": "Jyotindra Narayan Kalyani",
+
+      "alternateName": [
+        "Dieablo",
+        "DieabloFX"
+      ],
+
+      "url": "https://dieablo.com/",
+
       "sameAs": [
         "https://instagram.com/dieablofx",
         "https://x.com/dieablofx",
         "https://youtube.com/@dieablofx",
         "https://www.linkedin.com/in/dieablofx",
-        "https://behance.net/dieablofx",
-        "https://pinterest.com/dieablofx"
+        "https://www.behance.net/dieablofx",
+        "https://www.pinterest.com/dieablofx"
       ],
-      "jobTitle": ["Creative Director", "Motion Designer", "Video Editor", "VFX Artist", "3D Motion Designer"],
-      "description": "Dieablo is a Creative Director, Motion Designer, and VFX Artist working under the creative identity DieabloFX.",
-      "knowsAbout": ["Video Editing", "Motion Design", "Visual Effects (VFX)", "3D Animation", "Creative Direction", "Visual Storytelling"]
+
+      "jobTitle": [
+        "Creative Director",
+        "Motion Designer",
+        "Video Editor",
+        "VFX Artist",
+        "3D Motion Designer"
+      ],
+
+      "description": "Jyotindra Narayan Kalyani, professionally known as Dieablo, is a Creative Director, Motion Designer, Video Editor and VFX Artist working under the personal creative brand DieabloFX.",
+
+      "knowsAbout": [
+        "Video Editing",
+        "Motion Design",
+        "Visual Effects (VFX)",
+        "3D Animation",
+        "Creative Direction",
+        "Visual Storytelling",
+        "Motion Graphics",
+        "Compositing",
+        "CGI"
+      ],
+
+      "brand": {
+        "@id": "https://dieablo.com/#brand"
+      }
     },
+
     {
-      "@type": "Organization",
-      "@id": "https://dieablo.com/#organization",
+      "@type": "Brand",
+      "@id": "https://dieablo.com/#brand",
+
       "name": "DieabloFX",
-      "url": "https://dieablo.com",
+
+      "alternateName": "Dieablo",
+
+      "url": "https://dieablo.com/",
+
       "logo": {
         "@type": "ImageObject",
         "url": "https://dieablo.com/dieablofx.svg"
+      },
+
+      "description": "DieabloFX is the personal creative brand of Jyotindra Narayan Kalyani, professionally known as Dieablo, specializing in creative direction, motion design, VFX, 3D animation, video editing and visual storytelling.",
+
+      "founder": {
+        "@id": "https://dieablo.com/#person"
       }
     },
+
     {
       "@type": "WebSite",
       "@id": "https://dieablo.com/#website",
-      "url": "https://dieablo.com",
-      "name": "DieabloFX Portfolio",
-      "description": "Portfolio of DieabloFX — Creative Director and Motion Designer",
+
+      "url": "https://dieablo.com/",
+
+      "name": "DieabloFX",
+
+      "alternateName": "DieabloFX Portfolio",
+
+      "description": "Official portfolio of Jyotindra Narayan Kalyani, professionally known as Dieablo, showcasing creative direction, motion design, video editing, VFX, 3D animation and visual storytelling under the personal creative brand DieabloFX.",
+
       "publisher": {
-        "@id": "https://dieablo.com/#organization"
+        "@id": "https://dieablo.com/#person"
+      },
+
+      "creator": {
+        "@id": "https://dieablo.com/#person"
+      },
+
+      "about": {
+        "@id": "https://dieablo.com/#brand"
       }
     },
+
     {
       "@type": "WebPage",
       "@id": "https://dieablo.com/#webpage",
-      "url": "https://dieablo.com",
-      "name": "DieabloFX | Creative Director & Motion Designer",
+
+      "url": "https://dieablo.com/",
+
+      "name": "DieabloFX | Creative Director, Motion Designer & VFX Artist",
+
+      "description": "Official portfolio of Jyotindra Narayan Kalyani, professionally known as Dieablo, featuring motion design, VFX, 3D animation, video editing, creative direction and visual storytelling.",
+
+      "isPartOf": {
+        "@id": "https://dieablo.com/#website"
+      },
+
       "about": {
+        "@id": "https://dieablo.com/#person"
+      },
+
+      "creator": {
+        "@id": "https://dieablo.com/#person"
+      },
+
+      "publisher": {
         "@id": "https://dieablo.com/#person"
       }
     }
+
   ]
 };
 
