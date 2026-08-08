@@ -250,8 +250,8 @@ export function Work() {
             </motion.div>
           ) : (
             <div className="relative w-full">
-              {/* Top pagination - absolutely positioned to not push the grid down */}
-              <div className="absolute -top-14 left-0 right-0 flex justify-center z-50">
+              {/* Top pagination - responsive positioning to avoid mobile overlap */}
+              <div className="flex justify-center lg:justify-end lg:absolute lg:-top-14 lg:right-0 z-50 mb-6 lg:mb-0 w-full">
                 <PaginationControls />
               </div>
 
