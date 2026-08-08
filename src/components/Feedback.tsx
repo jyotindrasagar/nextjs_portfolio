@@ -43,8 +43,8 @@ export function Feedback() {
       
       <AnimatedSection>
         {/* CAD reference label */}
-        <div className="flex items-center gap-2 text-[9px] tracking-[0.25em] font-mono opacity-50 mb-4 uppercase">
-          <span>âŒ–</span>
+        <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-foreground/90 mb-4 md:mb-6 uppercase">
+          <span className="text-accent">❖</span>
           <span>SYS.FEEDBACK // TESTIMONIALS</span>
         </div>
 

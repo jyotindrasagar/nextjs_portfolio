@@ -126,8 +126,8 @@ export function Contact() {
       <AnimatedSection className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="w-full">
           {/* CAD reference label */}
-          <div className="flex items-center gap-2 text-[9px] tracking-[0.25em] font-mono opacity-50 mb-4 uppercase">
-            <span>âŒ–</span>
+          <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-foreground/90 mb-4 md:mb-6 uppercase">
+            <span className="text-accent">❖</span>
             <span>SYS.CONTACT // REGISTRATION</span>
           </div>
 
@@ -136,7 +136,7 @@ export function Contact() {
             {/* LEFT COLUMN */}
             <div className="lg:col-span-6 flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-3 text-accent text-[10px] font-mono tracking-widest uppercase mb-6">
+                <div className="flex items-center gap-3 text-accent text-[11px] font-mono font-bold tracking-widest uppercase mb-6">
                   <div className="w-1.5 h-1.5 rounded-full bg-accent" />
                   <span>01. GET IN TOUCH</span>
                 </div>
@@ -145,7 +145,7 @@ export function Contact() {
                   LET'S CREATE<br />SOMETHING IMPACTFUL<span className="text-accent">.</span>
                 </h2>
 
-                <p className="text-foreground/70 text-sm md:text-base font-light max-w-md leading-relaxed mb-12">
+                <p className="text-foreground/85 text-sm md:text-base font-normal max-w-md leading-relaxed mb-12">
                   I'm currently open to commissions, projects, and creative collaborations. Get in touch to discuss cinematic directions.
                 </p>
 
@@ -154,37 +154,37 @@ export function Contact() {
                     onClick={openCalendly}
                     className="flex items-center gap-6 px-6 py-4 border border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-300 group"
                   >
-                    <span className="text-[10px] font-mono font-bold tracking-widest uppercase">BOOK A CALL</span>
+                    <span className="text-[11px] font-mono font-bold tracking-widest uppercase">BOOK A CALL</span>
                     <Calendar size={14} className="opacity-70 group-hover:opacity-100" />
                   </button>
-                  <div className="flex items-center gap-3 text-[10px] font-mono tracking-widest uppercase text-foreground/50">
-                    <div className="w-1 h-1 rounded-full border border-foreground/50" />
+                  <div className="flex items-center gap-3 text-[11px] font-mono font-semibold tracking-widest uppercase text-foreground/70">
+                    <div className="w-1.5 h-1.5 rounded-full border border-foreground/70" />
                     <span>REPLY WITHIN 24H</span>
                   </div>
                 </div>
               </div>
 
               {/* Bottom Info Grid */}
-              <div className="pt-10 border-t border-foreground/10 grid grid-cols-1 sm:grid-cols-2 gap-8 font-mono text-[9px] uppercase tracking-[0.15em] text-foreground/70">
+              <div className="pt-10 border-t border-foreground/15 grid grid-cols-1 sm:grid-cols-2 gap-8 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.15em] text-foreground/85">
                 {/* Channels */}
                 <div className="flex flex-col gap-4">
-                  <h4 className="text-accent tracking-widest">// QUICK CHANNELS</h4>
+                  <h4 className="text-accent font-bold tracking-widest">// QUICK CHANNELS</h4>
                   <div className="flex flex-col gap-1.5">
-                    <button aria-label="Copy Email address" onClick={() => { navigator.clipboard.writeText('hello@dieablo.com'); alert('Email copied to clipboard!'); }} className="hover:text-foreground transition-colors font-bold text-left">
+                    <button aria-label="Copy Email address" onClick={() => { navigator.clipboard.writeText('hello@dieablo.com'); alert('Email copied to clipboard!'); }} className="hover:text-accent transition-colors font-bold text-left text-[11px] sm:text-[12px]">
                       HELLO@DIEABLO.COM
                     </button>
                   </div>
-                  <Mail size={14} className="opacity-50 mt-1" strokeWidth={1.5} />
+                  <Mail size={15} className="opacity-70 mt-1" strokeWidth={1.5} />
                 </div>
 
                 {/* Timezone */}
                 <div className="hidden lg:flex flex-col gap-4">
-                  <h4 className="text-accent tracking-widest">// TIMEZONE ENGINE</h4>
+                  <h4 className="text-accent font-bold tracking-widest">// TIMEZONE ENGINE</h4>
                   <div className="flex flex-col gap-1.5">
-                    <span className="font-bold">LOCAL CLOCK // {time}</span>
-                    <span className="text-foreground/40">STABLE FEED</span>
+                    <span className="font-bold text-[11px] sm:text-[12px]">LOCAL CLOCK // {time}</span>
+                    <span className="text-foreground/60 font-semibold">STABLE FEED</span>
                   </div>
-                  <Clock size={14} className="opacity-50 mt-1" strokeWidth={1.5} />
+                  <Clock size={15} className="opacity-70 mt-1" strokeWidth={1.5} />
                 </div>
 
               </div>
@@ -192,7 +192,7 @@ export function Contact() {
 
             {/* RIGHT COLUMN (FORM) */}
             <div className="lg:col-span-6">
-              <div className="flex items-center gap-3 text-accent text-[10px] font-mono tracking-widest uppercase mb-10">
+              <div className="flex items-center gap-3 text-accent text-[12px] font-mono font-bold tracking-[0.2em] uppercase mb-10">
                 <span>02. PROJECT INQUIRY</span>
               </div>
 
@@ -201,7 +201,7 @@ export function Contact() {
                 {/* Row 1 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col gap-3">
-                    <label className="text-[10px] font-mono tracking-widest uppercase text-foreground/80 font-bold">YOUR NAME</label>
+                    <label className="text-[12px] md:text-[13px] font-mono tracking-[0.2em] uppercase text-foreground font-bold">YOUR NAME</label>
                     <input
                       type="text"
                       name="name"
@@ -209,11 +209,11 @@ export function Contact() {
                       onChange={handleChange}
                       placeholder="Enter your name"
                       required
-                      className="bg-transparent border border-foreground/15 px-4 py-3.5 text-sm font-mono focus:border-foreground/40 focus:outline-none transition-colors placeholder:text-foreground/30"
+                      className="bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40"
                     />
                   </div>
                   <div className="flex flex-col gap-3">
-                    <label className="text-[10px] font-mono tracking-widest uppercase text-foreground/80 font-bold">EMAIL ADDRESS</label>
+                    <label className="text-[12px] md:text-[13px] font-mono tracking-[0.2em] uppercase text-foreground font-bold">EMAIL ADDRESS</label>
                     <input
                       type="email"
                       name="email"
@@ -221,7 +221,7 @@ export function Contact() {
                       onChange={handleChange}
                       placeholder="hello@dieablo.com"
                       required
-                      className="bg-transparent border border-foreground/15 px-4 py-3.5 text-sm font-mono focus:border-foreground/40 focus:outline-none transition-colors placeholder:text-foreground/30"
+                      className="bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40"
                     />
                   </div>
                 </div>
@@ -229,24 +229,24 @@ export function Contact() {
                 {/* Row 2 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col gap-3">
-                    <label className="text-[10px] font-mono tracking-widest uppercase text-foreground/80 font-bold">COMPANY / BRAND (OPTIONAL)</label>
+                    <label className="text-[12px] md:text-[13px] font-mono tracking-[0.2em] uppercase text-foreground font-bold">COMPANY / BRAND (OPTIONAL)</label>
                     <input
                       type="text"
                       name="company"
                       value={formData.company}
                       onChange={handleChange}
                       placeholder="Your brand or company"
-                      className="bg-transparent border border-foreground/15 px-4 py-3.5 text-sm font-mono focus:border-foreground/40 focus:outline-none transition-colors placeholder:text-foreground/30"
+                      className="bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40"
                     />
                   </div>
                   <div className="flex flex-col gap-3">
-                    <label className="text-[10px] font-mono tracking-widest uppercase text-foreground/80 font-bold">PROJECT TYPE</label>
+                    <label className="text-[12px] md:text-[13px] font-mono tracking-[0.2em] uppercase text-foreground font-bold">PROJECT TYPE</label>
                     <div className="relative">
                       <select
                         name="projectType"
                         value={formData.projectType}
                         onChange={handleChange}
-                        className="w-full appearance-none bg-transparent border border-foreground/15 px-4 py-3.5 text-sm font-mono focus:border-foreground/40 focus:outline-none transition-colors text-foreground/70 cursor-pointer"
+                        className="w-full appearance-none bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer"
                       >
                         <option value="" disabled className="bg-background text-foreground/50">Select project type</option>
                         <option value="commercial" className="bg-background text-foreground">Commercial</option>
@@ -254,8 +254,8 @@ export function Contact() {
                         <option value="vfx" className="bg-background text-foreground">VFX / Post Production</option>
                         <option value="other" className="bg-background text-foreground">Other</option>
                       </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 1L5 5L9 1" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-70">
+                        <svg width="12" height="7" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 1L5 5L9 1" strokeLinecap="round" strokeLinejoin="round" /></svg>
                       </div>
                     </div>
                   </div>
@@ -263,54 +263,54 @@ export function Contact() {
 
                 {/* Row 3 - Overview */}
                 <div className="flex flex-col gap-3">
-                  <label className="text-[10px] font-mono tracking-widest uppercase text-foreground/80 font-bold">PROJECT OVERVIEW</label>
+                  <label className="text-[12px] md:text-[13px] font-mono tracking-[0.2em] uppercase text-foreground font-bold">PROJECT OVERVIEW</label>
                   <textarea
                     name="overview"
                     value={formData.overview}
                     onChange={handleChange}
                     placeholder="Tell me about your project, goals, and vision..."
                     rows={4}
-                    className="bg-transparent border border-foreground/15 px-4 py-3.5 text-sm font-mono focus:border-foreground/40 focus:outline-none transition-colors placeholder:text-foreground/30 resize-none"
+                    className="bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 resize-none text-foreground font-medium"
                   />
                 </div>
 
                 {/* Row 4 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col gap-3">
-                    <label className="text-[10px] font-mono tracking-widest uppercase text-foreground/80 font-bold">BUDGET RANGE</label>
+                    <label className="text-[12px] md:text-[13px] font-mono tracking-[0.2em] uppercase text-foreground font-bold">BUDGET RANGE</label>
                     <div className="relative">
                       <select
                         name="budget"
                         value={formData.budget}
                         onChange={handleChange}
-                        className="w-full appearance-none bg-transparent border border-foreground/15 px-4 py-3.5 text-sm font-mono focus:border-foreground/40 focus:outline-none transition-colors text-foreground/70 cursor-pointer"
+                        className="w-full appearance-none bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer"
                       >
                         <option value="" disabled className="bg-background text-foreground/50">Select budget range</option>
                         <option value="small" className="bg-background text-foreground">Under $1k</option>
                         <option value="medium" className="bg-background text-foreground">$1k - $5k</option>
                         <option value="large" className="bg-background text-foreground">$5k+</option>
                       </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 1L5 5L9 1" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-70">
+                        <svg width="12" height="7" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 1L5 5L9 1" strokeLinecap="round" strokeLinejoin="round" /></svg>
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-col gap-3">
-                    <label className="text-[10px] font-mono tracking-widest uppercase text-foreground/80 font-bold">TIMELINE</label>
+                    <label className="text-[12px] md:text-[13px] font-mono tracking-[0.2em] uppercase text-foreground font-bold">TIMELINE</label>
                     <div className="relative">
                       <select
                         name="timeline"
                         value={formData.timeline}
                         onChange={handleChange}
-                        className="w-full appearance-none bg-transparent border border-foreground/15 px-4 py-3.5 text-sm font-mono focus:border-foreground/40 focus:outline-none transition-colors text-foreground/70 cursor-pointer"
+                        className="w-full appearance-none bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer"
                       >
                         <option value="" disabled className="bg-background text-foreground/50">Select timeline</option>
                         <option value="asap" className="bg-background text-foreground">ASAP</option>
                         <option value="1month" className="bg-background text-foreground">Within 1 Month</option>
                         <option value="flexible" className="bg-background text-foreground">Flexible</option>
                       </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 1L5 5L9 1" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-70">
+                        <svg width="12" height="7" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 1L5 5L9 1" strokeLinecap="round" strokeLinejoin="round" /></svg>
                       </div>
                     </div>
                   </div>
@@ -318,7 +318,7 @@ export function Contact() {
 
                 {/* Row 5 - References */}
                 <div className="flex flex-col gap-3">
-                  <label htmlFor="references" className="text-[10px] font-mono tracking-widest uppercase text-foreground/80 font-bold">PROJECT ASSETS (WE TRANSFER, DROPBOX, ETC)</label>
+                  <label htmlFor="references" className="text-[12px] md:text-[13px] font-mono tracking-[0.2em] uppercase text-foreground font-bold">PROJECT ASSETS (WE TRANSFER, DROPBOX, ETC)</label>
                   <div className="flex flex-col gap-2">
                     <input
                       type="text"
@@ -327,14 +327,14 @@ export function Contact() {
                       value={formData.references}
                       onChange={handleChange}
                       placeholder="Paste link to your files here..."
-                      className="w-full bg-transparent border border-foreground/15 px-4 py-3.5 text-sm font-mono focus:border-foreground/40 focus:outline-none transition-colors placeholder:text-foreground/30"
+                      className="w-full bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 text-foreground font-medium"
                     />
                     <button
                       type="button"
                       onClick={() => document.getElementById('references')?.focus()}
-                      className="flex items-center gap-2 self-start text-[10px] font-mono font-bold tracking-widest uppercase text-foreground/60 hover:text-foreground transition-colors group"
+                      className="flex items-center gap-2 self-start text-[11px] md:text-[12px] font-mono font-bold tracking-[0.2em] uppercase text-foreground/80 hover:text-accent transition-colors group py-1"
                     >
-                      <Paperclip size={14} className="opacity-50 group-hover:opacity-100" />
+                      <Paperclip size={15} className="opacity-70 group-hover:opacity-100" />
                       <span>ATTACH FILES</span>
                     </button>
                   </div>
@@ -360,17 +360,17 @@ export function Contact() {
                   <button
                     type="submit"
                     disabled={status === 'loading'}
-                    className="w-full sm:w-auto flex items-center justify-center gap-4 bg-accent border border-white text-white dark:bg-white dark:border-accent dark:text-black px-8 py-4 transition-colors duration-300 hover:bg-white hover:text-accent dark:hover:bg-accent dark:hover:text-white group disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto flex items-center justify-center gap-4 bg-accent border border-white text-white dark:bg-white dark:border-accent dark:text-black px-10 py-4.5 text-[12px] md:text-[13px] font-mono font-extrabold tracking-[0.25em] uppercase transition-colors duration-300 hover:bg-white hover:text-accent dark:hover:bg-accent dark:hover:text-white group disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                   >
                     {status === 'loading' ? (
                       <>
-                        <Loader2 size={14} className="animate-spin" />
-                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase">SENDING...</span>
+                        <Loader2 size={16} className="animate-spin" />
+                        <span>SENDING...</span>
                       </>
                     ) : (
                       <>
-                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase">SEND INQUIRY</span>
-                        <ArrowUpRight size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        <span>SEND INQUIRY</span>
+                        <ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform font-bold" />
                       </>
                     )}
                   </button>

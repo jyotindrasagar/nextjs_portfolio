@@ -77,8 +77,8 @@ export function Hero({ loading = false }: { loading?: boolean }) {
         <div className="flex-1 w-full xl:max-w-[40%] z-20 select-none relative mt-0 md:mt-8 lg:pl-8 xl:pl-10 shrink-0 xl:flex xl:flex-col xl:justify-between h-full">
           
           <div>
-            <div className="flex items-center gap-3 text-[8px] md:text-[9px] tracking-[0.25em] font-mono opacity-50 mb-4 md:mb-6 uppercase">
-              <span className="text-accent">+</span>
+            <div className="flex items-center gap-3 text-[11px] md:text-[12px] tracking-[0.25em] font-mono font-semibold text-foreground/90 mb-4 md:mb-6 uppercase">
+              <span className="text-accent font-bold">+</span>
               <span>Creative Direction</span>
             </div>
 
@@ -102,14 +102,14 @@ export function Hero({ loading = false }: { loading?: boolean }) {
               </motion.div>
             </div>
 
-            <div className="font-display font-light text-[10px] md:text-[12px] tracking-[0.35em] text-foreground/80 uppercase flex flex-col gap-2 mb-4 md:mb-6">
+            <div className="font-display font-semibold text-[12px] md:text-[14px] tracking-[0.35em] text-foreground uppercase flex flex-col gap-2 mb-4 md:mb-6">
               <span>Visual Storytelling</span>
               <span>Through Editing & Design</span>
             </div>
 
-            <div className="w-10 h-[1px] bg-accent mb-6 md:mb-8"></div>
+            <div className="w-12 h-[2px] bg-accent mb-6 md:mb-8"></div>
 
-            <p className="text-[9px] md:text-[11px] font-mono tracking-[0.2em] leading-[2.2] text-foreground/60 uppercase max-w-sm mb-8 md:mb-12">
+            <p className="text-[11px] md:text-[13px] font-mono font-medium tracking-[0.18em] leading-[2] text-foreground/85 uppercase max-w-sm mb-8 md:mb-12">
               I direct ideas, craft stories,<br />
               and deliver visuals that leave<br />
               a lasting impact.
@@ -120,19 +120,19 @@ export function Hero({ loading = false }: { loading?: boolean }) {
             <button 
               aria-label="View All Work"
               onClick={() => scrollToSection('work')}
-              className="bg-accent text-white px-5 py-3 md:px-6 md:py-4 xl:px-5 xl:py-3 text-[9px] md:text-[10px] xl:text-[9px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[180px] md:min-w-[220px] xl:min-w-[180px] hover:bg-accent/90"
+              className="bg-accent text-white px-6 py-4 md:px-8 md:py-4.5 text-[12px] md:text-[13px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:bg-accent/90 shadow-md"
             >
               <span>View All Work</span>
-              <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-sm leading-none font-light">↗</span>
+              <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-base leading-none font-bold">↗</span>
             </button>
             
             <button 
               aria-label="Contact Me"
               onClick={() => scrollToSection('contact')}
-              className="bg-transparent border border-foreground text-foreground px-5 py-3 md:px-6 md:py-4 xl:px-5 xl:py-3 text-[9px] md:text-[10px] xl:text-[9px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[180px] md:min-w-[220px] xl:min-w-[180px] hover:bg-foreground/10"
+              className="bg-transparent border border-foreground text-foreground px-6 py-4 md:px-8 md:py-4.5 text-[12px] md:text-[13px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:bg-foreground/10"
             >
               <span>Contact Me</span>
-              <span className="text-[14px] opacity-70 leading-none">≡</span>
+              <span className="text-[16px] opacity-80 leading-none">≡</span>
             </button>
           </div>
 
@@ -342,38 +342,38 @@ export function Hero({ loading = false }: { loading?: boolean }) {
           <div className="col-span-1 lg:col-span-7 grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/50 dark:divide-accent/50">
             {/* Stat 1 */}
             <div className="flex flex-col gap-3 py-6 lg:py-8 pl-0 md:pl-6 lg:pl-8 pr-4 justify-start">
-              <div className="flex items-start gap-2 text-[8px] font-mono tracking-widest uppercase text-white/80 min-h-[24px] md:min-h-[32px]">
+              <div className="flex items-start gap-2 text-[10px] md:text-[11px] font-mono font-bold tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px]">
                 <span>Total Projects</span>
               </div>
               <CountUpStat end={140} suffix="+" />
-              <div className="text-[7px] font-mono tracking-[0.2em] uppercase text-white/70 min-h-[24px] md:min-h-[32px]">Completed Projects</div>
+              <div className="text-[9px] md:text-[10px] font-mono font-semibold tracking-[0.15em] uppercase text-white/90 min-h-[24px] md:min-h-[32px]">Completed Projects</div>
             </div>
 
             {/* Stat 2 */}
             <div className="flex flex-col gap-3 py-6 lg:py-8 px-4 lg:px-8 justify-start">
-              <div className="flex items-start gap-2 text-[8px] font-mono tracking-widest uppercase text-white/80 min-h-[24px] md:min-h-[32px]">
+              <div className="flex items-start gap-2 text-[10px] md:text-[11px] font-mono font-bold tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px]">
                 <span>Total Views</span>
               </div>
               <CountUpStat end={17} suffix="M+" />
-              <div className="text-[7px] font-mono tracking-[0.2em] uppercase text-white/70 min-h-[24px] md:min-h-[32px]">Across Platforms</div>
+              <div className="text-[9px] md:text-[10px] font-mono font-semibold tracking-[0.15em] uppercase text-white/90 min-h-[24px] md:min-h-[32px]">Across Platforms</div>
             </div>
 
             {/* Stat 3 */}
             <div className="flex flex-col gap-3 py-6 lg:py-8 px-4 lg:px-8 justify-start">
-              <div className="flex items-start gap-2 text-[8px] font-mono tracking-widest uppercase text-white/80 min-h-[24px] md:min-h-[32px]">
+              <div className="flex items-start gap-2 text-[10px] md:text-[11px] font-mono font-bold tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px]">
                 <span>Hours Delivered</span>
               </div>
               <CountUpStat end={5.1} suffix="K+" decimals={1} />
-              <div className="text-[7px] font-mono tracking-[0.2em] uppercase text-white/70 min-h-[24px] md:min-h-[32px]">Hours of Work</div>
+              <div className="text-[9px] md:text-[10px] font-mono font-semibold tracking-[0.15em] uppercase text-white/90 min-h-[24px] md:min-h-[32px]">Hours of Work</div>
             </div>
 
             {/* Stat 4 */}
             <div className="flex flex-col gap-3 py-6 lg:py-8 px-4 lg:px-8 justify-start">
-              <div className="flex items-start gap-2 text-[8px] font-mono tracking-widest uppercase text-white/80 min-h-[24px] md:min-h-[32px]">
+              <div className="flex items-start gap-2 text-[10px] md:text-[11px] font-mono font-bold tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px]">
                 <span>Client Satisfaction</span>
               </div>
               <CountUpStat end={95} suffix="%" />
-              <div className="text-[7px] font-mono tracking-[0.2em] uppercase text-white/70 min-h-[24px] md:min-h-[32px]">Repeated & Referral Work</div>
+              <div className="text-[9px] md:text-[10px] font-mono font-semibold tracking-[0.15em] uppercase text-white/90 min-h-[24px] md:min-h-[32px]">Repeated & Referral Work</div>
             </div>
           </div>
 

@@ -10,8 +10,8 @@ export function About() {
       {/* Dust Particles Removed for Performance */}
 
       {/* CAD reference label */}
-      <div className="flex items-center gap-2 text-[9px] tracking-[0.25em] font-mono opacity-50 mb-4 uppercase">
-        <span>âŒ–</span>
+      <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-foreground/90 mb-4 md:mb-6 uppercase">
+        <span className="text-accent">❖</span>
         <span>SYS.ABOUT // PHILOSOPHY</span>
       </div>
 
@@ -35,44 +35,44 @@ export function About() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 mt-12 pt-8 border-t border-foreground/5 font-mono text-[10px] uppercase tracking-widest text-foreground/60">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 pt-8 border-t border-foreground/15 font-mono text-[11px] md:text-[13px] uppercase tracking-[0.18em] text-foreground/90 font-medium">
             <div>
-              <h4 className="text-accent mb-2">// CORE CAPABILITIES</h4>
-              <ul className="space-y-1">
-                <li>Creative Direction</li>
-                <li>Motion & Stage Graphics</li>
-                <li>3D & 2D Animation</li>
-                <li>Track & Simulation</li>
-                <li>Ads and Promotional Marketing</li>
-                <li>Music Videos</li>
+              <h4 className="text-accent font-bold mb-4 text-[12px] md:text-[14px] tracking-[0.2em]">// CORE CAPABILITIES</h4>
+              <ul className="space-y-2 font-semibold">
+                <li className="hover:text-accent transition-colors">Creative Direction</li>
+                <li className="hover:text-accent transition-colors">Motion & Stage Graphics</li>
+                <li className="hover:text-accent transition-colors">3D & 2D Animation</li>
+                <li className="hover:text-accent transition-colors">Track & Simulation</li>
+                <li className="hover:text-accent transition-colors">Ads and Promotional Marketing</li>
+                <li className="hover:text-accent transition-colors">Music Videos</li>
               </ul>
             </div>
             <div>
-              <h4 className="text-accent mb-2">// ENGINE SETUP</h4>
-              <ul className="space-y-3">
+              <h4 className="text-accent font-bold mb-4 text-[12px] md:text-[14px] tracking-[0.2em]">// ENGINE SETUP</h4>
+              <ul className="space-y-3 font-semibold">
                 <li className="flex items-center justify-between">
                   <span>AFTER EFFECTS / AE</span>
-                  <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/AfterEffects.svg" className="w-5 h-5 object-contain" alt="After Effects" />
+                  <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/AfterEffects.svg" className="w-6 h-6 object-contain" alt="After Effects" />
                 </li>
                 <li className="flex items-center justify-between">
                   <span>PREMIERE PRO / DAVINCI</span>
                   <div className="flex gap-2">
-                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/Premiere_Pro.svg" className="w-5 h-5 object-contain" alt="Premiere Pro" />
-                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/DaVinci_Resolve_Studio.png" className="w-5 h-5 object-contain" alt="DaVinci Resolve" />
+                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/Premiere_Pro.svg" className="w-6 h-6 object-contain" alt="Premiere Pro" />
+                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/DaVinci_Resolve_Studio.png" className="w-6 h-6 object-contain" alt="DaVinci Resolve" />
                   </div>
                 </li>
                 <li className="flex items-center justify-between">
                   <span>BLENDER / UNREAL ENGINE</span>
                   <div className="flex gap-2">
-                    <img src="https://cdn.simpleicons.org/blender/ea7600" className="w-5 h-5" alt="Blender" />
-                    <img src="https://cdn.simpleicons.org/unrealengine" className="w-5 h-5 opacity-80 dark:invert" alt="Unreal" />
+                    <img src="https://cdn.simpleicons.org/blender/ea7600" className="w-6 h-6" alt="Blender" />
+                    <img src="https://cdn.simpleicons.org/unrealengine" className="w-6 h-6 opacity-80 dark:invert" alt="Unreal" />
                   </div>
                 </li>
                 <li className="flex items-center justify-between">
                   <span>SYNTHEYES & MOCHA PRO</span>
                   <div className="flex gap-2">
-                    <img src="/syntheyes.png" className="w-5 h-5 object-cover rounded-sm" alt="Syntheyes" />
-                    <img src="/mochapro.jpg" className="w-5 h-5 object-cover rounded-sm" alt="Mocha Pro" />
+                    <img src="/syntheyes.png" className="w-6 h-6 object-cover rounded-sm" alt="Syntheyes" />
+                    <img src="/mochapro.jpg" className="w-6 h-6 object-cover rounded-sm" alt="Mocha Pro" />
                   </div>
                 </li>
               </ul>

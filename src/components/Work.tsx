@@ -149,8 +149,8 @@ export function Work() {
   return (
     <section className="relative pt-0 pb-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 overflow-hidden">
       {/* CAD reference label */}
-      <div className="flex items-center gap-2 text-[9px] tracking-[0.25em] font-mono opacity-50 mb-4 uppercase relative z-10">
-        <span>⌖</span>
+      <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-foreground/90 mb-4 md:mb-6 uppercase relative z-10">
+        <span className="text-accent">❖</span>
         <span>INDEX // SELECTED_WORK</span>
       </div>
 
@@ -169,7 +169,7 @@ export function Work() {
           </div>
 
           {/* Filter categories */}
-          <div className="flex flex-wrap gap-3 md:gap-4 font-mono text-[9px] tracking-widest mt-4">
+          <div className="flex flex-wrap gap-3 md:gap-4 font-mono text-[11px] md:text-[12px] tracking-[0.2em] mt-4">
             {categories.map((cat) => {
               if (cat === 'SHOWREEL') {
                 return (
@@ -183,7 +183,7 @@ export function Work() {
                         : { boxShadow: "0px 0px 20px rgba(255,184,198,0.6)" }
                     }
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className={`px-8 py-2.5 border transition-all duration-300 cursor-pointer tracking-[0.35em] font-bold uppercase rounded-[2px] ${activeCategory === cat
+                    className={`px-8 py-3 border transition-all duration-300 cursor-pointer tracking-[0.25em] font-extrabold uppercase rounded-[2px] ${activeCategory === cat
                       ? 'border-accent text-white bg-accent scale-105'
                       : 'border-accent/60 text-accent bg-transparent hover:border-accent hover:text-white hover:bg-accent/20 hover:scale-105'
                       }`}
@@ -198,8 +198,8 @@ export function Work() {
                   key={cat}
                   aria-label={`Filter by ${cat} category`}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 border transition-all duration-300 cursor-pointer ${activeCategory === cat
-                    ? 'border-white text-white bg-accent font-bold shadow-[0_0_12px_rgba(255,255,255,0.35)] scale-105 dark:bg-accent dark:border-white dark:text-white'
+                  className={`px-5 py-3 border transition-all duration-300 cursor-pointer font-bold tracking-[0.2em] uppercase rounded-[2px] ${activeCategory === cat
+                    ? 'border-white text-white bg-accent font-extrabold shadow-[0_0_12px_rgba(255,255,255,0.35)] scale-105 dark:bg-accent dark:border-white dark:text-white'
                     : 'border-white/60 text-white/90 bg-accent/90 hover:border-white hover:text-white hover:scale-105 dark:bg-accent/60 dark:border-white/50 dark:text-white/90 dark:hover:bg-accent dark:hover:border-white'
                     }`}
                 >
@@ -217,13 +217,13 @@ export function Work() {
         <div className="lg:w-64 lg:shrink-0 lg:sticky lg:top-32 h-fit flex flex-col gap-8 z-40">
           <AnimatedSection>
             <div className="flex flex-col gap-2">
-              <h3 className="text-accent font-mono uppercase tracking-widest text-xs font-bold">{activeCategory}</h3>
-              <h2 className="text-foreground font-display text-2xl uppercase tracking-tight">{categoryInfo[activeCategory]?.title || activeCategory}</h2>
+              <h3 className="text-accent font-mono uppercase tracking-[0.2em] text-sm font-extrabold">{activeCategory}</h3>
+              <h2 className="text-foreground font-display text-3xl md:text-4xl font-bold uppercase tracking-tight">{categoryInfo[activeCategory]?.title || activeCategory}</h2>
             </div>
 
-            <div className="w-[1px] h-12 bg-foreground/20 my-2 hidden lg:block"></div>
+            <div className="w-[1px] h-12 bg-foreground/30 my-3 hidden lg:block"></div>
 
-            <p className="text-foreground/50 font-mono text-[9px] uppercase tracking-widest leading-loose max-w-[250px]">
+            <p className="text-foreground/90 font-mono text-[11px] md:text-[12px] font-semibold uppercase tracking-widest leading-relaxed max-w-[260px]">
               {categoryInfo[activeCategory]?.desc || 'SELECTED PROJECTS & VISUAL STORIES.'}
             </p>
 

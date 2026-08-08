@@ -167,23 +167,23 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               window.scrollTo({ top: 0, behavior: 'smooth' });
               setMobileMenuOpen(false);
             }}
-            className="font-display font-bold tracking-[0.2em] text-xs sm:text-sm uppercase hover:opacity-80 transition-opacity"
+            className="font-display font-bold tracking-[0.18em] text-xs sm:text-sm uppercase hover:opacity-80 transition-opacity"
           >
             <span className="sr-only">DIEABLO FX</span>
-            <div aria-hidden="true" className="flex items-center gap-[0.15em]">
+            <div aria-hidden="true" className="flex items-center gap-0">
               <motion.img 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 src={logoUrl} 
                 alt="DieabloFX Logo" 
-                className="h-[0.85em] w-auto object-contain logo-image scale-125" 
+                className="h-[0.92em] w-auto object-contain logo-image" 
               />
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                className="flex items-center gap-[0.2em]"
+                className="flex items-center -ml-[0.03em]"
               >
                 <span className="text-foreground">IEABLO</span>
                 <span className="text-accent">FX</span>
@@ -193,7 +193,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         </div>
 
         {/* Desktop Nav links */}
-        <div className="hidden lg:flex gap-10 text-[10px] uppercase tracking-[0.2em] font-mono flex-1 justify-center">
+        <div className="hidden lg:flex gap-8 lg:gap-10 text-xs sm:text-sm uppercase tracking-[0.18em] font-display font-bold flex-1 justify-center">
           {navLinks.map((link) => (
             <a
               key={link.id}
@@ -203,7 +203,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
                 setActiveSection(link.id);
               }}
               className={`hover:text-accent transition-colors relative flex flex-col items-center ${
-                activeSection === link.id ? 'text-accent' : 'text-foreground/70'
+                activeSection === link.id ? 'text-accent' : 'text-foreground font-bold'
               }`}
             >
               <span>{link.label}</span>
@@ -228,7 +228,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               setActiveSection('work');
               window.dispatchEvent(new CustomEvent('openShowreel'));
             }}
-            className="hidden md:flex bg-accent text-white px-5 py-2.5 text-[9px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 items-center gap-4 group hover:bg-accent/90 mr-2"
+            className="hidden md:flex bg-accent text-white px-6 py-3 text-[11px] md:text-[12px] font-mono font-extrabold uppercase tracking-[0.2em] transition-all duration-300 items-center gap-4 group hover:bg-accent/90 mr-2 shadow-sm"
           >
             <span>Watch Showreel</span>
             <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-sm leading-none font-light">↗</span>
@@ -304,8 +304,8 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
                   handleScroll(e, link.id);
                   setActiveSection(link.id);
                 }}
-                className={`text-sm sm:text-base font-mono uppercase tracking-[0.2em] transition-colors ${
-                  activeSection === link.id ? 'text-accent font-bold' : 'text-foreground/70 hover:text-foreground'
+                className={`text-base font-display uppercase tracking-[0.18em] transition-colors ${
+                  activeSection === link.id ? 'text-accent font-extrabold' : 'text-foreground font-extrabold hover:text-accent'
                 }`}
               >
                 {link.label}
