@@ -82,7 +82,7 @@ export const SocialSidebar = memo(function SocialSidebar() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1, delay: 1 }}
-      className="absolute left-0 lg:left-1 xl:left-4 top-[-112px] bottom-[-16px] z-50 hidden lg:flex flex-col items-center select-none w-10"
+      className="absolute left-0 lg:left-1 xl:left-4 top-[-112px] bottom-[-16px] z-50 hidden lg:flex flex-col items-center justify-center select-none w-10"
     >
       {/* Continuous background line */}
       <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-foreground/10 -z-10" />
