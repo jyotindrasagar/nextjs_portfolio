@@ -22,7 +22,7 @@ export default async function Icon() {
           justifyContent: 'center',
         }}
       >
-        <img src={src} width={140} height={140} style={{ objectFit: 'contain' }} />
+        <img src={src} width={75} height={75} style={{ objectFit: 'contain' }} />
       </div>
     ),
     { ...size }
