@@ -79,7 +79,19 @@ export function Hero({ loading = false }: { loading?: boolean }) {
           <div>
             <div className="flex items-center gap-3 text-[11px] md:text-[12px] tracking-[0.25em] font-mono font-semibold text-foreground/90 mb-4 md:mb-6 uppercase">
               <span className="text-accent font-bold">+</span>
-              <span>Creative Direction</span>
+              <motion.span
+                initial={{ clipPath: "inset(0 100% 0 0)" }}
+                animate={{ clipPath: "inset(0 0% 0 0)" }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                  repeatDelay: 1,
+                }}
+              >
+                Video editor and motion designer
+              </motion.span>
             </div>
 
             <h1 className="sr-only">DieabloFX | Creative Director, Motion Designer & VFX Artist</h1>
