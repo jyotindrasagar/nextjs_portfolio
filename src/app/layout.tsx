@@ -52,8 +52,18 @@ export const metadata: Metadata = {
     canonical: "https://dieablo.com/"
   },
   icons: {
-    icon: '/icon',
-    shortcut: '/icon',
+    icon: [
+      {
+        url: '/icon-light',
+        media: '(prefers-color-scheme: light)',
+        type: 'image/png',
+      },
+      {
+        url: '/icon-dark',
+        media: '(prefers-color-scheme: dark)',
+        type: 'image/png',
+      },
+    ],
     apple: '/apple-icon',
   },
   openGraph: {
