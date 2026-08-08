@@ -14,7 +14,7 @@ export default async function Icon() {
     (
       <div
         style={{
-          background: 'transparent',
+          background: 'black',
           width: '100%',
           height: '100%',
           display: 'flex',
