@@ -100,9 +100,7 @@ export const SocialSidebar = memo(function SocialSidebar() {
         }}
       />
 
-      {/* Top spacer */}
-      <div className="h-[15vh] shrink-0 w-full" />
-      
+      {/* Top spacer removed to bring social bay upwards */}      
       {/* Social Title removed */}
 
       {/* Social Icons Container */}
