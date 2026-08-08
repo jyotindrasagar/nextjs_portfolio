@@ -13,6 +13,7 @@
  *   title: 'PROJECT TITLE',
  *   category: 'VFX', // Must be EXACTLY one of: 'VFX' | 'Commercial' | 'Editorial' | 'Documentary' | 'Social' | 'Demos' | 'Teasers'
  *   videoUrl: 'https://link-to-video-file.mp4', // Optional: The actual video file link or embed URL
+ *   trackUrl: 'https://spotify.com/...', // Optional: Link to the song, track, or artist page
  *   postUrl: 'https://instagram.com/...', // Optional: Hyperlink to the actual post
  *   description: 'A short description detailing the breakdown.',
  *   pinPosition: 1 // Optional: 1 is first, 2 is second, etc.
@@ -25,6 +26,8 @@ export interface ProjectInput {
   category: string;
   videoUrl?: string;
   postUrl?: string;
+  trackUrl?: string;
+  externalUrl?: string;
   description: string;
   pinPosition?: number;
   loop?: boolean;
@@ -64,26 +67,13 @@ const rawProjects: ProjectInput[] = [
     description: 'Discover the five science-based looksmaxing foundations that can improve facial aesthetics, confidence, grooming, and overall appearance with practical self-improvement tips for long-term results.',
     pinPosition: 8
   },
-  {
-    title: 'Kobe Bryant',
-    category: 'Social',
-    videoUrl: 'https://www.youtube.com/watch?v=hFwy3F6yhZ0',
-    description: 'A short-form basketball edit featuring an insightful discussion on Kobe Bryants impact and why NBA players continue to hold him in such high regard.This project emphasizes visual clarity and engagement through cinematic color grading, dynamic caption animation, and polished editing, transforming a simple interview into compelling social media content.Services: Video Editing • Color Grading • Caption Animation • Motion Graphics',
-    //pinPosition: 5
-  },
+
   {
     title: 'Fan Edit(Spiderman)',
     category: 'Demos',
     videoUrl: 'https://www.youtube.com/watch?v=_UCXDOj13QU',
     description: 'A cinematic and emotional fan edit from amazing spiderman 2 and amazing spiderman 1, The project focuses on emotional pacing, cinematic editing, sound design, and storytelling.',
     pinPosition: 10
-  },
-  {
-    title: 'Marines Surprise WWII & Korean War Hero',
-    category: 'Social',
-    videoUrl: 'https://www.youtube.com/watch?v=rYvWk9y-yfg',
-    description: 'A cinematic motivational edit built around a real story of U.S. Marines honoring World War II and Korean War veteran Robert "Woody" Woodbury. The project focuses on emotional pacing, cinematic editing, sound design, and storytelling to transform a simple act of respect into an impactful short-form narrative. Client - CBH',
-    pinPosition: 7
   },
   {
     title: 'Black Bunny Venue Showcase',
@@ -124,9 +114,52 @@ const rawProjects: ProjectInput[] = [
     title: 'Music Release Promo',
     category: 'teasers',
     videoUrl: 'https://www.youtube.com/watch?v=kUQn52ZEDeg',
+    trackUrl: 'https://open.spotify.com/album/0s1GF1doXtBtksW2lXoQud?si=FtHajscWSy6qmy3hng5BkQ', // Replace with link to song or artist
     description: 'Advanced music release promotional animation created by DieabloFX for Ashley Marie single Charing Cross, featuring cinematic motion graphics, 2.5D depth map animation, camera projection, typography animation, visual effects, and commercial video production.',
     pinPosition: 8
-  }
+  },
+  {
+    title: 'Springwel Product Explainer',
+    category: 'Commercial',
+    videoUrl: 'https://www.youtube.com/watch?v=GgUcBTQbCAE',
+    description: 'Commercial product explainer animation created by DieabloFX for Springwel, featuring motion graphics, typography animation, product visualization, educational animation, furniture marketing, mattress buying guide, and commercial video production.',
+    pinPosition: 70
+  },
+  {
+    title: 'Drift home Highlights 1',
+    category: 'social',
+    videoUrl: 'https://www.youtube.com/watch?v=yTYIbCkoA9w',
+    description: 'Motorsport promotional video for The Drift Home featuring cinematic event editing, automotive storytelling, motion graphics, color grading, drifting highlights, timed racing coverage, and commercial video production.',
+    pinPosition: 1
+  },
+  {
+    title: 'Kobe Bryant',
+    category: 'Social',
+    videoUrl: 'https://www.youtube.com/watch?v=hFwy3F6yhZ0',
+    description: 'A short-form basketball edit featuring an insightful discussion on Kobe Bryants impact and why NBA players continue to hold him in such high regard.This project emphasizes visual clarity and engagement through cinematic color grading, dynamic caption animation, and polished editing, transforming a simple interview into compelling social media content.Services: Video Editing • Color Grading • Caption Animation • Motion Graphics',
+    pinPosition: 5
+  },
+  {
+    title: 'Marines Surprise WWII & Korean War Hero',
+    category: 'Social',
+    videoUrl: 'https://www.youtube.com/watch?v=rYvWk9y-yfg',
+    description: 'A cinematic motivational edit built around a real story of U.S. Marines honoring World War II and Korean War veteran Robert "Woody" Woodbury. The project focuses on emotional pacing, cinematic editing, sound design, and storytelling to transform a simple act of respect into an impactful short-form narrative. Client - CBH',
+    pinPosition: 2
+  },
+  {
+    title: 'Drift home Highlights 2',
+    category: 'Social',
+    videoUrl: 'https://www.youtube.com/watch?v=nTvmnxt_kFs',
+    description: 'Motorsport promotional video for The Drift Home featuring cinematic event editing, automotive storytelling, motion graphics, color grading, drifting highlights, timed racing coverage, and commercial video production.',
+    pinPosition: 3
+  },
+  {
+    title: 'Drift home Highlights 3',
+    category: 'Social',
+    videoUrl: 'https://www.youtube.com/watch?v=4m7myWaopUc',
+    description: 'Motorsport promotional video for The Drift Home featuring cinematic event editing, automotive storytelling, motion graphics, color grading, drifting highlights, timed racing coverage, and commercial video production.',
+    pinPosition: 4
+  },
 ];
 
 export const projectsData: Project[] = rawProjects.map(project => ({

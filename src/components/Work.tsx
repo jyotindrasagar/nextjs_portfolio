@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { projectsData } from '../data/projects';
 import { HoverVideoPlayer } from './HoverVideoPlayer';
 import { AnimatedSection } from './AnimatedSection';
-import { Clapperboard, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Clapperboard, ChevronLeft, ChevronRight, ExternalLink, Music } from 'lucide-react';
 
 const categoryInfo: Record<string, { title: string; desc: string }> = {
   'SHOWREEL': { title: '2025 SHOWREEL', desc: 'A COMPILATION OF MY BEST DESIGIN, VISUAL EFFECTS AND EDITING WORK.' },
@@ -330,9 +330,23 @@ export function Work() {
 
                             {/* Card Content */}
                             <div className="relative h-full flex flex-col justify-between p-3 z-10">
-                              {/* Top Row: Icon */}
+                              {/* Top Row: Icon & Optional Track/Artist Link */}
                               <div className="flex items-center justify-between text-white/90 drop-shadow-md">
                                 <Clapperboard size={14} strokeWidth={2} />
+                                {(project.trackUrl || project.externalUrl || project.postUrl) && (
+                                  <a
+                                    href={project.trackUrl || project.externalUrl || project.postUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="flex items-center gap-1.5 text-[8px] sm:text-[9px] font-mono font-bold uppercase tracking-wider bg-black/75 hover:bg-accent text-white px-2 py-1 rounded-sm border border-white/20 transition-all duration-300 pointer-events-auto"
+                                    title="Listen to track / artist"
+                                  >
+                                    <Music size={10} />
+                                    <span>Listen / Track</span>
+                                    <ExternalLink size={9} />
+                                  </a>
+                                )}
                               </div>
 
                               {/* Bottom Row: Title and Subtitle */}
