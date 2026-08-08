@@ -11,7 +11,7 @@
  * --- TEMPLATE ---
  * {
  *   title: 'PROJECT TITLE',
- *   category: 'VFX', // Must be EXACTLY one of: 'VFX' | 'Commercial' | 'Editorial' | 'Documentary' | 'Social' | 'Demos'
+ *   category: 'VFX', // Must be EXACTLY one of: 'VFX' | 'Commercial' | 'Editorial' | 'Documentary' | 'Social' | 'Demos' | 'Teasers'
  *   videoUrl: 'https://link-to-video-file.mp4', // Optional: The actual video file link or embed URL
  *   postUrl: 'https://instagram.com/...', // Optional: Hyperlink to the actual post
  *   description: 'A short description detailing the breakdown.',
@@ -97,7 +97,7 @@ const rawProjects: ProjectInput[] = [
     category: 'Commercial',
     videoUrl: 'https://www.youtube.com/watch?v=T5gVxAogrWM',
     description: 'Commercial venue showcase for Black Bunny Dubai featuring cinematic editing, motion graphics, tracked visual effects, 3D animation, and promotional storytelling created through HekayaHaus.',
-    pinPosition: 7
+    pinPosition: 9
   },
   {
     title: 'Character Animation',
@@ -118,9 +118,15 @@ const rawProjects: ProjectInput[] = [
     category: 'Commercial',
     videoUrl: 'https://www.youtube.com/watch?v=3kUKesOFciE',
     description: 'Luxury brand reveal and logo animation created by DieabloFX for HOF India featuring premium motion graphics, corporate branding, elegant visual identity, commercial animation, and 2D motion design.',
-    pinPosition: 6
+    pinPosition: 7
+  },
+  {
+    title: 'Music Release Promo',
+    category: 'teasers',
+    videoUrl: 'https://www.youtube.com/watch?v=kUQn52ZEDeg',
+    description: 'Advanced music release promotional animation created by DieabloFX for Ashley Marie single Charing Cross, featuring cinematic motion graphics, 2.5D depth map animation, camera projection, typography animation, visual effects, and commercial video production.',
+    pinPosition: 8
   }
-
 ];
 
 export const projectsData: Project[] = rawProjects.map(project => ({

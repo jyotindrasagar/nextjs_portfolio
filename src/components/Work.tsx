@@ -13,6 +13,7 @@ const categoryInfo: Record<string, { title: string; desc: string }> = {
   'DOCUMENTARY': { title: 'DOCUMENTARY', desc: 'RAW NARRATIVES AND REAL-WORLD STORIES.' },
   'SOCIAL': { title: 'SOCIAL STORIES', desc: 'SHORT-FORM STORIES made for social media.' },
   'DEMOS': { title: 'TRIALS & DEMOS', desc: 'EXPERIMENTAL CUTS AND TECHNICAL SHOWCASES.' },
+  'TEASERS': { title: 'TEASERS & PROMOS', desc: 'SHORT TRAILERS, TEASERS AND PROMOTIONAL CUTS.' },
 };
 
 // Items per page: 6 = 2 rows × 3 cols on desktop, fits nicely on all screens
@@ -22,7 +23,7 @@ export function Work() {
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const categories = ['SHOWREEL', 'ALL', 'COMMERCIAL', 'DOCUMENTARY', 'SOCIAL', 'DEMOS'];
+  const categories = ['SHOWREEL', 'ALL', 'COMMERCIAL', 'DOCUMENTARY', 'SOCIAL', 'DEMOS', 'TEASERS'];
 
   const filteredProjects = activeCategory === 'ALL'
     ? projectsData.filter(p => p.category.toUpperCase() !== 'SOCIAL')
