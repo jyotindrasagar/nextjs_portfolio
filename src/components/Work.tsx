@@ -240,7 +240,7 @@ export function Work() {
               className="w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden shadow-[0_0_40px_rgba(255,255,255,0.15)] border-2 border-foreground mx-auto mt-4"
             >
               <iframe
-                src="https://www.youtube.com/embed/xeoAIGh7EK8?si=YZQL2AmeEVfunRfa&autoplay=1&controls=1&modestbranding=1&rel=0&cc_load_policy=0&iv_load_policy=3"
+                src="https://www.youtube.com/embed/xeoAIGh7EK8?si=YZQL2AmeEVfunRfa&autoplay=0&controls=1&modestbranding=1&rel=0&cc_load_policy=0&iv_load_policy=3"
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen

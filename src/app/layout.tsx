@@ -54,12 +54,6 @@ export const metadata: Metadata = {
     description: "Portfolio of DieabloFX — Creative Director, Video Editor, Motion Designer, and VFX Artist.",
     url: "https://dieablo.com/",
     siteName: "DieabloFX",
-    images: [
-      {
-        // Change this URL to your CDN link, or replace public/og-image.png in your code!
-        url: "/og-image.png", 
-      },
-    ],
     locale: "en_US",
     type: "website",
   },
@@ -69,8 +63,6 @@ export const metadata: Metadata = {
     description: "Portfolio of DieabloFX — Creative Director, Video Editor, Motion Designer, and VFX Artist.",
     creator: "@dieablofx",
     site: "@dieablofx",
-    // Change this URL to match your openGraph image!
-    images: ["/og-image.png"],
   },
 };
 
