@@ -95,24 +95,24 @@ export function Hero({ loading = false }: { loading?: boolean }) {
             </div>
 
             <h1 className="sr-only">DieabloFX | Creative Director, Motion Designer & VFX Artist</h1>
-            <div aria-hidden="true" className="flex items-center gap-0 mb-6 text-6xl md:text-8xl lg:text-[8rem] xl:text-[6.5rem] 2xl:text-[8rem]">
-              <motion.img 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1.2, ease: "easeOut" }}
+            <motion.div 
+              aria-hidden="true" 
+              className="flex items-center gap-0 mb-6 text-6xl md:text-8xl lg:text-[8rem] xl:text-[6.5rem] 2xl:text-[8rem]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+            >
+              <img 
                 src={logoUrl} 
                 alt="DieabloFX Logo" 
                 className="h-[0.72em] w-auto object-contain logo-image scale-125" 
               />
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1.2, ease: "easeOut" }}
+              <div 
                 className="font-display font-bold tracking-tight -ml-[0.025em] text-foreground leading-none"
               >
                 IEABLO
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
 
             <div className="font-display font-semibold text-[12px] md:text-[14px] tracking-[0.35em] text-foreground uppercase flex flex-col gap-2 mb-4 md:mb-6">
               <span>Visual Storytelling</span>

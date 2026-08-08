@@ -177,13 +177,13 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 src={logoUrl} 
                 alt="DieabloFX Logo" 
-                className="h-[0.92em] w-auto object-contain logo-image" 
+                className="h-[0.75em] w-auto object-contain logo-image mr-[0.08em]" 
               />
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                className="flex items-center -ml-[0.03em]"
+                className="flex items-center"
               >
                 <span className="text-foreground">IEABLO</span>
                 <span className="text-accent">FX</span>
@@ -228,7 +228,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               setActiveSection('work');
               window.dispatchEvent(new CustomEvent('openShowreel'));
             }}
-            className="hidden md:flex bg-accent text-white px-6 py-3 text-[11px] md:text-[12px] font-mono font-extrabold uppercase tracking-[0.2em] transition-all duration-300 items-center gap-4 group hover:bg-accent/90 mr-2 shadow-sm"
+            className="hidden md:flex bg-accent text-white px-6 py-3 font-display font-bold text-xs sm:text-sm uppercase tracking-[0.18em] transition-all duration-300 items-center gap-4 group hover:bg-accent/90 mr-2 shadow-sm"
           >
             <span>Watch Showreel</span>
             <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-sm leading-none font-light">↗</span>
@@ -319,7 +319,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               setActiveSection('work');
               window.dispatchEvent(new CustomEvent('openShowreel'));
             }}
-            className="flex bg-accent text-white px-5 py-4 text-[10px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 items-center justify-between group hover:bg-accent/90 w-full"
+            className="flex bg-accent text-white px-5 py-4 font-display font-bold text-xs sm:text-sm uppercase tracking-[0.18em] transition-all duration-300 items-center justify-between group hover:bg-accent/90 w-full"
           >
             <span>Watch Showreel</span>
             <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-lg leading-none font-light">↗</span>
