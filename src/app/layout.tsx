@@ -49,11 +49,24 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://dieablo.com/"
   },
+  icons: {
+    icon: '/icon',
+    shortcut: '/icon',
+    apple: '/apple-icon',
+  },
   openGraph: {
     title: "DieabloFX | Creative Director & Motion Designer",
     description: "Portfolio of DieabloFX — Creative Director, Video Editor, Motion Designer, and VFX Artist.",
     url: "https://dieablo.com/",
     siteName: "DieabloFX",
+    images: [
+      {
+        url: "https://dieablo.com/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "DieabloFX",
+      },
+    ],
     locale: "en_US",
     type: "website",
   },
@@ -63,6 +76,7 @@ export const metadata: Metadata = {
     description: "Portfolio of DieabloFX — Creative Director, Video Editor, Motion Designer, and VFX Artist.",
     creator: "@dieablofx",
     site: "@dieablofx",
+    images: ["https://dieablo.com/twitter-image"],
   },
 };
 
