@@ -177,7 +177,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 src={logoUrl} 
                 alt="DieabloFX Logo" 
-                className="h-[0.75em] w-auto object-contain logo-image mr-[0.08em]" 
+                className="h-[0.75em] w-auto object-contain logo-image mr-[0.08em] invert dark:invert-0" 
               />
               <motion.div 
                 initial={{ opacity: 0 }}

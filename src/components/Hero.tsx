@@ -102,10 +102,13 @@ export function Hero({ loading = false }: { loading?: boolean }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
             >
-              <img 
+              <motion.img 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
                 src={logoUrl} 
                 alt="DieabloFX Logo" 
-                className="h-[0.72em] w-auto object-contain logo-image scale-125" 
+                className="h-[0.72em] w-auto object-contain logo-image scale-125 invert dark:invert-0" 
               />
               <div 
                 className="font-display font-bold tracking-tight -ml-[0.025em] text-foreground leading-none"
