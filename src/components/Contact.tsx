@@ -88,7 +88,7 @@ export function Contact() {
     try {
       // Send data to Google Apps Script
       const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyq0A_gRSh2jJZZf5bdr9hAi7XetP_DFFEAOmMGNa9gNzwdv8lcHP8tE1uiKDV7o-N2/exec';
-      
+
       const formBody = new FormData();
       formBody.append('name', formData.name);
       formBody.append('email', formData.email);
@@ -122,7 +122,7 @@ export function Contact() {
     <footer className="relative pt-16 pb-24 bg-transparent overflow-hidden">
       {/* Top Border constrained by padding */}
       <div className="absolute top-0 left-4 md:left-8 lg:left-12 xl:left-16 right-4 md:right-8 lg:right-12 xl:right-16 h-[1px] bg-foreground/10"></div>
-      
+
       <AnimatedSection className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="w-full">
           {/* CAD reference label */}
@@ -146,7 +146,7 @@ export function Contact() {
                 </h2>
 
                 <p className="text-foreground/85 text-sm md:text-base font-normal max-w-md leading-relaxed mb-12">
-                  I'm currently open to commissions, projects, and creative collaborations. Get in touch to discuss cinematic directions.
+                  I'm currently open to commissions, projects, and creative collaborations. Get in touch to discuss Collaborations.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-6 mb-16">
@@ -428,7 +428,7 @@ export function Contact() {
 
           <a aria-label="Behance profile" href="https://behance.net/dieablofx" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h3.584c2.508 0 2.906-3 4.412-3h-7.996v3zm0 5.988h3.816c2.508 0 2.906-3 4.412-3h-8.228v3z"/>
+              <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h3.584c2.508 0 2.906-3 4.412-3h-7.996v3zm0 5.988h3.816c2.508 0 2.906-3 4.412-3h-8.228v3z" />
             </svg>
             <span className="hidden md:inline">BEHANCE</span>
           </a>

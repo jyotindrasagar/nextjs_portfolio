@@ -28,10 +28,10 @@ export function About() {
               For me, editing has never been just about putting clips together. It's about understanding rhythm, emotion, pacing, and knowing when to let a moment breathe. Motion design and visual effects are simply extensions of that process—tools that help tell a story more effectively.
             </p>
             <p>
-              As Dieablo, I work under the creative identity <strong className="font-semibold text-foreground">DieabloFX</strong>, creating commercials, documentaries, motion graphics, 3D visuals, and branded content. I enjoy solving creative problems, learning new techniques, and pushing every project a little further than the last.
+              As Dieablo, I work under the creative identity <strong className="font-semibold text-foreground">DieabloFX</strong>, creating commercials, documentaries, motion graphics, 3D visuals, and branded content. I enjoy working on Heavy Graphical based work load, learning new techniques, and pushing every project a little further than the last.
             </p>
             <p>
-              I'm still growing as an artist, and that's something I value. Every project teaches me something new, and every challenge becomes part of the next piece of work. My focus is simple: keep learning, keep improving, and create visuals that people remember for the right reasons.
+              I'm still growing as an artist, and that's something I value. Every project teaches me something new, and every challenge and evry experience i gather somehow becomes part of the next piece of work. My focus is simple -  create visuals that people remember for the right reasons.
             </p>
           </div>
 

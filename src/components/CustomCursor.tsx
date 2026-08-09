@@ -84,6 +84,10 @@ export function CustomCursor() {
   }, []);
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+      return;
+    }
+
     // Hide the default cursor completely
     const style = document.createElement('style');
     style.innerHTML = `* { cursor: none !important; }`;

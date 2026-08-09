@@ -1,6 +1,13 @@
 "use client";
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
+
+const roles = [
+  "Video Editor",
+  "Motion Designer",
+  "Creative Director",
+  "VFX Artist"
+];
 
 const CountUpStat = ({ end, suffix, decimals = 0 }: { end: number, suffix: string, decimals?: number }) => {
   const rounded = end.toFixed(decimals);
@@ -23,14 +30,14 @@ import { clients as baseClients } from '../data/clients';
 const logoUrl = '/dieablofx.svg';
 
 // Guarantee at least 12 logos so the carousel is always wider than the screen
-const displayClients = baseClients.length > 0 
+const displayClients = baseClients.length > 0
   ? Array.from({ length: Math.ceil(12 / baseClients.length) }).flatMap(() => baseClients)
   : [];
 
 export function Hero({ loading = false }: { loading?: boolean }) {
   const { scrollY } = useScroll();
   const yImages = useTransform(scrollY, [0, 500], [0, -30]);
-  
+
   const [windowWidth, setWindowWidth] = useState(1200);
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -38,8 +45,17 @@ export function Hero({ loading = false }: { loading?: boolean }) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  
+
   const isDesktop = windowWidth >= 1024;
+
+  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -72,45 +88,46 @@ export function Hero({ loading = false }: { loading?: boolean }) {
       <div className="relative flex flex-col xl:flex-row items-start xl:items-stretch justify-between flex-1 mt-4 px-4 md:px-8 lg:px-12 xl:px-16 pb-4 gap-8 md:gap-12 lg:gap-16 xl:gap-24">
         {/* Social Sidebar - Absolute so it stops perfectly at the bottom navigation section */}
         <SocialSidebar />
-        
+
         {/* Left Typography Column */}
         <div className="flex-1 w-full xl:max-w-[40%] z-20 select-none relative mt-0 md:mt-8 lg:pl-8 xl:pl-10 shrink-0 xl:flex xl:flex-col xl:justify-between h-full">
-          
+
           <div>
             <div className="flex items-center gap-3 text-[11px] md:text-[12px] tracking-[0.25em] font-mono font-semibold text-foreground/90 mb-4 md:mb-6 uppercase">
               <span className="text-accent font-bold">+</span>
-              <motion.span
-                initial={{ clipPath: "inset(0 100% 0 0)" }}
-                animate={{ clipPath: "inset(0 0% 0 0)" }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  ease: "easeInOut",
-                  repeatDelay: 1,
-                }}
-              >
-                Video editor and motion designer
-              </motion.span>
+              <div className="relative overflow-hidden h-[1.5em] w-full">
+                <AnimatePresence mode="popLayout">
+                  <motion.span
+                    key={currentRoleIndex}
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -20, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="absolute inset-0 flex items-center whitespace-nowrap"
+                  >
+                    {roles[currentRoleIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
             </div>
 
-            <h1 className="sr-only">DieabloFX | Creative Director, Motion Designer & VFX Artist</h1>
-            <motion.div 
-              aria-hidden="true" 
+            <h1 className="sr-only">DieabloFX | Video Editor & Motion Designer</h1>
+            <motion.div
+              aria-hidden="true"
               className="flex items-center gap-0 mb-6 text-6xl md:text-8xl lg:text-[8rem] xl:text-[6.5rem] 2xl:text-[8rem]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
             >
-              <motion.img 
+              <motion.img
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                src={logoUrl} 
-                alt="DieabloFX Logo" 
-                className="h-[0.72em] w-auto object-contain logo-image scale-125 invert dark:invert-0" 
+                src={logoUrl}
+                alt="DieabloFX Logo"
+                className="h-[0.72em] w-auto object-contain logo-image scale-125 invert dark:invert-0"
               />
-              <div 
+              <div
                 className="font-display font-bold tracking-tight -ml-[0.025em] text-foreground leading-none"
               >
                 IEABLO
@@ -132,7 +149,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 relative z-20 xl:mb-0 xl:mt-auto">
-            <button 
+            <button
               aria-label="View All Work"
               onClick={() => scrollToSection('work')}
               className="bg-accent text-white px-6 py-4 md:px-8 md:py-4.5 text-[12px] md:text-[13px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:bg-accent/90 shadow-md"
@@ -140,8 +157,8 @@ export function Hero({ loading = false }: { loading?: boolean }) {
               <span>View All Work</span>
               <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-base leading-none font-bold">↗</span>
             </button>
-            
-            <button 
+
+            <button
               aria-label="Contact Me"
               onClick={() => scrollToSection('contact')}
               className="bg-transparent border border-foreground text-foreground px-6 py-4 md:px-8 md:py-4.5 text-[12px] md:text-[13px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:bg-foreground/10"
@@ -154,23 +171,23 @@ export function Hero({ loading = false }: { loading?: boolean }) {
         </div>
 
         {/* Right Structured Grid Column (Responsive Masonry) */}
-        <motion.div 
-          style={{ y: yImages, willChange: "transform" }} 
+        <motion.div
+          style={{ y: yImages, willChange: "transform" }}
           variants={containerVariants}
           initial="hidden"
           animate={!loading ? "visible" : "hidden"}
           className="w-full xl:w-[48vw] xl:max-w-[850px] 2xl:max-w-[1100px] flex flex-col gap-3 lg:gap-4 z-30 self-start xl:self-end mt-4 xl:mt-0 ml-auto justify-end shrink"
         >
-          
+
           {/* Layout Wrapper (2 Columns on Desktop) */}
           <div className="flex flex-col md:flex-row gap-3 lg:gap-4 w-full">
-            
+
             {/* Left & Middle Group */}
             <div className="flex flex-col gap-3 lg:gap-4 md:w-[65%] shrink-0">
-              
+
               {/* 1. Logo Animation (1440x720) */}
               <motion.div variants={itemVariants} whileHover={{ scale: 1.02, opacity: 1 }} className="flex w-full aspect-[1440/720] shrink-0 group cursor-pointer relative overflow-hidden rounded-[5px] border border-foreground/5 bg-panels/20 flex-col">
-                <HoverVideoPlayer 
+                <HoverVideoPlayer
                   imageUrl={heroVideosData[0].imageUrl}
                   videoUrl={heroVideosData[0].videoUrl}
                   altText={heroVideosData[0].title}
@@ -193,10 +210,10 @@ export function Hero({ loading = false }: { loading?: boolean }) {
 
               {/* Bottom Split (Promotionals & Animations) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4 w-full">
-                
+
                 {/* 4. Promotionals */}
                 <motion.div variants={itemVariants} whileHover={{ scale: 1.02, opacity: 1 }} className="flex w-full aspect-video shrink-0 group cursor-pointer relative overflow-hidden rounded-[5px] border border-foreground/5 bg-panels/20 flex-col">
-                  <HoverVideoPlayer 
+                  <HoverVideoPlayer
                     imageUrl={heroVideosData[2].imageUrl}
                     videoUrl={heroVideosData[2].videoUrl}
                     altText={heroVideosData[2].title}
@@ -206,21 +223,21 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     loadDelay={500}
                     volume={0.88}
                   >
-                  <div className="absolute bottom-4 left-4 z-20 flex flex-col">
-                    <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[2].title}</span>
-                    <div className="grid transition-all duration-500 ease-out grid-rows-[0fr] opacity-0 group-hover:grid-rows-[1fr] group-hover:opacity-100">
-                      <div className="overflow-hidden flex flex-col">
-                        <span className="font-mono text-[8px] tracking-[0.2em] text-white uppercase pt-1 pb-1 mix-blend-difference">{heroVideosData[2].subtitle}</span>
+                    <div className="absolute bottom-4 left-4 z-20 flex flex-col">
+                      <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[2].title}</span>
+                      <div className="grid transition-all duration-500 ease-out grid-rows-[0fr] opacity-0 group-hover:grid-rows-[1fr] group-hover:opacity-100">
+                        <div className="overflow-hidden flex flex-col">
+                          <span className="font-mono text-[8px] tracking-[0.2em] text-white uppercase pt-1 pb-1 mix-blend-difference">{heroVideosData[2].subtitle}</span>
+                        </div>
                       </div>
+                      <div className="h-[1px] bg-accent w-0 group-hover:w-8 transition-all duration-500 ease-out delay-100"></div>
                     </div>
-                    <div className="h-[1px] bg-accent w-0 group-hover:w-8 transition-all duration-500 ease-out delay-100"></div>
-                  </div>
                   </HoverVideoPlayer>
                 </motion.div>
 
                 {/* 5. Animations */}
                 <motion.div variants={itemVariants} whileHover={{ scale: 1.02, opacity: 1 }} className="flex w-full aspect-video shrink-0 group cursor-pointer relative overflow-hidden rounded-[5px] border border-foreground/5 bg-panels/20 flex-col">
-                  <HoverVideoPlayer 
+                  <HoverVideoPlayer
                     imageUrl={heroVideosData[3].imageUrl}
                     videoUrl={heroVideosData[3].videoUrl}
                     altText={heroVideosData[3].title}
@@ -229,15 +246,15 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     alwaysPlay={isDesktop}
                     loadDelay={1000}
                   >
-                  <div className="absolute bottom-4 left-4 z-20 flex flex-col">
-                    <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[3].title}</span>
-                    <div className="grid transition-all duration-500 ease-out grid-rows-[0fr] opacity-0 group-hover:grid-rows-[1fr] group-hover:opacity-100">
-                      <div className="overflow-hidden flex flex-col">
-                        <span className="font-mono text-[8px] tracking-[0.2em] text-white uppercase pt-1 pb-1 mix-blend-difference">{heroVideosData[3].subtitle}</span>
+                    <div className="absolute bottom-4 left-4 z-20 flex flex-col">
+                      <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[3].title}</span>
+                      <div className="grid transition-all duration-500 ease-out grid-rows-[0fr] opacity-0 group-hover:grid-rows-[1fr] group-hover:opacity-100">
+                        <div className="overflow-hidden flex flex-col">
+                          <span className="font-mono text-[8px] tracking-[0.2em] text-white uppercase pt-1 pb-1 mix-blend-difference">{heroVideosData[3].subtitle}</span>
+                        </div>
                       </div>
+                      <div className="h-[1px] bg-accent w-0 group-hover:w-8 transition-all duration-500 ease-out delay-100"></div>
                     </div>
-                    <div className="h-[1px] bg-accent w-0 group-hover:w-8 transition-all duration-500 ease-out delay-100"></div>
-                  </div>
                   </HoverVideoPlayer>
                 </motion.div>
 
@@ -246,10 +263,10 @@ export function Hero({ loading = false }: { loading?: boolean }) {
 
             {/* Right Column */}
             <div className="flex flex-col gap-3 lg:gap-4 flex-1">
-              
+
               {/* 2. Explainers (1920x1080 Landscape) */}
               <motion.div variants={itemVariants} whileHover={{ scale: 1.02, opacity: 1 }} className="flex w-full aspect-video shrink-0 group cursor-pointer relative overflow-hidden rounded-[5px] border border-foreground/5 bg-panels/20 flex-col">
-                <HoverVideoPlayer 
+                <HoverVideoPlayer
                   imageUrl={heroVideosData[1].imageUrl}
                   videoUrl={heroVideosData[1].videoUrl}
                   altText={heroVideosData[1].title}
@@ -272,7 +289,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
 
               {/* 3. Motion Loops (1280x700) */}
               <motion.div variants={itemVariants} whileHover={{ scale: 1.02, opacity: 1 }} className="flex w-full aspect-[1280/700] shrink-0 group cursor-pointer relative overflow-hidden rounded-[5px] border border-foreground/5 bg-panels/20 flex-col">
-                <HoverVideoPlayer 
+                <HoverVideoPlayer
                   imageUrl={heroVideosData[4].imageUrl}
                   videoUrl={heroVideosData[4].videoUrl}
                   altText={heroVideosData[4].title}
@@ -299,7 +316,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                 <div className="font-mono text-[9px] tracking-[0.2em] text-foreground/60 uppercase">Coming Soon</div>
               </motion.div>
             </div>
-            
+
           </div>
         </motion.div>
       </div>
@@ -308,18 +325,18 @@ export function Hero({ loading = false }: { loading?: boolean }) {
 
       {/* Bottom Stats Section */}
       <div className="w-full mt-4 z-20">
-        <div 
+        <div
           className="grid grid-cols-1 lg:grid-cols-12 border-t border-b border-white/50 dark:border-accent/50 divide-y lg:divide-y-0 lg:divide-x divide-white/50 dark:divide-accent/50 px-6 md:px-8 lg:px-12 xl:px-16 bg-[#ea879c] dark:bg-black text-white relative overflow-hidden"
         >
-          
+
           {/* Left Section: Clients */}
           <div className="col-span-1 lg:col-span-5 relative min-h-[140px] flex items-end pb-4 lg:pb-6 pr-8">
             {/* Carousel spanning all over */}
-            <div 
+            <div
               className="absolute inset-0 w-full h-full overflow-hidden flex items-center opacity-100"
               style={{ maskImage: 'linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent)' }}
             >
-              <motion.div 
+              <motion.div
                 className="flex items-center min-w-max"
                 animate={{ x: ["0%", "-50%"] }}
                 transition={{ duration: 415, repeat: Infinity, ease: "linear" }}
@@ -330,10 +347,10 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     {displayClients.map((client, j) => (
                       <div key={`${i}-${j}`} className="flex-shrink-0 flex items-center justify-center">
                         {client.imagePath ? (
-                          <img 
-                            src={client.imagePath} 
-                            alt={client.name} 
-                            className="h-8 sm:h-11 md:h-12 w-auto object-contain brightness-0 invert" 
+                          <img
+                            src={client.imagePath}
+                            alt={client.name}
+                            className="h-8 sm:h-11 md:h-12 w-auto object-contain brightness-0 invert"
                           />
                         ) : client.svgLogo ? (
                           client.svgLogo
