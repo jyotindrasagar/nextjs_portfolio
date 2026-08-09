@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-
+import Image from 'next/image';
 // ─── CONFIGURE RESPONSIVE VALUES INSIDE THE COMPONENT ────────────
 
 export function CADOverlay({ loading = false, targetRef }: { loading?: boolean, targetRef?: React.RefObject<HTMLDivElement | null> }) {
@@ -87,11 +87,12 @@ export function CADOverlay({ loading = false, targetRef }: { loading?: boolean, 
             className="absolute inset-0 w-full h-full"
           >
             {/* The Tree Image â€” static, no continuous animation */}
-            <img
+            <Image
               className="absolute top-0 right-0 w-full h-full object-contain object-right-top opacity-[0.85] dark:opacity-[0.75] transition-opacity duration-500 origin-top-right"
               src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/tree.svg"
               alt="Sakura Tree"
               loading="lazy"
+              fill
               style={{ animation: 'tree-sway 14s ease-in-out infinite', willChange: 'transform' }}
             />
             {/* Gradient overlay for fade out (replaces expensive mask-image) */}
