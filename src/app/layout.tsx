@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "DieabloFX | Video Editor & Motion Designer",
-    description: "portfolio of Jyotindra Narayan Kalyani, professionally known as Dieablo, featuring motion design, VFX, 3D animation & video editing under the personal creative brand DieabloFX.",
+    description: "Official Portfolio of Jyotindra Narayan Kalyani, professionally known as Dieablo, featuring motion design, VFX, 3D animation & video editing under the personal creative brand DieabloFX.",
     url: "https://dieablo.com/",
     siteName: "DieabloFX",
     images: [
