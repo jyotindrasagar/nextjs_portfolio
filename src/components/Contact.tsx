@@ -209,7 +209,7 @@ export function Contact() {
                       onChange={handleChange}
                       placeholder="Enter your name"
                       required
-                      className="bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40"
+                      className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-lg"
                     />
                   </div>
                   <div className="flex flex-col gap-3">
@@ -221,7 +221,7 @@ export function Contact() {
                       onChange={handleChange}
                       placeholder="hello@dieablo.com"
                       required
-                      className="bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40"
+                      className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-lg"
                     />
                   </div>
                 </div>
@@ -236,7 +236,7 @@ export function Contact() {
                       value={formData.company}
                       onChange={handleChange}
                       placeholder="Your brand or company"
-                      className="bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40"
+                      className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-lg"
                     />
                   </div>
                   <div className="flex flex-col gap-3">
@@ -246,7 +246,7 @@ export function Contact() {
                         name="projectType"
                         value={formData.projectType}
                         onChange={handleChange}
-                        className="w-full appearance-none bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer"
+                        className="w-full appearance-none bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer rounded-lg"
                       >
                         <option value="" disabled className="bg-background text-foreground/50">Select project type</option>
                         <option value="commercial" className="bg-background text-foreground">Commercial</option>
@@ -270,7 +270,7 @@ export function Contact() {
                     onChange={handleChange}
                     placeholder="Tell me about your project, goals, and vision..."
                     rows={4}
-                    className="bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 resize-none text-foreground font-medium"
+                    className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 resize-none text-foreground font-medium rounded-lg"
                   />
                 </div>
 
@@ -283,7 +283,7 @@ export function Contact() {
                         name="budget"
                         value={formData.budget}
                         onChange={handleChange}
-                        className="w-full appearance-none bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer"
+                        className="w-full appearance-none bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer rounded-lg"
                       >
                         <option value="" disabled className="bg-background text-foreground/50">Select budget range</option>
                         <option value="small" className="bg-background text-foreground">Under $1k</option>
@@ -302,7 +302,7 @@ export function Contact() {
                         name="timeline"
                         value={formData.timeline}
                         onChange={handleChange}
-                        className="w-full appearance-none bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer"
+                        className="w-full appearance-none bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer rounded-lg"
                       >
                         <option value="" disabled className="bg-background text-foreground/50">Select timeline</option>
                         <option value="asap" className="bg-background text-foreground">ASAP</option>
@@ -327,7 +327,7 @@ export function Contact() {
                       value={formData.references}
                       onChange={handleChange}
                       placeholder="Paste link to your files here..."
-                      className="w-full bg-transparent border border-foreground/20 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 text-foreground font-medium"
+                      className="w-full bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 text-foreground font-medium rounded-lg"
                     />
                     <button
                       type="button"

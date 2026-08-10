@@ -114,7 +114,7 @@ export function Work() {
         <button
           onClick={() => goToPage(currentPage - 1)}
           disabled={currentPage === 0}
-          className="flex items-center gap-1 px-4 py-1.5 bg-black/50 backdrop-blur-md border border-foreground/30 text-foreground/80 hover:text-white hover:bg-black/70 hover:border-foreground/60 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
+          className="flex items-center gap-1 px-4 py-1.5 bg-foreground/[0.02] backdrop-blur-xl border border-foreground/20 text-foreground/80 hover:bg-foreground/[0.04] hover:border-foreground/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
         >
           <ChevronLeft size={14} />
           <span className="tracking-widest">PREV</span>
@@ -137,7 +137,7 @@ export function Work() {
         <button
           onClick={() => goToPage(currentPage + 1)}
           disabled={currentPage >= totalPages - 1}
-          className="flex items-center gap-1 px-4 py-1.5 bg-black/50 backdrop-blur-md border border-foreground/30 text-foreground/80 hover:text-white hover:bg-black/70 hover:border-foreground/60 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
+          className="flex items-center gap-1 px-4 py-1.5 bg-foreground/[0.02] backdrop-blur-xl border border-foreground/20 text-foreground/80 hover:bg-foreground/[0.04] hover:border-foreground/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
         >
           <span className="tracking-widest">NEXT</span>
           <ChevronRight size={14} />
@@ -151,14 +151,14 @@ export function Work() {
       {/* CAD reference label */}
       <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-foreground/90 mb-4 md:mb-6 uppercase relative z-10">
         <span className="text-accent">❖</span>
-        <span>INDEX // SELECTED_WORK</span>
+        <span>INDEX // MY_WORKS</span>
       </div>
 
       <AnimatedSection>
         <div className="flex flex-col border-b border-foreground/10 pb-8 mb-16 gap-6 relative min-h-[80px]">
           <div>
             <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground uppercase">
-              Selected Work
+              My Works
             </h2>
             <p className="sr-only">
               Motion Designer and Video Editor specializing in high-end product advertisements, 3D animation, motion graphics, CGI, VFX compositing, documentaries, commercial videos, UI animation, camera tracking, and cinematic visual storytelling using Blender, After Effects, DaVinci Resolve, Premiere Pro, Unreal Engine, Substance 3D, SynthEyes, and Boris FX.
