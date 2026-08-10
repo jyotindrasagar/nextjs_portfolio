@@ -271,7 +271,7 @@ export function Feedback() {
         >
           <motion.div
             ref={contentRef}
-            className="flex gap-4 md:gap-6 w-max pl-4 md:pl-8"
+            className="flex items-center gap-4 md:gap-6 w-max pl-4 md:pl-8"
             style={{ x }}
             drag="x"
             dragConstraints={{ left: -10000, right: 10000 }}
@@ -288,7 +288,7 @@ export function Feedback() {
                 <div
                   key={idx}
                   ref={idx === 0 ? firstCardRef : idx === testimonials.length ? secondSetFirstCardRef : null}
-                  className="flex-shrink-0 w-[85vw] sm:w-[510px] md:w-[580px] min-h-[400px] p-6 md:p-8 border border-foreground/10 bg-foreground/[0.03] backdrop-blur-xl relative group hover:bg-foreground/[0.05] transition-all duration-500 flex flex-col rounded-xl shadow-[0_0_15px_rgba(255,184,198,0.15)] hover:shadow-[0_0_30px_rgba(255,184,198,0.4)] justify-between"
+                  className="flex-shrink-0 w-[85vw] sm:w-[510px] md:w-[580px] max-h-[420px] p-6 md:p-8 border border-foreground/10 bg-foreground/[0.03] backdrop-blur-xl relative group hover:bg-foreground/[0.05] transition-all duration-500 flex flex-col rounded-xl shadow-[0_0_15px_rgba(255,184,198,0.15)] hover:shadow-[0_0_30px_rgba(255,184,198,0.4)] justify-between"
                 >
                   <div
                     className="relative z-20 flex-grow flex flex-col cursor-pointer group/text"
