@@ -19,6 +19,15 @@ export const testimonials: Testimonial[] = [
     avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/ashley%20marie.jpg"
   },
   {
+    quote: "I've used dieablo for outsourcing editing countless times and his work is out of this world. From his VFX compositing to simple cutting, I have always had a great experience working together. And Quick turn around with good communication makes him one of the best editors you can ask for.",
+    author: "Darby",
+    role: "Videographer & Editor",
+    company: "",
+    project: "Editorial Collaboration ",
+    link: "",
+    avatar: ""
+  },
+  {
     quote: "Working with Dieablo was great! He handled the editing and motion graphics for our long-form documentaries, and the final videos came together really well. He understood the story, pacing, and visual direction from the start, and brought everything together without losing the documentary feel. Really happy with the work and would definitely recommend him to anyone.",
     author: "Valcs Documentaries",
     role: "Content Creator",
