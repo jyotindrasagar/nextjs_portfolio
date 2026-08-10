@@ -6,6 +6,42 @@ import { AnimatedSection } from './AnimatedSection';
 import { testimonials, Testimonial } from '../data/feedback';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 
+function VerifiedBadge({ hasLink }: { hasLink?: boolean }) {
+  if (hasLink) {
+    return (
+      <span className="inline-flex items-center justify-center shrink-0" title="Verified Link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="shrink-0">
+          {/* Smooth Meta Verified Rosette Badge */}
+          <path 
+            d="M12 2L14.39 3.55L17.15 3.12L18.42 5.63L21 6.8L20.84 9.63L22.5 12L20.84 14.37L21 17.2L18.42 18.37L17.15 20.88L14.39 20.45L12 22L9.61 20.45L6.85 20.88L5.58 18.37L3 17.2L3.16 14.37L1.5 12L3.16 9.63L3 6.8L5.58 5.63L6.85 3.12L9.61 3.55L12 2Z" 
+            fill="currentColor" 
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+            className="text-accent"
+          />
+          {/* Perfectly Centered White Checkmark */}
+          <path 
+            d="M7.5 12.2L10.5 15.2L16.5 9.2" 
+            stroke="#ffffff" 
+            strokeWidth="2.8" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+          />
+        </svg>
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex items-center justify-center shrink-0 text-accent" title="Verified Client">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </span>
+  );
+}
+
 // Redesigned modal with scrollable text, fixed footer, and navigation
 function ReadMoreModal({
   currentIndex,
@@ -121,9 +157,7 @@ function ReadMoreModal({
                     ) : (
                       testimonial.author
                     )}
-                    <span className="text-background bg-accent rounded-full p-[3px] inline-flex">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </span>
+                    <VerifiedBadge hasLink={Boolean(testimonial.link)} />
                   </h4>
                   <p className="font-sans text-[11px] md:text-xs text-foreground/50 mt-1">
                     {testimonial.role} {testimonial.company ? `• ${testimonial.company}` : ''}
@@ -271,7 +305,7 @@ export function Feedback() {
         >
           <motion.div
             ref={contentRef}
-            className="flex items-center gap-4 md:gap-6 w-max pl-4 md:pl-8"
+            className="flex gap-4 md:gap-6 w-max pl-4 md:pl-8"
             style={{ x }}
             drag="x"
             dragConstraints={{ left: -10000, right: 10000 }}
@@ -281,22 +315,27 @@ export function Feedback() {
             onDragEnd={() => setIsDragging(false)}
           >
             {displayTestimonials.map((testimonial, idx) => {
-              // Check if we need a "READ MORE" button based on length
-              const needsReadMore = testimonial.quote.length > 150;
+              // Check if long quote starting from top
+              const isLongQuote = testimonial.quote.length > 400;
 
               return (
                 <div
                   key={idx}
                   ref={idx === 0 ? firstCardRef : idx === testimonials.length ? secondSetFirstCardRef : null}
-                  className="flex-shrink-0 w-[85vw] sm:w-[510px] md:w-[580px] max-h-[420px] p-6 md:p-8 border border-foreground/10 bg-foreground/[0.03] backdrop-blur-xl relative group hover:bg-foreground/[0.05] transition-all duration-500 flex flex-col rounded-xl shadow-[0_0_15px_rgba(255,184,198,0.15)] hover:shadow-[0_0_30px_rgba(255,184,198,0.4)] justify-between"
+                  className="flex-shrink-0 w-[85vw] sm:w-[510px] md:w-[580px] h-[400px] md:h-[420px] p-6 md:p-8 border border-foreground/10 bg-foreground/[0.03] backdrop-blur-xl relative group hover:bg-foreground/[0.05] transition-all duration-500 flex flex-col rounded-xl shadow-[0_0_15px_rgba(255,184,198,0.15)] hover:shadow-[0_0_30px_rgba(255,184,198,0.4)] justify-between"
                 >
                   <div
-                    className="relative z-20 flex-grow flex flex-col cursor-pointer group/text"
+                    className="relative z-20 flex-grow flex flex-col justify-center cursor-pointer group/text"
                     onClick={() => setSelectedTestimonialIndex(idx % testimonials.length)}
                   >
-                    <div className="flex-grow flex flex-col">
+                    {/* Fixed Top-Left Quote Icon for all cards */}
+                    <span className="text-accent text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
+
+                    <div className={`flex-grow flex flex-col ${isLongQuote ? 'justify-start pt-1' : 'justify-center'}`}>
                       <p className="font-sans font-light text-sm md:text-base leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-[8] group-hover/text:text-foreground transition-colors">
-                        <span className="text-accent text-4xl md:text-5xl font-serif float-left mr-2 mt-[-6px] md:mt-[-10px] h-3 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity">“</span>
+                        {isLongQuote && (
+                          <span className="text-accent text-4xl md:text-5xl font-serif float-left mr-2 mt-[-6px] md:mt-[-10px] h-3 leading-none opacity-0">“</span>
+                        )}
                         {testimonial.quote}
                       </p>
 
@@ -329,9 +368,7 @@ export function Feedback() {
                           ) : (
                             testimonial.author
                           )}
-                          <span className="text-background bg-accent rounded-full p-[3px] inline-flex">
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                          </span>
+                          <VerifiedBadge hasLink={Boolean(testimonial.link)} />
                         </h4>
                         <p className="font-sans text-[12px] md:text-[13px] text-foreground/60 mt-0.5">
                           {testimonial.role} {testimonial.company ? `• ${testimonial.company}` : ''}
