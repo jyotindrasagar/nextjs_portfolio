@@ -24,8 +24,8 @@ export const testimonials: Testimonial[] = [
     role: "Videographer & Editor",
     company: "",
     project: "Editorial Collaboration ",
-    link: "",
-    avatar: ""
+    link: "https://lukedarby.carrd.co/",
+    avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/darby.png"
   },
   {
     quote: "Working with Dieablo was great! He handled the editing and motion graphics for our long-form documentaries, and the final videos came together really well. He understood the story, pacing, and visual direction from the start, and brought everything together without losing the documentary feel. Really happy with the work and would definitely recommend him to anyone.",
