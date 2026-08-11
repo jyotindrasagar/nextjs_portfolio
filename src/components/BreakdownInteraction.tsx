@@ -52,6 +52,7 @@ interface Comment {
   createdAt: string;
   likes: number;
   liked?: boolean;
+  parentId?: string;
 }
 
 export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) {
@@ -111,15 +112,25 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
 
             setComments(dbComments.map((c: any) => {
               const authorProfile = profileMap[c.user_id];
+              let text = c.text || '';
+              let parentId: string | undefined = undefined;
+              
+              const replyMatch = text.match(/^\[reply:([^\]]+)\]\s*([\s\S]*)/);
+              if (replyMatch) {
+                parentId = replyMatch[1];
+                text = replyMatch[2];
+              }
+
               return {
                 id: c.id,
                 userId: c.user_id,
                 author: authorProfile?.username || c.author,
                 avatarUrl: authorProfile?.avatar_url || c.avatar_url,
-                text: c.text,
+                text: text,
                 createdAt: c.created_at,
                 likes: c.likes_count || 0,
-                liked: false
+                liked: false,
+                parentId: parentId
               };
             }));
           }
@@ -144,6 +155,11 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [submittingComment, setSubmittingComment] = useState(false);
+
+  // States for nesting/replying
+  const [replyingToId, setReplyingToId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
+  const [submittingReply, setSubmittingReply] = useState(false);
 
   const handleLike = async () => {
     const isLiked = !liked;
@@ -210,6 +226,53 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
     }
   };
 
+  const handleReplySubmit = async (e: React.FormEvent, parentId: string) => {
+    e.preventDefault();
+    if (!replyText.trim() || !user) return;
+
+    setSubmittingReply(true);
+
+    const nowIso = new Date().toISOString();
+    const tempReplyId = Date.now().toString();
+    const tempReply: Comment = {
+      id: tempReplyId,
+      userId: user.id,
+      author: username,
+      avatarUrl: userAvatar,
+      text: replyText,
+      createdAt: nowIso,
+      likes: 0,
+      liked: false,
+      parentId: parentId
+    };
+
+    // Optimistically update UI
+    setComments([...comments, tempReply]);
+    const submittedText = replyText;
+    setReplyText('');
+    setReplyingToId(null);
+
+    try {
+      if (breakdownId) {
+        const { error } = await supabase.from('comments').insert({
+          breakdown_id: breakdownId,
+          user_id: user.id,
+          author: username,
+          avatar_url: userAvatar,
+          text: `[reply:${parentId}] ${submittedText}`
+        });
+
+        if (error) {
+          console.error('Failed to save reply to database:', error.message);
+        }
+      }
+    } catch (err) {
+      console.error('Error posting reply:', err);
+    } finally {
+      setSubmittingReply(false);
+    }
+  };
+
   const handleDeleteComment = async (commentId: string) => {
     setDeletingId(null);
     // Optimistically remove from state
@@ -244,6 +307,15 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
     const timeB = new Date(b.createdAt).getTime() || 0;
     return timeB - timeA;
   });
+
+  const rootComments = sortedComments.filter(c => !c.parentId);
+
+  const getReplies = (parentId: string) => {
+    return comments
+      .filter(c => c.parentId === parentId)
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+  };
+
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-16 pt-16 border-t border-foreground/10 flex flex-col gap-16">
@@ -367,12 +439,10 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
               Sign In with Google
             </Link>
           </div>
-        )}
-
-        {/* Comments List */}
-        <div className="flex flex-col gap-4">
+        )}        {/* Comments List */}
+        <div className="flex flex-col gap-6">
           <AnimatePresence>
-            {sortedComments.map((comment) => {
+            {rootComments.map((comment) => {
               // Dynamically display latest avatar and username for the logged-in user or fetched profile
               const displayAvatar = (comment.userId && user && comment.userId === user.id)
                 ? (userAvatar || comment.avatarUrl)
@@ -383,82 +453,230 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
                 : comment.author;
 
               const formattedTime = formatCommentTimestamp(comment.createdAt, mounted);
+              const replies = getReplies(comment.id);
 
               return (
-                <motion.div 
-                  key={comment.id}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-panels border border-foreground/10 rounded-lg p-5 flex flex-col gap-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      {displayAvatar ? (
-                        <img src={displayAvatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover border border-foreground/20 shrink-0" />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-foreground/10 flex items-center justify-center border border-foreground/20 shrink-0">
-                          <User size={16} className="text-foreground/50" />
-                        </div>
-                      )}
-                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-accent">
-                        {displayAuthor}
+                <div key={comment.id} className="flex flex-col gap-4">
+                  {/* Main Comment Card */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="bg-panels border border-foreground/10 rounded-lg p-5 flex flex-col gap-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {displayAvatar ? (
+                          <img src={displayAvatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover border border-foreground/20 shrink-0" />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-foreground/10 flex items-center justify-center border border-foreground/20 shrink-0">
+                            <User size={16} className="text-foreground/50" />
+                          </div>
+                        )}
+                        <span className="font-mono text-xs font-bold uppercase tracking-wider text-accent">
+                          {displayAuthor}
+                        </span>
+                      </div>
+                      <span suppressHydrationWarning className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest">
+                        {formattedTime}
                       </span>
                     </div>
-                    <span suppressHydrationWarning className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest">
-                      {formattedTime}
-                    </span>
-                  </div>
-                  <p className="font-sans text-sm text-foreground/80 leading-relaxed pl-11">
-                    {comment.text}
-                  </p>
+                    <p className="font-sans text-sm text-foreground/80 leading-relaxed pl-11">
+                      {comment.text}
+                    </p>
 
-                  {/* Comment Actions Footer */}
-                  <div className="flex items-center justify-between pt-2 border-t border-foreground/5">
-                    {/* Delete Confirmation or Button */}
-                    {user && comment.userId === user.id ? (
-                      deletingId === comment.id ? (
-                        <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 px-3 py-1 rounded">
-                          <span className="font-mono text-[10px] text-red-400 uppercase tracking-wider">Delete comment?</span>
-                          <button
-                            onClick={() => handleDeleteComment(comment.id)}
-                            className="font-mono text-[10px] font-bold text-red-400 hover:text-white uppercase tracking-wider bg-red-500 px-2 py-0.5 rounded transition-colors"
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            onClick={() => setDeletingId(null)}
-                            className="font-mono text-[10px] text-foreground/60 hover:text-foreground uppercase tracking-wider px-1 transition-colors"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => setDeletingId(comment.id)}
-                          className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-red-400/70 hover:text-red-400 hover:bg-red-500/10 px-2.5 py-1 rounded transition-colors"
-                          title="Delete your comment"
-                        >
-                          <Trash2 size={13} />
-                          <span>Delete</span>
-                        </button>
-                      )
-                    ) : <div />}
+                    {/* Comment Actions Footer */}
+                    <div className="flex items-center justify-between pt-2 border-t border-foreground/5">
+                      <div className="flex items-center gap-3">
+                        {/* Delete Confirmation or Button */}
+                        {user && comment.userId === user.id ? (
+                          deletingId === comment.id ? (
+                            <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 px-3 py-1 rounded">
+                              <span className="font-mono text-[10px] text-red-400 uppercase tracking-wider">Delete comment?</span>
+                              <button
+                                onClick={() => handleDeleteComment(comment.id)}
+                                className="font-mono text-[10px] font-bold text-red-400 hover:text-white uppercase tracking-wider bg-red-500 px-2 py-0.5 rounded transition-colors"
+                              >
+                                Confirm
+                              </button>
+                              <button
+                                onClick={() => setDeletingId(null)}
+                                className="font-mono text-[10px] text-foreground/60 hover:text-foreground uppercase tracking-wider px-1 transition-colors"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => setDeletingId(comment.id)}
+                              className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-red-400/70 hover:text-red-400 hover:bg-red-500/10 px-2.5 py-1 rounded transition-colors"
+                              title="Delete your comment"
+                            >
+                              <Trash2 size={13} />
+                              <span>Delete</span>
+                            </button>
+                          )
+                        ) : null}
 
-                    {/* Comment Like Button */}
-                    <button 
-                      onClick={() => handleCommentLike(comment.id)}
-                      className={`flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider px-3 py-1 rounded transition-colors ${
-                        comment.liked 
-                          ? 'text-accent bg-accent/10 font-bold' 
-                          : 'text-foreground/50 hover:text-foreground hover:bg-foreground/5'
-                      }`}
+                        {/* Reply Button (Only for top-level comments) */}
+                        {user && (
+                          <button
+                            onClick={() => {
+                              setReplyingToId(replyingToId === comment.id ? null : comment.id);
+                              setReplyText('');
+                            }}
+                            className={`flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider px-2.5 py-1 rounded transition-colors ${
+                              replyingToId === comment.id 
+                                ? 'text-accent bg-accent/10 font-bold' 
+                                : 'text-foreground/50 hover:text-foreground hover:bg-foreground/5'
+                            }`}
+                          >
+                            <MessageSquare size={13} />
+                            <span>Reply</span>
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Comment Like Button */}
+                      <button 
+                        onClick={() => handleCommentLike(comment.id)}
+                        className={`flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider px-3 py-1 rounded transition-colors ${
+                          comment.liked 
+                            ? 'text-accent bg-accent/10 font-bold' 
+                            : 'text-foreground/50 hover:text-foreground hover:bg-foreground/5'
+                        }`}
+                      >
+                        <Heart size={13} className={comment.liked ? 'fill-accent text-accent' : ''} />
+                        <span>{comment.likes > 0 ? comment.likes : ''} {comment.liked ? 'Liked' : 'Like'}</span>
+                      </button>
+                    </div>
+                  </motion.div>
+
+                  {/* Nested Replies */}
+                  {replies.length > 0 && (
+                    <div className="pl-6 md:pl-10 border-l-2 border-foreground/10 flex flex-col gap-3 ml-4 md:ml-6 mt-1">
+                      {replies.map((reply) => {
+                        const replyAvatar = (reply.userId && user && reply.userId === user.id)
+                          ? (userAvatar || reply.avatarUrl)
+                          : reply.avatarUrl;
+
+                        const replyAuthor = (reply.userId && user && reply.userId === user.id)
+                          ? (username || reply.author)
+                          : reply.author;
+
+                        const replyTime = formatCommentTimestamp(reply.createdAt, mounted);
+
+                        return (
+                          <motion.div
+                            key={reply.id}
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-panels/60 border border-foreground/5 rounded-lg p-4 flex flex-col gap-2.5"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                {replyAvatar ? (
+                                  <img src={replyAvatar} alt="Avatar" className="w-6 h-6 rounded-full object-cover border border-foreground/20 shrink-0" />
+                                ) : (
+                                  <div className="w-6 h-6 rounded-full bg-foreground/10 flex items-center justify-center border border-foreground/20 shrink-0">
+                                    <User size={12} className="text-foreground/50" />
+                                  </div>
+                                )}
+                                <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-accent">
+                                  {replyAuthor}
+                                </span>
+                              </div>
+                              <span suppressHydrationWarning className="font-mono text-[9px] text-foreground/40 uppercase tracking-widest">
+                                {replyTime}
+                              </span>
+                            </div>
+                            <p className="font-sans text-xs md:text-sm text-foreground/80 leading-relaxed pl-8">
+                              {reply.text}
+                            </p>
+
+                            {/* Reply Actions */}
+                            <div className="flex items-center justify-between pt-1.5 border-t border-foreground/5">
+                              {user && reply.userId === user.id ? (
+                                deletingId === reply.id ? (
+                                  <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 px-2 py-0.5 rounded">
+                                    <span className="font-mono text-[9px] text-red-400 uppercase tracking-wider">Delete?</span>
+                                    <button
+                                      onClick={() => handleDeleteComment(reply.id)}
+                                      className="font-mono text-[9px] font-bold text-red-400 hover:text-white uppercase tracking-wider bg-red-500 px-1.5 py-0.5 rounded transition-colors"
+                                    >
+                                      Confirm
+                                    </button>
+                                    <button
+                                      onClick={() => setDeletingId(null)}
+                                      className="font-mono text-[9px] text-foreground/60 hover:text-foreground uppercase tracking-wider px-0.5 transition-colors"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    onClick={() => setDeletingId(reply.id)}
+                                    className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-red-400/70 hover:text-red-400 hover:bg-red-500/10 px-2 py-0.5 rounded transition-colors"
+                                  >
+                                    <Trash2 size={11} />
+                                    <span>Delete</span>
+                                  </button>
+                                )
+                              ) : <div />}
+
+                              <button 
+                                onClick={() => handleCommentLike(reply.id)}
+                                className={`flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded transition-colors ${
+                                  reply.liked 
+                                    ? 'text-accent bg-accent/10 font-bold' 
+                                    : 'text-foreground/50 hover:text-foreground hover:bg-foreground/5'
+                                }`}
+                              >
+                                <Heart size={11} className={reply.liked ? 'fill-accent text-accent' : ''} />
+                                <span>{reply.likes > 0 ? reply.likes : ''} {reply.liked ? 'Liked' : 'Like'}</span>
+                              </button>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {/* Inline Reply Form */}
+                  {replyingToId === comment.id && (
+                    <motion.form 
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      onSubmit={(e) => handleReplySubmit(e, comment.id)}
+                      className="pl-6 md:pl-10 flex flex-col gap-2 ml-4 md:ml-6 mt-1"
                     >
-                      <Heart size={13} className={comment.liked ? 'fill-accent text-accent' : ''} />
-                      <span>{comment.likes > 0 ? comment.likes : ''} {comment.liked ? 'Liked' : 'Like'}</span>
-                    </button>
-                  </div>
-                </motion.div>
+                      <div className="flex gap-2">
+                        <textarea 
+                          placeholder={`Reply to ${displayAuthor}...`}
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          className="w-full bg-foreground/5 border border-foreground/15 rounded-lg p-3 font-sans text-xs md:text-sm text-foreground outline-none focus:border-accent min-h-[70px] resize-y transition-colors"
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <button 
+                          type="button"
+                          onClick={() => setReplyingToId(null)}
+                          className="font-mono text-[10px] font-bold uppercase tracking-wider px-4 py-2 border border-foreground/10 text-foreground/75 hover:bg-foreground/5 rounded transition-all"
+                        >
+                          Cancel
+                        </button>
+                        <button 
+                          type="submit"
+                          disabled={!replyText.trim() || submittingReply}
+                          className="flex items-center gap-1.5 bg-accent text-black font-mono text-[10px] font-bold uppercase tracking-wider px-4 py-2 rounded transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {submittingReply ? 'Posting...' : 'Post Reply'} <Send size={11} />
+                        </button>
+                      </div>
+                    </motion.form>
+                  )}
+                </div>
               );
             })}
           </AnimatePresence>

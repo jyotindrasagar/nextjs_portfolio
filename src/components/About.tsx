@@ -25,13 +25,18 @@ export function About() {
 
           <div className="space-y-6 text-foreground/80 font-light text-sm md:text-base leading-relaxed">
             <p>
-              For me, editing has never been just about putting clips together. It's about understanding rhythm, emotion, pacing, and knowing when to let a moment breathe. Motion design and visual effects are simply extensions of that process—tools that help tell a story more effectively.
+              Hi 🫡
+            </p>
+            <p> I'm Dieablo, a 23 year old Video Editor and a Motion Designer working under the Creative identity <strong className="font-semibold text-foreground">DieabloFX</strong>,
             </p>
             <p>
-              As Dieablo, I work under the creative identity <strong className="font-semibold text-foreground">DieabloFX</strong>, creating commercials, documentaries, motion graphics, 3D visuals, and branded content. I enjoy working on Heavy Graphical based work load, learning new techniques, and pushing every project a little further than the last.
+              I personally enjoy stuff that involves heavy Graphical Input. As for the reason why? To be completely honest I do not know, I was just naturally attracted to them from early age I guess and that got me in to making Commercials and advertisement based contents.
             </p>
             <p>
-              I'm still growing as an artist, and that's something I value. Every project teaches me something new, and every challenge and evry experience i gather somehow becomes part of the next piece of work. My focus is simple -  create visuals that people remember for the right reasons.
+              i am still trying to find my style and my own Artform but I do enjoy proper Story and Cinematic based works and  i am trying to get better at Animation on side, and I am Always looking for oppertunities to learn new stuff and work on new projects so yeah thats me 🫠!
+            </p>
+            <p>
+              Hit me up if you feel like working together, or even if you just wanna chat :)
             </p>
           </div>
 
@@ -104,7 +109,7 @@ export function About() {
             className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
           />
         </div>
-      </div>
-    </section>
+      </div >
+    </section >
   );
 }
