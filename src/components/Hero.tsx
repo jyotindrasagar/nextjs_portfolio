@@ -339,21 +339,22 @@ export function Hero({ loading = false }: { loading?: boolean }) {
               <motion.div
                 className="flex items-center min-w-max"
                 animate={{ x: ["0%", "-50%"] }}
-                transition={{ duration: 415, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 250, repeat: Infinity, ease: "linear", repeatType: "loop" }}
+                style={{ willChange: "transform" }}
               >
                 {/* Repeat logos twice for seamless infinite scroll */}
                 {[...Array(2)].map((_, i) => (
                   <div key={i} className="flex gap-8 sm:gap-12 lg:gap-16 items-center pr-8 sm:pr-12 lg:pr-16">
                     {displayClients.map((client, j) => (
                       <div key={`${i}-${j}`} className="flex-shrink-0 flex items-center justify-center">
-                        {client.imagePath ? (
+                        {client.svgLogo ? (
+                          client.svgLogo
+                        ) : client.imagePath ? (
                           <img
                             src={client.imagePath}
                             alt={client.name}
-                            className="h-7 sm:h-9 md:h-10 w-auto object-contain brightness-0 invert"
+                            className={`h-7 sm:h-9 md:h-10 w-auto object-contain ${client.filterClass || 'brightness-0 invert'}`}
                           />
-                        ) : client.svgLogo ? (
-                          client.svgLogo
                         ) : (
                           <div className={`${client.fontStyle} leading-none text-xs sm:text-sm`}>{client.textLogo}</div>
                         )}
