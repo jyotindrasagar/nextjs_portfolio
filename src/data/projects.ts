@@ -92,7 +92,7 @@ const rawProjects: ProjectInput[] = [
     subCategory: 'Ads',
     videoUrl: 'https://www.youtube.com/watch?v=T5gVxAogrWM',
     description: 'Commercial venue showcase for Black Bunny Dubai featuring cinematic editing, motion graphics, tracked visual effects, 3D animation, and promotional storytelling created through HekayaHaus.',
-    pinPosition: 9
+    pinPosition: 6
   },
   {
     title: 'Character Animation',
@@ -123,7 +123,7 @@ const rawProjects: ProjectInput[] = [
     subCategory: 'Logo Animations',
     videoUrl: ' https://www.youtube.com/watch?v=-YCDIamM4u0',
     description: 'Logo animation created by Dieablo for ALA Engineering, featuring clean motion design and a polished animated treatment of the engineering brand identity.',
-    pinPosition: 8
+    pinPosition: 15
   },
 
 
