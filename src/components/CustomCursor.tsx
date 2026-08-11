@@ -45,7 +45,7 @@ export function CustomCursor() {
   );
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+    if (typeof window !== 'undefined' && (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1025)) {
       return;
     }
 
@@ -84,7 +84,7 @@ export function CustomCursor() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+    if (typeof window !== 'undefined' && (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1025)) {
       return;
     }
 
@@ -109,7 +109,7 @@ export function CustomCursor() {
     : 'drop-shadow(0px 0px 25px rgba(186,230,253,0.8))'; // Bluish white
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+    <div className="hidden xl:block fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
       <motion.div
         animate={{ x: 0, y: 0 }}
         transition={{ duration: 0 }}

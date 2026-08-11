@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { projectsData } from '../data/projects';
 import { HoverVideoPlayer } from './HoverVideoPlayer';
 import { AnimatedSection } from './AnimatedSection';
-import { Clapperboard, ChevronLeft, ChevronRight, ExternalLink, Music } from 'lucide-react';
+import { Clapperboard, ChevronLeft, ChevronRight, ExternalLink, Music, Wrench } from 'lucide-react';
 
 const categoryInfo: Record<string, { title: string; desc: string }> = {
   'SHOWREEL': { title: '2025 SHOWREEL', desc: 'A COMPILATION OF MY BEST DESIGIN, VISUAL EFFECTS AND EDITING WORK.' },
@@ -21,13 +21,20 @@ const ITEMS_PER_PAGE = 6;
 
 export function Work() {
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
+  const [activeSubCategory, setActiveSubCategory] = useState<string>('ALL');
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const categories = ['SHOWREEL', 'ALL', 'COMMERCIAL', 'DOCUMENTARY', 'SOCIAL', 'DEMOS', 'TEASERS'];
 
   const filteredProjects = activeCategory === 'ALL'
     ? projectsData.filter(p => p.category.toUpperCase() !== 'SOCIAL')
-    : projectsData.filter(p => p.category.toUpperCase() === activeCategory);
+    : projectsData.filter(p => {
+        if (p.category.toUpperCase() !== activeCategory) return false;
+        if (activeCategory === 'COMMERCIAL' && activeSubCategory !== 'ALL') {
+          return p.subCategory?.toUpperCase() === activeSubCategory;
+        }
+        return true;
+      });
 
   const sortedProjects = [...filteredProjects].sort((a, b) => {
     if (a.pinPosition !== undefined && b.pinPosition !== undefined) {
@@ -42,6 +49,7 @@ export function Work() {
   useEffect(() => {
     setCurrentPage(0);
     setPlayingVideoId(null);
+    setActiveSubCategory('ALL');
   }, [activeCategory]);
 
   // Listen for navigation button click
@@ -227,6 +235,24 @@ export function Work() {
               {categoryInfo[activeCategory]?.desc || 'SELECTED PROJECTS & VISUAL STORIES.'}
             </p>
 
+            {activeCategory === 'COMMERCIAL' && (
+              <div className="flex flex-col gap-2 mt-4">
+                {['ALL', 'ADS', 'LOGO ANIMATIONS'].map((subCat) => (
+                  <button
+                    key={subCat}
+                    onClick={() => setActiveSubCategory(subCat)}
+                    className={`text-left px-4 py-2 font-mono text-[10px] uppercase tracking-widest border transition-colors ${
+                      activeSubCategory === subCat
+                        ? 'border-accent bg-accent/10 text-accent font-bold'
+                        : 'border-transparent hover:border-foreground/20 text-foreground/70'
+                    }`}
+                  >
+                    {subCat}
+                  </button>
+                ))}
+              </div>
+            )}
+
 
           </AnimatedSection>
         </div>
@@ -255,10 +281,10 @@ export function Work() {
                 <PaginationControls />
               </div>
 
-              {/* Grid — 2 rows × 3 cols desktop, 2 cols tablet, 1 col mobile */}
+              {/* Grid — 1 col mobile, 2 cols iPad/tablet, 3 cols large desktop */}
               <div className={`grid items-center gap-3 md:gap-4 w-full ${activeCategory === 'SOCIAL'
-                  ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'
-                  : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                  ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
+                  : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'
                 }`}>
                 <AnimatePresence mode="popLayout">
                   {paginatedProjects.map((project) => {
@@ -329,7 +355,7 @@ export function Work() {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500"></div>
 
                             {/* Card Content */}
-                            <div className="relative h-full flex flex-col justify-between p-3 z-10">
+                            <div className="relative h-full flex flex-col justify-between p-2.5 sm:p-3 md:p-3.5 xl:p-4 z-10">
                               {/* Top Row: Icon & Optional Track/Artist Link */}
                               <div className="flex items-center justify-between text-white/90 drop-shadow-md">
                                 <Clapperboard size={14} strokeWidth={2} />
@@ -339,7 +365,7 @@ export function Work() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={(e) => e.stopPropagation()}
-                                    className="flex items-center gap-1.5 text-[8px] sm:text-[9px] font-mono font-bold uppercase tracking-wider bg-black/75 hover:bg-accent text-white px-2 py-1 rounded-sm border border-white/20 transition-all duration-300 pointer-events-auto"
+                                    className="flex items-center gap-1 text-[8px] sm:text-[9px] font-mono font-bold uppercase tracking-wider bg-black/75 hover:bg-accent text-white px-2 py-0.5 rounded-sm border border-white/20 transition-all duration-300 pointer-events-auto"
                                     title="Listen to track / artist"
                                   >
                                     <Music size={10} />
@@ -350,11 +376,11 @@ export function Work() {
                               </div>
 
                               {/* Bottom Row: Title and Subtitle */}
-                              <div className="flex flex-col items-start justify-end gap-1">
-                                <h3 className="font-display font-bold text-sm md:text-base tracking-tight text-white group-hover:text-accent transition-colors uppercase drop-shadow-md">
+                              <div className="flex flex-col items-start justify-end gap-0.5 sm:gap-1">
+                                <h3 className="font-display font-bold text-xs sm:text-sm md:text-[13px] lg:text-sm xl:text-base tracking-tight text-white group-hover:text-accent transition-colors uppercase drop-shadow-md line-clamp-2 leading-tight">
                                   {project.title}
                                 </h3>
-                                <p className="font-mono text-[8px] uppercase tracking-widest text-accent drop-shadow-md">
+                                <p className="font-mono text-[7px] sm:text-[8px] uppercase tracking-widest text-accent drop-shadow-md">
                                   {project.category}
                                 </p>
                               </div>
@@ -365,6 +391,28 @@ export function Work() {
                     </motion.div>
                   );
                 })}
+
+                  {/* Translucent Placeholder Card if count < 4 */}
+                  {filteredProjects.length < 4 && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="group relative flex flex-col items-center justify-center border border-dashed border-foreground/20 bg-foreground/[0.03] backdrop-blur-md rounded-lg p-6 text-center w-full aspect-video pointer-events-none select-none overflow-hidden"
+                    >
+                      <div className="flex flex-col items-center justify-center gap-3 p-4">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-accent animate-pulse">
+                          <Wrench size={18} />
+                        </div>
+                        <h4 className="font-display font-bold text-xs md:text-sm uppercase tracking-wider text-foreground/80 leading-snug max-w-[240px]">
+                          HOLD ON TRYNNA LOAD MOURE STUFF UP IN HERE
+                        </h4>
+                        <span className="font-mono text-[10px] text-accent tracking-widest uppercase font-bold">
+                          GIVE ME THE WRENCH 🔧
+                        </span>
+                      </div>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
               </div>
             </div>

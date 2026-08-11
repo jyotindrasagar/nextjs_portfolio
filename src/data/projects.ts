@@ -24,6 +24,7 @@
 export interface ProjectInput {
   title: string;
   category: string;
+  subCategory?: string;
   videoUrl?: string;
   postUrl?: string;
   trackUrl?: string;
@@ -41,6 +42,7 @@ const rawProjects: ProjectInput[] = [
   {
     title: 'Fintech Landing Page Motion Design',
     category: 'Commercial',
+    subCategory: 'Ads',
     videoUrl: 'https://www.youtube.com/watch?v=hLVrIpj-F_s',
     description: 'Premium 3D banking app hero animation featuring a seamless fintech landing page background loop designed for modern financial websites, mobile apps, and commercial motion design portfolios.',
     pinPosition: 5,
@@ -56,6 +58,7 @@ const rawProjects: ProjectInput[] = [
   {
     title: 'Electronic Logging Device (ELD) | 3D',
     category: 'Commercial',
+    subCategory: 'Ads',
     videoUrl: 'https://www.youtube.com/watch?v=8-FyWvnZcWM',
     description: 'This 3D commercial was created for ALA Engineering to showcase their Electronic Logging Device (ELD) through cinematic product visualization, motion graphics, and visual storytelling. The project combines realistic 3D animation, commercial editing, motion design, and visual effects to communicate complex product features in a clear and engaging way. Every shot was designed to balance technical accuracy with modern advertising aesthetics, creating a commercial that is both informative and visually compelling. Created by Dieablo (DieabloFX), this project covers the complete production pipeline, including creative direction, 3D animation, product visualization, motion graphics, compositing, video editing, color grading, lighting, rendering, and final post-production using Blender, Adobe After Effects, and Adobe Premiere Pro.',
     pinPosition: 2
@@ -78,6 +81,7 @@ const rawProjects: ProjectInput[] = [
   {
     title: 'Black Bunny Venue Showcase',
     category: 'Commercial',
+    subCategory: 'Ads',
     videoUrl: 'https://www.youtube.com/watch?v=akOsJpUSTn4',
     description: 'Commercial promotional video for Black Bunny Dubai featuring cinematic editing, camera tracking, 3D animation, motion graphics, and visual effects produced through HekayaHaus.',
     pinPosition: 1
@@ -85,6 +89,7 @@ const rawProjects: ProjectInput[] = [
   {
     title: 'Black Bunny Arcade Promo',
     category: 'Commercial',
+    subCategory: 'Ads',
     videoUrl: 'https://www.youtube.com/watch?v=T5gVxAogrWM',
     description: 'Commercial venue showcase for Black Bunny Dubai featuring cinematic editing, motion graphics, tracked visual effects, 3D animation, and promotional storytelling created through HekayaHaus.',
     pinPosition: 9
@@ -99,6 +104,7 @@ const rawProjects: ProjectInput[] = [
   {
     title: 'HOF Logo Animation',
     category: 'Commercial',
+    subCategory: 'Logo Animations',
     videoUrl: 'https://www.youtube.com/watch?v=FY0C61ks3dM',
     description: 'Premium logo animation created by DieabloFX for HOF India featuring elegant motion graphics, brand animation, commercial design, corporate identity, and 2D motion design.',
     pinPosition: 4
@@ -106,6 +112,7 @@ const rawProjects: ProjectInput[] = [
   {
     title: 'HOF Brand Reveal',
     category: 'Commercial',
+    subCategory: 'Logo Animations',
     videoUrl: 'https://www.youtube.com/watch?v=3kUKesOFciE',
     description: 'Luxury brand reveal and logo animation created by DieabloFX for HOF India featuring premium motion graphics, corporate branding, elegant visual identity, commercial animation, and 2D motion design.',
     pinPosition: 7
@@ -121,6 +128,7 @@ const rawProjects: ProjectInput[] = [
   {
     title: 'Springwel Product Explainer',
     category: 'Commercial',
+    subCategory: 'Ads',
     videoUrl: 'https://www.youtube.com/watch?v=GgUcBTQbCAE',
     description: 'Commercial product explainer animation created by DieabloFX for Springwel, featuring motion graphics, typography animation, product visualization, educational animation, furniture marketing, mattress buying guide, and commercial video production.',
     pinPosition: 70

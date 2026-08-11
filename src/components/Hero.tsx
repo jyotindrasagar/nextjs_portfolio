@@ -326,15 +326,15 @@ export function Hero({ loading = false }: { loading?: boolean }) {
       {/* Bottom Stats Section */}
       <div className="w-full mt-4 z-20">
         <div
-          className="grid grid-cols-1 lg:grid-cols-12 border-t border-b border-white/50 dark:border-accent/50 divide-y lg:divide-y-0 lg:divide-x divide-white/50 dark:divide-accent/50 px-6 md:px-8 lg:px-12 xl:px-16 bg-[#ea879c] dark:bg-black text-white relative overflow-hidden"
+          className="grid grid-cols-1 lg:grid-cols-12 border-t border-b border-white/50 dark:border-accent/50 divide-y lg:divide-y-0 lg:divide-x divide-white/50 dark:divide-accent/50 px-4 md:px-6 lg:px-6 xl:px-16 bg-[#ea879c] dark:bg-black text-white relative overflow-hidden"
         >
 
           {/* Left Section: Clients */}
-          <div className="col-span-1 lg:col-span-5 relative min-h-[140px] flex items-end pb-4 lg:pb-6 pr-8">
+          <div className="col-span-1 lg:col-span-4 xl:col-span-5 relative min-h-[140px] flex items-end pb-4 lg:pb-6 px-3 md:px-4 lg:px-5 overflow-hidden">
             {/* Carousel spanning all over */}
             <div
               className="absolute inset-0 w-full h-full overflow-hidden flex items-center opacity-100"
-              style={{ maskImage: 'linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent)' }}
+              style={{ maskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)' }}
             >
               <motion.div
                 className="flex items-center min-w-max"
@@ -343,19 +343,19 @@ export function Hero({ loading = false }: { loading?: boolean }) {
               >
                 {/* Repeat logos twice for seamless infinite scroll */}
                 {[...Array(2)].map((_, i) => (
-                  <div key={i} className="flex gap-12 sm:gap-16 lg:gap-24 items-center pr-12 sm:pr-16 lg:pr-24">
+                  <div key={i} className="flex gap-8 sm:gap-12 lg:gap-16 items-center pr-8 sm:pr-12 lg:pr-16">
                     {displayClients.map((client, j) => (
                       <div key={`${i}-${j}`} className="flex-shrink-0 flex items-center justify-center">
                         {client.imagePath ? (
                           <img
                             src={client.imagePath}
                             alt={client.name}
-                            className="h-8 sm:h-11 md:h-12 w-auto object-contain brightness-0 invert"
+                            className="h-7 sm:h-9 md:h-10 w-auto object-contain brightness-0 invert"
                           />
                         ) : client.svgLogo ? (
                           client.svgLogo
                         ) : (
-                          <div className={`${client.fontStyle} leading-none`}>{client.textLogo}</div>
+                          <div className={`${client.fontStyle} leading-none text-xs sm:text-sm`}>{client.textLogo}</div>
                         )}
                       </div>
                     ))}
@@ -371,41 +371,41 @@ export function Hero({ loading = false }: { loading?: boolean }) {
           </div>
 
           {/* Right Section: Stats Grid */}
-          <div className="col-span-1 lg:col-span-7 grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/50 dark:divide-accent/50">
+          <div className="col-span-1 lg:col-span-8 xl:col-span-7 grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/50 dark:divide-accent/50 overflow-hidden">
             {/* Stat 1 */}
-            <div className="flex flex-col gap-3 py-6 lg:py-8 pl-0 md:pl-6 lg:pl-8 pr-4 justify-start">
-              <div className="flex items-start gap-2 text-[10px] md:text-[11px] font-mono font-bold tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px]">
+            <div className="flex flex-col gap-2 md:gap-3 py-4 md:py-6 lg:py-8 px-2.5 sm:px-4 lg:px-5 xl:px-6 justify-start overflow-hidden">
+              <div className="flex items-start gap-1.5 text-[9px] sm:text-[10px] lg:text-[10.5px] xl:text-[11px] font-mono font-bold tracking-normal sm:tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px] truncate">
                 <span>Total Projects</span>
               </div>
               <CountUpStat end={140} suffix="+" />
-              <div className="text-[9px] md:text-[10px] font-mono font-semibold tracking-[0.15em] uppercase text-white/90 min-h-[24px] md:min-h-[32px]">Completed Projects</div>
+              <div className="text-[8px] sm:text-[8.5px] lg:text-[9.5px] xl:text-[10px] font-mono font-semibold tracking-normal sm:tracking-[0.12em] uppercase text-white/90 min-h-[24px] md:min-h-[32px] leading-tight">Completed Projects</div>
             </div>
 
             {/* Stat 2 */}
-            <div className="flex flex-col gap-3 py-6 lg:py-8 px-4 lg:px-8 justify-start">
-              <div className="flex items-start gap-2 text-[10px] md:text-[11px] font-mono font-bold tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px]">
+            <div className="flex flex-col gap-2 md:gap-3 py-4 md:py-6 lg:py-8 px-2.5 sm:px-4 lg:px-5 xl:px-6 justify-start overflow-hidden">
+              <div className="flex items-start gap-1.5 text-[9px] sm:text-[10px] lg:text-[10.5px] xl:text-[11px] font-mono font-bold tracking-normal sm:tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px] truncate">
                 <span>Total Views</span>
               </div>
               <CountUpStat end={17} suffix="M+" />
-              <div className="text-[9px] md:text-[10px] font-mono font-semibold tracking-[0.15em] uppercase text-white/90 min-h-[24px] md:min-h-[32px]">Across Platforms</div>
+              <div className="text-[8px] sm:text-[8.5px] lg:text-[9.5px] xl:text-[10px] font-mono font-semibold tracking-normal sm:tracking-[0.12em] uppercase text-white/90 min-h-[24px] md:min-h-[32px] leading-tight">Across Platforms</div>
             </div>
 
             {/* Stat 3 */}
-            <div className="flex flex-col gap-3 py-6 lg:py-8 px-4 lg:px-8 justify-start">
-              <div className="flex items-start gap-2 text-[10px] md:text-[11px] font-mono font-bold tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px]">
+            <div className="flex flex-col gap-2 md:gap-3 py-4 md:py-6 lg:py-8 px-2.5 sm:px-4 lg:px-5 xl:px-6 justify-start overflow-hidden">
+              <div className="flex items-start gap-1.5 text-[9px] sm:text-[10px] lg:text-[10.5px] xl:text-[11px] font-mono font-bold tracking-normal sm:tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px] truncate">
                 <span>Hours Delivered</span>
               </div>
               <CountUpStat end={5.1} suffix="K+" decimals={1} />
-              <div className="text-[9px] md:text-[10px] font-mono font-semibold tracking-[0.15em] uppercase text-white/90 min-h-[24px] md:min-h-[32px]">Hours of Work</div>
+              <div className="text-[8px] sm:text-[8.5px] lg:text-[9.5px] xl:text-[10px] font-mono font-semibold tracking-normal sm:tracking-[0.12em] uppercase text-white/90 min-h-[24px] md:min-h-[32px] leading-tight">Hours of Work</div>
             </div>
 
             {/* Stat 4 */}
-            <div className="flex flex-col gap-3 py-6 lg:py-8 px-4 lg:px-8 justify-start">
-              <div className="flex items-start gap-2 text-[10px] md:text-[11px] font-mono font-bold tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px]">
+            <div className="flex flex-col gap-2 md:gap-3 py-4 md:py-6 lg:py-8 px-2.5 sm:px-4 lg:px-5 xl:px-6 justify-start overflow-hidden">
+              <div className="flex items-start gap-1.5 text-[9px] sm:text-[10px] lg:text-[10.5px] xl:text-[11px] font-mono font-bold tracking-normal sm:tracking-wider uppercase text-white min-h-[24px] md:min-h-[32px] truncate">
                 <span>Client Satisfaction</span>
               </div>
               <CountUpStat end={95} suffix="%" />
-              <div className="text-[9px] md:text-[10px] font-mono font-semibold tracking-[0.15em] uppercase text-white/90 min-h-[24px] md:min-h-[32px]">Repeated & Referral Work</div>
+              <div className="text-[8px] sm:text-[8.5px] lg:text-[9.5px] xl:text-[10px] font-mono font-semibold tracking-normal sm:tracking-[0.12em] uppercase text-white/90 min-h-[24px] md:min-h-[32px] leading-tight">Repeated & Referral Work</div>
             </div>
           </div>
 

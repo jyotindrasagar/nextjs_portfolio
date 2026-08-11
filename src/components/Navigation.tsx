@@ -12,7 +12,7 @@ interface NavigationProps {
 const navLinks = [
   { id: 'home', label: 'Home' },
   { id: 'work', label: 'Work' },
-  // { id: 'case-studies', label: 'Project Breakdowns' },
+  { id: 'breakdowns', label: 'Breakdowns' },
   { id: 'about', label: 'About' },
   { id: 'feedback', label: 'Feedback' },
   { id: 'contact', label: 'Contact' }
@@ -149,12 +149,12 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 bg-background/95 transition-colors duration-500 border-b select-none"
       >
         {/* Brand logo */}
-        <div className="flex-1 flex items-center">
+        <div className="shrink-0 flex items-center">
           {/* Mobile Menu Toggle */}
           <button 
             aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
             aria-expanded={mobileMenuOpen}
-            className="lg:hidden mr-4 p-2 -ml-2 text-foreground/80 hover:text-foreground transition-colors"
+            className="lg:hidden mr-3 p-2 -ml-2 text-foreground/80 hover:text-foreground transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -167,7 +167,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               window.scrollTo({ top: 0, behavior: 'smooth' });
               setMobileMenuOpen(false);
             }}
-            className="font-display font-bold tracking-[0.18em] text-xs sm:text-sm uppercase hover:opacity-80 transition-opacity"
+            className="font-display font-bold tracking-[0.15em] lg:tracking-[0.18em] text-xs sm:text-sm uppercase hover:opacity-80 transition-opacity"
           >
             <span className="sr-only">DIEABLO FX</span>
             <div aria-hidden="true" className="flex items-center gap-0">
@@ -193,7 +193,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         </div>
 
         {/* Desktop Nav links */}
-        <div className="hidden lg:flex gap-8 lg:gap-10 text-xs sm:text-sm uppercase tracking-[0.18em] font-display font-bold flex-1 justify-center">
+        <div className="hidden lg:flex items-center gap-3 lg:gap-5 xl:gap-8 text-[11px] lg:text-xs xl:text-sm uppercase tracking-[0.1em] lg:tracking-[0.14em] xl:tracking-[0.18em] font-display font-bold justify-center mx-auto whitespace-nowrap">
           {navLinks.map((link) => (
             <a
               key={link.id}
@@ -219,7 +219,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         </div>
 
         {/* Action button & theme toggle */}
-        <div className="flex-1 flex justify-end items-center gap-3 sm:gap-4">
+        <div className="shrink-0 flex justify-end items-center gap-2 sm:gap-3 lg:gap-4">
 
           {/* Watch Showreel Button */}
           <button 
@@ -228,7 +228,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               setActiveSection('work');
               window.dispatchEvent(new CustomEvent('openShowreel'));
             }}
-            className="hidden md:flex bg-accent text-white px-5 py-2.5 rounded-[2px] font-display font-bold text-[10px] sm:text-xs uppercase tracking-[0.18em] transition-all duration-300 items-center gap-3 group hover:bg-accent/90 mr-2 shadow-sm"
+            className="hidden sm:flex bg-accent text-white px-3 lg:px-4 xl:px-5 py-2 lg:py-2.5 rounded-[2px] font-display font-bold text-[9px] lg:text-[11px] xl:text-xs uppercase tracking-[0.12em] lg:tracking-[0.15em] xl:tracking-[0.18em] transition-all duration-300 items-center gap-2 lg:gap-3 group hover:bg-accent/90 shadow-sm shrink-0 whitespace-nowrap"
           >
             <span>Watch Showreel</span>
             <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-xs sm:text-sm leading-none font-light">↗</span>

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useAnimationFrame, useMotionValue, AnimatePresence } from 'framer-motion';
 import { AnimatedSection } from './AnimatedSection';
 import { testimonials, Testimonial } from '../data/feedback';
+import { VouchesSection } from './VouchesSection';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 
 function VerifiedBadge({ hasLink }: { hasLink?: boolean }) {
@@ -255,7 +256,7 @@ export function Feedback() {
   });
 
   // Handlers for arrow buttons to manually shift the carousel
-  const shiftLeft = () => {
+    const shiftLeft = () => {
     x.set(x.get() + 400);
   };
 
@@ -264,7 +265,7 @@ export function Feedback() {
   };
 
   return (
-    <section className="relative pt-24 pb-32 px-0 overflow-hidden">
+    <section className="relative pt-10 md:pt-20 pb-6 md:pb-12 px-0 overflow-hidden">
       <div className="absolute top-0 left-4 md:left-8 lg:left-12 xl:left-16 right-4 md:right-8 lg:right-12 xl:right-16 h-[1px] bg-foreground/10"></div>
 
       <AnimatePresence>
@@ -279,33 +280,33 @@ export function Feedback() {
         )}
       </AnimatePresence>
 
-      <AnimatedSection className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mb-16 flex flex-col items-start text-left">
-        <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-accent mb-4 md:mb-6 uppercase">
+      <AnimatedSection className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mb-4 md:mb-8 flex flex-col items-start text-left">
+        <div className="flex items-center gap-2 text-[10px] sm:text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-accent mb-2 md:mb-4 uppercase">
           <span>❖</span>
           <span>SYS.FEEDBACK // TESTIMONIALS</span>
         </div>
 
-        <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground uppercase mb-6">
+        <h2 className="font-display font-bold text-2xl sm:text-4xl md:text-5xl tracking-tight text-foreground uppercase mb-3 md:mb-4">
           Collaborator <span className="text-accent">Feedback</span>
         </h2>
-        <p className="font-mono text-xs md:text-sm text-foreground/40 tracking-widest uppercase max-w-xl leading-relaxed">
+        <p className="font-mono text-[10px] sm:text-xs md:text-sm text-foreground/40 tracking-widest uppercase max-w-xl leading-relaxed">
           Kind words from incredible people and brands I've had the privilege to work with.
         </p>
       </AnimatedSection>
 
       <div className="relative w-full">
         {/* Left and Right Fade Overlays to replace mask and preserve blur */}
-        <div className="absolute top-0 bottom-0 left-0 w-[64px] z-30 bg-gradient-to-r from-background to-transparent pointer-events-none"></div>
-        <div className="absolute top-0 bottom-0 right-0 w-[64px] z-30 bg-gradient-to-l from-background to-transparent pointer-events-none"></div>
+        <div className="absolute top-0 bottom-0 left-0 w-[24px] sm:w-[64px] z-30 bg-gradient-to-r from-background to-transparent pointer-events-none"></div>
+        <div className="absolute top-0 bottom-0 right-0 w-[24px] sm:w-[64px] z-30 bg-gradient-to-l from-background to-transparent pointer-events-none"></div>
         
         <div
-          className="overflow-hidden w-full cursor-grab active:cursor-grabbing py-12"
+          className="overflow-hidden w-full cursor-grab active:cursor-grabbing py-1 md:py-4"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
           <motion.div
             ref={contentRef}
-            className="flex gap-4 md:gap-6 w-max pl-4 md:pl-8"
+            className="flex gap-2.5 sm:gap-4 md:gap-6 w-max pl-3 sm:pl-8"
             style={{ x }}
             drag="x"
             dragConstraints={{ left: -10000, right: 10000 }}
@@ -322,31 +323,29 @@ export function Feedback() {
                 <div
                   key={idx}
                   ref={idx === 0 ? firstCardRef : idx === testimonials.length ? secondSetFirstCardRef : null}
-                  className="flex-shrink-0 w-[85vw] sm:w-[510px] md:w-[580px] h-[400px] md:h-[420px] p-6 md:p-8 border border-foreground/10 bg-foreground/[0.03] backdrop-blur-xl relative group hover:bg-foreground/[0.05] transition-all duration-500 flex flex-col rounded-xl shadow-[0_0_15px_rgba(255,184,198,0.15)] hover:shadow-[0_0_30px_rgba(255,184,198,0.4)] justify-between"
+                  className="flex-shrink-0 w-[45vw] sm:w-[340px] md:w-[400px] lg:w-[540px] h-[270px] sm:h-[370px] md:h-[420px] p-3 sm:p-6 md:p-8 border border-foreground/10 bg-foreground/[0.03] backdrop-blur-xl relative group hover:bg-foreground/[0.05] transition-all duration-500 flex flex-col rounded-xl shadow-[0_0_15px_rgba(255,184,198,0.15)] hover:shadow-[0_0_30px_rgba(255,184,198,0.4)] justify-between"
                 >
                   <div
                     className="relative z-20 flex-grow flex flex-col justify-center cursor-pointer group/text"
                     onClick={() => setSelectedTestimonialIndex(idx % testimonials.length)}
                   >
                     {/* Fixed Top-Left Quote Icon for all cards */}
-                    <span className="text-accent text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
+                    <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
 
                     <div className={`flex-grow flex flex-col ${isLongQuote ? 'justify-start pt-1' : 'justify-center'}`}>
-                      <p className="font-sans font-light text-sm md:text-base leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-[8] group-hover/text:text-foreground transition-colors">
+                      <p className="font-sans font-light text-[10px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-5 sm:line-clamp-[6] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0">
                         {isLongQuote && (
-                          <span className="text-accent text-4xl md:text-5xl font-serif float-left mr-2 mt-[-6px] md:mt-[-10px] h-3 leading-none opacity-0">“</span>
+                          <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif float-left mr-1 sm:mr-2 mt-[-4px] md:mt-[-10px] h-3 leading-none opacity-0">“</span>
                         )}
                         {testimonial.quote}
                       </p>
-
-                      {/* Removed "Read more" from card as requested */}
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between mt-6 pt-5 border-t border-foreground/10 relative z-20">
-                    <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between mt-2 sm:mt-6 pt-2 sm:pt-5 border-t border-foreground/10 relative z-20">
+                    <div className="flex items-center gap-2 sm:gap-4">
                       {testimonial.avatar ? (
-                        <div className="w-12 h-12 rounded-full overflow-hidden border border-foreground/20 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity shadow-lg">
+                        <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-foreground/20 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity shadow-lg">
                           <img
                             src={testimonial.avatar}
                             alt={`${testimonial.author} Avatar`}
@@ -354,27 +353,27 @@ export function Feedback() {
                           />
                         </div>
                       ) : (
-                        <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-foreground/50 font-bold font-mono shrink-0 text-sm shadow-lg">
+                        <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-foreground/50 font-bold font-mono shrink-0 text-[10px] sm:text-sm shadow-lg">
                           {testimonial.author.charAt(0)}
                         </div>
                       )}
 
-                      <div className="flex flex-col">
-                        <h4 className="font-mono font-bold text-[13px] md:text-[15px] tracking-wider text-foreground flex items-center gap-2">
+                      <div className="flex flex-col min-w-0">
+                        <h4 className="font-mono font-bold text-[10px] sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1 sm:gap-2 truncate">
                           {testimonial.link ? (
-                            <a href={testimonial.link} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors flex items-center gap-1.5">
-                              {testimonial.author} <span className="opacity-70 text-[10px]">↗</span>
+                            <a href={testimonial.link} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors flex items-center gap-1 truncate">
+                              <span className="truncate">{testimonial.author}</span> <span className="opacity-70 text-[8px] sm:text-[10px] shrink-0">↗</span>
                             </a>
                           ) : (
-                            testimonial.author
+                            <span className="truncate">{testimonial.author}</span>
                           )}
                           <VerifiedBadge hasLink={Boolean(testimonial.link)} />
                         </h4>
-                        <p className="font-sans text-[12px] md:text-[13px] text-foreground/60 mt-0.5">
+                        <p className="font-sans text-[8.5px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate">
                           {testimonial.role} {testimonial.company ? `• ${testimonial.company}` : ''}
                         </p>
                         {testimonial.project && (
-                          <p className="font-mono text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-2 font-bold">
+                          <p className="font-mono text-[7px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-0.5 sm:mt-2 font-bold truncate">
                             {testimonial.project}
                           </p>
                         )}
@@ -386,6 +385,9 @@ export function Feedback() {
             })}
           </motion.div>
         </div>
+
+        {/* Industry Vouches Section */}
+        <VouchesSection />
       </div>
     </section>
   );

@@ -8,6 +8,7 @@ import { CADOverlay } from '../components/CADOverlay';
 import { FallingPetals } from '../components/FallingPetals';
 
 import { Work } from '../components/Work';
+import { Projects } from '../components/Projects';
 import { About } from '../components/About';
 import { Feedback } from '../components/Feedback';
 import { Contact } from '../components/Contact';
@@ -104,6 +105,7 @@ export default function Home() {
         <main className="relative w-full">
           <Hero loading={loading} />
           <LazySection id="work" height="100vh"><Work /></LazySection>
+          <LazySection id="breakdowns" height="100vh"><Projects /></LazySection>
           <LazySection id="about" height="100vh"><About /></LazySection>
           <div ref={fadeRef}>
             <LazySection id="feedback" height="50vh"><Feedback /></LazySection>

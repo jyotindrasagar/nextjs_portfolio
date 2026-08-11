@@ -69,12 +69,12 @@ const SOCIAL_LINKS = [
 ];
 
 export const SocialSidebar = memo(function SocialSidebar() {
-  const [copied, setCopied] = useState(false);
+  const [copiedItem, setCopiedItem] = useState<string | null>(null);
 
-  const handleCopy = (username: string) => {
-    navigator.clipboard.writeText(username);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = (url: string, name: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedItem(name);
+    setTimeout(() => setCopiedItem(null), 2000);
   };
 
   return (
@@ -100,24 +100,27 @@ export const SocialSidebar = memo(function SocialSidebar() {
         }}
       />
 
-      {/* Top spacer removed to bring social bay upwards */}      
-      {/* Social Title removed */}
-
       {/* Social Icons Container */}
       <div className="flex flex-col items-center gap-7 py-8 px-3 mt-4 z-10 w-full">
         {SOCIAL_LINKS.map((social) => (
           social.isCopy ? (
             <button
               key={social.name}
-              onClick={() => handleCopy(social.url)}
+              onClick={() => handleCopy(social.url, social.name)}
               className="relative text-foreground/80 hover:text-foreground transition-colors group cursor-pointer py-1"
               title={`Copy ${social.name}`}
             >
               {social.icon}
-              {/* Tooltip */}
-              <div className="absolute left-full ml-6 top-1/2 -translate-y-1/2 px-2 py-1 bg-background text-foreground shadow-md border border-foreground/20 rounded text-[10px] uppercase tracking-wider opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-                {copied ? 'Copied!' : `Copy ${social.name}`}
-              </div>
+              {/* Tooltip / Copied Badge */}
+              {copiedItem === social.name ? (
+                <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-accent text-black font-mono font-extrabold shadow-[0_0_12px_rgba(255,184,198,0.5)] rounded text-[10px] uppercase tracking-wider whitespace-nowrap z-50">
+                  ✓ COPIED!
+                </div>
+              ) : (
+                <div className="absolute left-full ml-6 top-1/2 -translate-y-1/2 px-2 py-1 bg-background text-foreground shadow-md border border-foreground/20 rounded text-[10px] uppercase tracking-wider opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                  Copy {social.name}
+                </div>
+              )}
             </button>
           ) : (
             <a
