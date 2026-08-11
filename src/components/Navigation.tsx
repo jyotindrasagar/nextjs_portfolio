@@ -193,7 +193,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         </div>
 
         {/* Desktop Nav links */}
-        <div className="hidden lg:flex items-center gap-2.5 lg:gap-3.5 xl:gap-7 text-[10px] lg:text-[11px] xl:text-xs uppercase tracking-[0.06em] lg:tracking-[0.08em] xl:tracking-[0.16em] font-display font-bold justify-center absolute left-[48.5%] top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
+        <div className="hidden lg:flex items-center h-full gap-1 lg:gap-1.5 xl:gap-4 text-[10px] lg:text-[11px] xl:text-xs uppercase tracking-[0.06em] lg:tracking-[0.08em] xl:tracking-[0.16em] font-display font-bold justify-center absolute left-[48.5%] top-0 bottom-0 -translate-x-1/2 whitespace-nowrap">
           {navLinks.map((link) => (
             <a
               key={link.id}
@@ -202,7 +202,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
                 handleScroll(e, link.id);
                 setActiveSection(link.id);
               }}
-              className={`hover:text-accent transition-colors relative flex flex-col items-center ${
+              className={`h-full px-2 lg:px-2.5 xl:px-3.5 flex items-center justify-center hover:text-accent transition-colors relative ${
                 activeSection === link.id ? 'text-accent' : 'text-foreground font-bold'
               }`}
             >
@@ -210,7 +210,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               {activeSection === link.id && (
                 <motion.div
                   layoutId="nav-indicator"
-                  className="absolute -bottom-6 w-full h-[1px] bg-accent"
+                  className="absolute bottom-0 left-2 right-2 h-[2px] bg-accent"
                   transition={{ duration: 0.3, ease: "easeOut" }}
                 />
               )}
