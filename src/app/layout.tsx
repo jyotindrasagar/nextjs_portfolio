@@ -215,8 +215,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scrollbar-hide" suppressHydrationWarning>
       <head>
-        <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
-        <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async defer></script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

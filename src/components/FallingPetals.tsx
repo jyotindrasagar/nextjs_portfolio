@@ -10,7 +10,7 @@ export function FallingPetals() {
   useEffect(() => {
     setMounted(true);
     const handleResize = () => {
-      setPetalCount(window.innerWidth < 1024 ? 8 : 20); // 80% reduction for mobile (8), 50% reduction for PC (20)
+      setPetalCount(window.innerWidth < 1024 ? 5 : 12);
     };
     handleResize(); // trigger on mount
     window.addEventListener('resize', handleResize);
@@ -55,7 +55,6 @@ export function FallingPetals() {
               opacity: opacity,
               animation: `falling-petal ${animationDuration}s linear ${animationDelay}s infinite, ${isFirefly ? 'firefly-glow' : 'petal-glow'} ${glowDuration}s ease-in-out ${glowDelay}s infinite`,
               borderRadius: isFirefly ? '50%' : '100% 0 100% 0',
-              willChange: 'transform, box-shadow',
             }}
           />
         );

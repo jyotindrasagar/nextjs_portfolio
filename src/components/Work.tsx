@@ -299,24 +299,18 @@ export function Work() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
-                      style={{ willChange: "transform, opacity" }}
                       key={project.id}
                       aria-label={`View project: ${project.title}`}
-                      role="button"
-                      className={`group relative flex flex-col border border-foreground/10 overflow-hidden w-full cursor-pointer bg-background ${aspectClass}`}
-                      onClick={() => {
-                        if (playingVideoId === project.id) return;
-                        setPlayingVideoId(project.id);
-                      }}
+                      className={`group relative flex flex-col border border-foreground/10 overflow-hidden w-full bg-background ${aspectClass}`}
                     >
                       {playingVideoId === project.id ? (
-                        <div className="absolute inset-0 z-50 bg-black flex items-center justify-center">
+                        <div className="w-full h-full relative z-50 bg-black">
                           {project.videoUrl?.includes('youtu') ? (
                             <iframe
                               src={getEmbedUrl(project)}
                               allow="autoplay; fullscreen; encrypted-media"
                               allowFullScreen
-                              className="w-full h-full border-0"
+                              className="w-full h-full border-0 absolute inset-0"
                             />
                           ) : (
                             <video
@@ -324,26 +318,23 @@ export function Work() {
                               controls
                               autoPlay
                               loop={project.loop}
-                              className="w-full h-full object-contain"
+                              className="w-full h-full object-contain absolute inset-0"
                             />
                           )}
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setPlayingVideoId(null); }}
+                            className="absolute top-2 right-2 z-[60] w-8 h-8 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white hover:bg-white transition-colors hover:text-black font-bold text-xs"
+                            aria-label="Close video"
+                          >
+                            ✕
+                          </button>
                         </div>
                       ) : (
-                        <>
-                          {project.videoUrl && (
-                            <script type="application/ld+json" dangerouslySetInnerHTML={{
-                              __html: JSON.stringify({
-                                "@context": "https://schema.org",
-                                "@type": "VideoObject",
-                                "name": project.title,
-                                "description": project.description,
-                                "thumbnailUrl": getThumbnailUrl(project) || "https://dieablo.com/og-image.png",
-                                "uploadDate": "2023-01-01T08:00:00+08:00",
-                                "contentUrl": project.videoUrl,
-                                "embedUrl": getEmbedUrl(project)
-                              })
-                            }} />
-                          )}
+                        <div 
+                          className="w-full h-full cursor-pointer"
+                          onClick={() => setPlayingVideoId(project.id)}
+                          role="button"
+                        >
                           <HoverVideoPlayer
                             imageUrl={getThumbnailUrl(project)}
                             videoUrl={project.videoUrl}
@@ -352,10 +343,10 @@ export function Work() {
                             baseGrayscale="grayscale"
                           >
                             {/* Gradient Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none"></div>
 
                             {/* Card Content */}
-                            <div className="relative h-full flex flex-col justify-between p-2.5 sm:p-3 md:p-3.5 xl:p-4 z-10">
+                            <div className="relative h-full flex flex-col justify-between p-2.5 sm:p-3 md:p-3.5 xl:p-4 z-10 pointer-events-none">
                               {/* Top Row: Icon & Optional Track/Artist Link */}
                               <div className="flex items-center justify-between text-white/90 drop-shadow-md">
                                 <Clapperboard size={14} strokeWidth={2} />
@@ -386,7 +377,7 @@ export function Work() {
                               </div>
                             </div>
                           </HoverVideoPlayer>
-                        </>
+                        </div>
                       )}
                     </motion.div>
                   );
@@ -398,7 +389,7 @@ export function Work() {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="group relative flex flex-col items-center justify-center border border-dashed border-foreground/20 bg-foreground/[0.03] backdrop-blur-md rounded-lg p-6 text-center w-full aspect-video pointer-events-none select-none overflow-hidden"
+                      className={`group relative flex flex-col items-center justify-center border border-dashed border-foreground/20 bg-foreground/[0.03] backdrop-blur-md rounded-lg p-6 text-center w-full ${activeCategory === 'SOCIAL' ? 'aspect-[9/16]' : 'aspect-video'} pointer-events-none select-none overflow-hidden`}
                     >
                       <div className="flex flex-col items-center justify-center gap-3 p-4">
                         <div className="w-10 h-10 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-accent animate-pulse">
@@ -419,6 +410,8 @@ export function Work() {
           )}
         </div>
       </div>
+
+
     </section>
   );
 }

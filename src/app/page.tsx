@@ -7,11 +7,13 @@ import { Hero } from '../components/Hero';
 import { CADOverlay } from '../components/CADOverlay';
 import { FallingPetals } from '../components/FallingPetals';
 
-import { Work } from '../components/Work';
-import { Projects } from '../components/Projects';
-import { About } from '../components/About';
-import { Feedback } from '../components/Feedback';
-import { Contact } from '../components/Contact';
+import dynamic from 'next/dynamic';
+
+const Work = dynamic(() => import('../components/Work').then(m => m.Work), { ssr: false });
+const Projects = dynamic(() => import('../components/Projects').then(m => m.Projects), { ssr: false });
+const About = dynamic(() => import('../components/About').then(m => m.About), { ssr: false });
+const Feedback = dynamic(() => import('../components/Feedback').then(m => m.Feedback), { ssr: false });
+const Contact = dynamic(() => import('../components/Contact').then(m => m.Contact), { ssr: false });
 
 function LazySection({ id, children, height = "100vh" }: { id: string, children: React.ReactNode, height?: string }) {
   const [hasMounted, setHasMounted] = useState(false);
@@ -25,7 +27,7 @@ function LazySection({ id, children, height = "100vh" }: { id: string, children:
           observer.disconnect();
         }
       },
-      { rootMargin: '600px' } 
+      { rootMargin: '300px' } 
     );
     if (ref.current) {
       observer.observe(ref.current);

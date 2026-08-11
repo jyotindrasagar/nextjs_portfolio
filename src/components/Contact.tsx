@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { AnimatedSection } from './AnimatedSection';
 import { Calendar, Mail, Clock, ArrowUpRight, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Script from 'next/script';
 
 declare global {
   interface Window {
@@ -121,7 +122,7 @@ export function Contact() {
 
   return (
     <>
-      <section id="contact" className="relative pt-12 md:pt-16 pb-5 xl:pb-24 bg-transparent overflow-hidden">
+      <section id="contact" className="relative pt-12 md:pt-16 pb-5 xl:pb-12 bg-transparent overflow-hidden">
         {/* Top Border constrained by padding */}
         <div className="absolute top-0 left-4 md:left-8 lg:left-12 xl:left-16 right-4 md:right-8 lg:right-12 xl:right-16 h-[1px] bg-foreground/10"></div>
 
@@ -137,7 +138,7 @@ export function Contact() {
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 xl:gap-24">
 
               {/* LEFT COLUMN */}
-              <div className="xl:col-span-6 flex flex-col justify-between">
+              <div className="xl:col-span-6 flex flex-col">
                 <div>
                   <div className="flex items-center gap-3 text-accent text-[11px] font-mono font-bold tracking-widest uppercase mb-4 md:mb-6">
                     <div className="w-1.5 h-1.5 rounded-full bg-accent" />
@@ -389,7 +390,7 @@ export function Contact() {
       </AnimatePresence>
 
       {/* Footer copyright and social links */}
-      <footer className="mt-6 xl:mt-32 border-t border-foreground/10 px-4 md:px-8 lg:px-12 xl:px-16 pt-4 xl:pt-8 pb-4 xl:pb-12 flex flex-row items-center justify-between gap-4 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/50 select-none">
+      <footer className="mt-6 xl:mt-16 border-t border-foreground/10 px-4 md:px-8 lg:px-12 xl:px-16 pt-4 xl:pt-8 pb-4 xl:pb-12 flex flex-row items-center justify-between gap-4 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/50 select-none">
         <div className="shrink-0">
           <span>&copy; SINCE 2021 // ALL RIGHTS RESERVED</span>
         </div>
@@ -453,6 +454,11 @@ export function Contact() {
           </button>
         </div>
       </footer>
+      <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
+      <Script 
+        src="https://assets.calendly.com/assets/external/widget.js" 
+        strategy="lazyOnload" 
+      />
     </>
   );
 }

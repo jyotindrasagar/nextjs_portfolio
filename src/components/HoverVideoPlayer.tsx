@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect, memo } from 'react';
+import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface HoverVideoPlayerProps {
@@ -33,6 +33,8 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
   const [isInView, setIsInView] = useState(false);
   const [isDelayPassed, setIsDelayPassed] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  // Only mount the <video> DOM when we actually need it
+  const [shouldMountVideo, setShouldMountVideo] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -98,7 +100,7 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
           setIsHovered(false);
         }
       },
-      { rootMargin: '50px' } // Load slightly before it comes into view, but pause quickly when out
+      { rootMargin: '200px' } // Increased from 50px for smoother thumbnail loading
     );
 
     if (containerRef.current) {
@@ -112,24 +114,37 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
     if (videoRef.current) {
       videoRef.current.volume = volume;
     }
-  }, [hasBeenInView, volume]);
+  }, [shouldMountVideo, volume]);
 
-  const handleMouseEnter = () => {
+  // Determine when to mount the video element in the DOM
+  useEffect(() => {
+    if (!videoUrl || videoUrl.includes('youtu')) return;
+    
+    if (alwaysPlay && hasBeenInView && isDelayPassed) {
+      // For alwaysPlay cards, mount video after delay + in view
+      setShouldMountVideo(true);
+    } else if (!alwaysPlay && isHovered && hasBeenInView) {
+      // For hover-only cards, mount video ONLY on first hover
+      setShouldMountVideo(true);
+    }
+  }, [alwaysPlay, hasBeenInView, isDelayPassed, isHovered, videoUrl]);
+
+  const handleMouseEnter = useCallback(() => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
     setIsHovered(true);
-  };
+  }, []);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
     setIsHovered(false);
-  };
+  }, []);
 
   useEffect(() => {
-    if (!videoRef.current || !hasBeenInView) return;
+    if (!videoRef.current || !shouldMountVideo) return;
 
     // Force pause if user manually paused OR if the component scrolled out of view
     if (isUserPaused || !isInView) {
@@ -149,7 +164,7 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
         videoRef.current.currentTime = 0;
       }
     }
-  }, [alwaysPlay, hasBeenInView, isPageLoaded, isHovered, isUserPaused, isInView, isDelayPassed]);
+  }, [alwaysPlay, shouldMountVideo, isPageLoaded, isHovered, isUserPaused, isInView, isDelayPassed]);
 
 
   return (
@@ -168,12 +183,12 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
         }
       }}
     >
-      {/* Video Element (Behind Image) */}
-      {hasBeenInView && videoUrl && !videoUrl.includes('youtu') && (
+      {/* Video Element — Only mounted when actually needed (hover or alwaysPlay) */}
+      {shouldMountVideo && videoUrl && !videoUrl.includes('youtu') && (
         <video
           ref={videoRef}
           src={((alwaysPlay && isDelayPassed) || isHovered) ? videoUrl : undefined}
-          className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out z-0 transform-gpu will-change-transform ${(isVideoPlaying || isUserPaused) ? 'opacity-100 grayscale-0' : 'opacity-0 grayscale'
+          className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out z-0 transform-gpu ${(isVideoPlaying || isUserPaused) ? 'opacity-100 grayscale-0' : 'opacity-0 grayscale'
             } ${isHovered ? 'scale-110' : 'scale-100'}`}
           muted={isMuted}
           playsInline

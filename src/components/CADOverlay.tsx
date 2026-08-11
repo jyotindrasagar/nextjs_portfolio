@@ -1,11 +1,12 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 // ─── CONFIGURE RESPONSIVE VALUES INSIDE THE COMPONENT ────────────
 
 export function CADOverlay({ loading = false, targetRef }: { loading?: boolean, targetRef?: React.RefObject<HTMLDivElement | null> }) {
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
+  const parallaxRef = useRef<HTMLDivElement>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight });
@@ -14,8 +15,38 @@ export function CADOverlay({ loading = false, targetRef }: { loading?: boolean, 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Pure RAF-based parallax — no Framer Motion, no React re-renders on scroll
+  useEffect(() => {
+    const el = parallaxRef.current;
+    if (!el) return;
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        // Parallax: maps [0, 6000] → [0, -540]
+        const parallaxY = -(scrollY * 540 / 6000);
+        // Fade: maps [fadeStart, fadeEnd] → [1, 0]
+        const fadeStart = windowSize.height * 3;
+        const fadeEnd = windowSize.height * 4;
+        let opacity = 1;
+        if (scrollY > fadeStart) {
+          opacity = Math.max(0, 1 - (scrollY - fadeStart) / (fadeEnd - fadeStart));
+        }
+        el.style.transform = `translate3d(0, ${parallaxY}px, 0)`;
+        el.style.opacity = String(opacity);
+        ticking = false;
+      });
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // initialize
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [windowSize.height]);
+
   const windowWidth = windowSize.width;
-  const windowHeight = windowSize.height;
 
   // ─── TWEAK THESE VALUES FOR DIFFERENT SCREEN SIZES ────────────
   let TREE_ROTATION_DEG = 15;
@@ -45,62 +76,45 @@ export function CADOverlay({ loading = false, targetRef }: { loading?: boolean, 
   }
   // ──────────────────────────────────────────────────────────────
 
-  const { scrollY } = useScroll();
-
-  // LAYER 1 — Parallax: pure screen-space vertical movement.
-  const parallaxY = useTransform(scrollY, [0, 6000], [0, -540]);
-
-  // Bulletproof Fade Out:
-  // The first 3 sections (Hero, Work, About) are exactly 100vh each.
-  // Feedback starts at 300vh, Contact ends at 400vh.
-  const fadeStart = windowHeight * 3;
-  const fadeEnd = windowHeight * 4;
-  const opacityTree = useTransform(scrollY, [fadeStart, fadeEnd], [1, 0]);
-
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       {/* ────────────────────────────────────────────────────────────── */}
-      {/* LAYER 1: Parallax scroll (screen-space, no rotation) */}
+      {/* LAYER 1: Parallax scroll (RAF-driven, zero React re-renders) */}
       {/* ────────────────────────────────────────────────────────────── */}
-      <motion.div
-        style={{
-          y: parallaxY,
-          opacity: opacityTree,
-          willChange: "transform, opacity",
-        }}
+      <div
+        ref={parallaxRef}
         className="absolute inset-0 w-full h-full"
       >
-        {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* ─────────────────────────────────────────────────────── */}
         {/* LAYER 2: Position + Rotation (static transforms)   */}
-        {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* ─────────────────────────────────────────────────────── */}
         <div
           className="absolute top-0 right-0 w-[280vw] sm:w-[140vw] md:w-[110vw] lg:w-[90vw] max-w-[1800px] aspect-[552/500] origin-top-right select-none pointer-events-none"
           style={{
             transform: `translateX(${TREE_TRANSLATE_X}px) translateY(${TREE_TRANSLATE_Y}px) rotate(${TREE_ROTATION_DEG}deg)`,
           }}
         >
-          {/* LAYER 3: Intro fade-in */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: loading ? 0 : 1 }}
-            transition={{ duration: 3, ease: "easeOut", delay: 0.5 }}
-            className="absolute inset-0 w-full h-full"
+          {/* LAYER 3: Intro fade-in — CSS transition instead of Framer Motion */}
+          <div
+            className="absolute inset-0 w-full h-full transition-opacity duration-[3000ms] ease-out"
+            style={{ opacity: loading ? 0 : 1 }}
           >
-            {/* The Tree Image â€” static, no continuous animation */}
+            {/* The Tree Image — static, no continuous animation */}
             <Image
-              className="absolute top-0 right-0 w-full h-full object-contain object-right-top opacity-[0.85] dark:opacity-[0.75] transition-opacity duration-500 origin-top-right"
+              className={`absolute top-0 right-0 w-full h-full object-contain object-right-top transition-opacity duration-[1500ms] ease-in-out origin-top-right ${imageLoaded ? 'opacity-[0.85] dark:opacity-[0.75]' : 'opacity-0'}`}
               src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/tree.svg"
               alt="Sakura Tree"
-              loading="lazy"
+              priority
+              onLoad={() => setImageLoaded(true)}
               fill
-              style={{ animation: 'tree-sway 14s ease-in-out infinite', willChange: 'transform' }}
+              style={{ animation: 'tree-sway 14s ease-in-out infinite' }}
             />
             {/* Gradient overlay for fade out (replaces expensive mask-image) */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0) 80%, var(--background) 100%)' }} />
 
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
