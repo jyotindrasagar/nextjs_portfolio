@@ -193,7 +193,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         </div>
 
         {/* Desktop Nav links */}
-        <div className="hidden lg:flex items-center gap-3 lg:gap-5 xl:gap-8 text-[11px] lg:text-xs xl:text-sm uppercase tracking-[0.1em] lg:tracking-[0.14em] xl:tracking-[0.18em] font-display font-bold justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
+        <div className="hidden lg:flex items-center gap-2.5 lg:gap-3 xl:gap-7 text-[10px] lg:text-[11px] xl:text-xs uppercase tracking-[0.06em] lg:tracking-[0.08em] xl:tracking-[0.16em] font-display font-bold justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
           {navLinks.map((link) => (
             <a
               key={link.id}
@@ -219,7 +219,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         </div>
 
         {/* Action button & theme toggle */}
-        <div className="shrink-0 flex justify-end items-center gap-2 sm:gap-3 lg:gap-4 ml-auto z-10">
+        <div className="shrink-0 flex justify-end items-center gap-1.5 sm:gap-2 lg:gap-2.5 xl:gap-4 ml-auto z-10">
 
           {/* Watch Showreel Button */}
           <button 
@@ -228,7 +228,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               setActiveSection('work');
               window.dispatchEvent(new CustomEvent('openShowreel'));
             }}
-            className="hidden sm:flex bg-accent text-white px-3 lg:px-4 xl:px-5 py-2 lg:py-2.5 rounded-[2px] font-display font-bold text-[9px] lg:text-[11px] xl:text-xs uppercase tracking-[0.12em] lg:tracking-[0.15em] xl:tracking-[0.18em] transition-all duration-300 items-center gap-2 lg:gap-3 group hover:bg-accent/90 shadow-sm shrink-0 whitespace-nowrap"
+            className="hidden sm:flex bg-accent text-white px-2.5 lg:px-3 xl:px-4 py-1.5 lg:py-2 xl:py-2.5 rounded-[2px] font-display font-bold text-[9px] lg:text-[10px] xl:text-xs uppercase tracking-[0.08em] lg:tracking-[0.1em] xl:tracking-[0.16em] transition-all duration-300 items-center gap-1.5 lg:gap-2 xl:gap-2.5 group hover:bg-accent/90 shadow-sm shrink-0 whitespace-nowrap"
           >
             <span>Watch Showreel</span>
             <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-xs sm:text-sm leading-none font-light">↗</span>
