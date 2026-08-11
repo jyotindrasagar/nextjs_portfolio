@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
-import { motion, useScroll, useVelocity, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useVelocity, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { useTheme } from 'next-themes';
 
 type IdleState = 'active' | 'glowing' | 'white';
 
 export function CustomCursor() {
   const { resolvedTheme } = useTheme();
-  const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
   const [isVisible, setIsVisible] = useState(false);
   const [idleState, setIdleState] = useState<IdleState>('active');
 
@@ -50,7 +51,8 @@ export function CustomCursor() {
     }
 
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
       setIsVisible(true);
       setIdleState('active');
 
@@ -111,13 +113,11 @@ export function CustomCursor() {
   return (
     <div className="hidden xl:block fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
       <motion.div
-        animate={{ x: 0, y: 0 }}
-        transition={{ duration: 0 }}
         style={{
-          left: mousePos.x,
-          top: mousePos.y,
+          x: mouseX,
+          y: mouseY,
         }}
-        className="fixed -translate-x-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center"
+        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center"
       >
         <motion.div
           initial={{ scale: 0 }}
