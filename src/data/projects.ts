@@ -147,6 +147,7 @@ const rawProjects: ProjectInput[] = [
     description: 'A short-form basketball edit featuring an insightful discussion on Kobe Bryants impact and why NBA players continue to hold him in such high regard.This project emphasizes visual clarity and engagement through cinematic color grading, dynamic caption animation, and polished editing, transforming a simple interview into compelling social media content.Services: Video Editing • Color Grading • Caption Animation • Motion Graphics',
     pinPosition: 5
   },
+  /*
   {
     title: 'Marines Surprise WWII & Korean War Hero',
     category: 'Social',
@@ -154,6 +155,7 @@ const rawProjects: ProjectInput[] = [
     description: 'A cinematic motivational edit built around a real story of U.S. Marines honoring World War II and Korean War veteran Robert "Woody" Woodbury. The project focuses on emotional pacing, cinematic editing, sound design, and storytelling to transform a simple act of respect into an impactful short-form narrative. Client - CBH',
     pinPosition: 2
   },
+  
   {
     title: 'Drift home Highlights 2',
     category: 'Social',
@@ -168,6 +170,7 @@ const rawProjects: ProjectInput[] = [
     description: 'Motorsport promotional video for The Drift Home featuring cinematic event editing, automotive storytelling, motion graphics, color grading, drifting highlights, timed racing coverage, and commercial video production.',
     pinPosition: 4
   },
+   */
 ];
 
 export const projectsData: Project[] = rawProjects.map(project => ({
