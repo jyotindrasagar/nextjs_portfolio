@@ -172,7 +172,7 @@ export function CustomCursor() {
                 />
               </g>
             ))}
-            <circle cx="50" cy="50" r="8" fill="#ffffff" />
+            <circle cx="50" cy="50" r="8" fill="#FAF9FC" />
             <circle
               cx="50"
               cy="50"
@@ -186,7 +186,7 @@ export function CustomCursor() {
                 <stop offset="100%" stopColor="#f43f5e" stopOpacity="0.85" />
               </linearGradient>
               <linearGradient id="white-petal-grad" x1="50" y1="50" x2="50" y2="0" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+                <stop offset="0%" stopColor="#FAF9FC" stopOpacity="0.95" />
                 <stop offset="45%" stopColor="#f8fafc" stopOpacity="0.9" />
                 <stop offset="100%" stopColor="#e2e8f0" stopOpacity="0.85" />
               </linearGradient>

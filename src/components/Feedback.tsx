@@ -24,7 +24,7 @@ function VerifiedBadge({ hasLink }: { hasLink?: boolean }) {
           {/* Perfectly Centered White Checkmark */}
           <path 
             d="M7.5 12.2L10.5 15.2L16.5 9.2" 
-            stroke="#ffffff" 
+            stroke="#FAF9FC" 
             strokeWidth="2.8" 
             strokeLinecap="round" 
             strokeLinejoin="round" 
