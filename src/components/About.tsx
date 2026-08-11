@@ -30,10 +30,10 @@ export function About() {
             <p> I'm Dieablo, a 23 year old Video Editor and a Motion Designer working under the Creative identity <strong className="font-semibold text-foreground">DieabloFX</strong>,
             </p>
             <p>
-              I personally enjoy stuff that involves heavy Graphical Input. As for the reason why? To be completely honest I do not know, I was just naturally attracted to them from early age I guess and that got me in to making Commercials and advertisement based contents.
+              I personally enjoy stuff that involves heavy Graphical Input, As for the reason why? To be completely honest I do not know, I was just naturally attracted to them from early age I guess and that got me in to making Commercials and advertisement based contents.
             </p>
             <p>
-              i am still trying to find my style and my own Artform but I do enjoy proper Story and Cinematic based works and  i am trying to get better at Animation on side, and I am Always looking for oppertunities to learn new stuff and work on new projects so yeah thats me 🫠!
+              i am still trying to find my style and my own Artform but I do enjoy proper Story and Cinematic based works aswell. I am trying to get better at Animation on side, and I am Always looking for oppertunities to learn new stuff and work on new projects so yeah thats me 🫠!
             </p>
             <p>
               Hit me up if you feel like working together, or even if you just wanna chat :)
