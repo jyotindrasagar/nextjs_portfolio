@@ -244,7 +244,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     baseOpacity="opacity-[0.99]"
                     baseGrayscale="grayscale-[40%]"
                     alwaysPlay={isDesktop}
-                    loadDelay={4000}
+                    loadDelay={3000}
                   >
                     <div className="absolute bottom-4 left-4 z-20 flex flex-col">
                       <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[3].title}</span>
@@ -273,7 +273,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                   baseOpacity="opacity-[0.99]"
                   baseGrayscale="grayscale-[40%]"
                   alwaysPlay={isDesktop}
-                  loadDelay={6000}
+                  loadDelay={4000}
                 >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
                     <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[1].title}</span>
@@ -296,7 +296,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                   baseOpacity="opacity-[0.99]"
                   baseGrayscale="grayscale-[40%]"
                   alwaysPlay={isDesktop}
-                  loadDelay={8000}
+                  loadDelay={4000}
                 >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
                     <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[4].title}</span>
