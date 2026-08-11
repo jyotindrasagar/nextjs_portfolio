@@ -193,7 +193,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         </div>
 
         {/* Desktop Nav links */}
-        <div className="hidden lg:flex items-center gap-3 lg:gap-5 xl:gap-8 text-[11px] lg:text-xs xl:text-sm uppercase tracking-[0.1em] lg:tracking-[0.14em] xl:tracking-[0.18em] font-display font-bold justify-center mx-auto whitespace-nowrap">
+        <div className="hidden lg:flex items-center gap-3 lg:gap-5 xl:gap-8 text-[11px] lg:text-xs xl:text-sm uppercase tracking-[0.1em] lg:tracking-[0.14em] xl:tracking-[0.18em] font-display font-bold justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
           {navLinks.map((link) => (
             <a
               key={link.id}
@@ -219,7 +219,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         </div>
 
         {/* Action button & theme toggle */}
-        <div className="shrink-0 flex justify-end items-center gap-2 sm:gap-3 lg:gap-4">
+        <div className="shrink-0 flex justify-end items-center gap-2 sm:gap-3 lg:gap-4 ml-auto z-10">
 
           {/* Watch Showreel Button */}
           <button 
