@@ -22,6 +22,7 @@ const ITEMS_PER_PAGE = 6;
 export function Work() {
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
   const [activeSubCategory, setActiveSubCategory] = useState<string>('ALL');
+  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const categories = ['SHOWREEL', 'ALL', 'COMMERCIAL', 'DOCUMENTARY', 'SOCIAL', 'DEMOS', 'TEASERS'];
 
@@ -47,6 +48,7 @@ export function Work() {
   // Reset page when category changes
   useEffect(() => {
     setCurrentPage(0);
+    setPlayingVideoId(null);
     setActiveSubCategory('ALL');
   }, [activeCategory]);
 
@@ -65,7 +67,32 @@ export function Work() {
   );
 
   const goToPage = (page: number) => {
+    setPlayingVideoId(null);
     setCurrentPage(Math.max(0, Math.min(page, totalPages - 1)));
+  };
+
+  const getEmbedUrl = (project: any) => {
+    const url = project?.videoUrl;
+    if (!url) return '';
+
+    let embedUrl = '';
+    let videoId = '';
+
+    if (url.includes('youtube.com/watch?v=')) {
+      videoId = url.split('v=')[1].split('&')[0];
+      embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    } else if (url.includes('youtu.be/')) {
+      videoId = url.split('youtu.be/')[1].split('?')[0];
+      embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    } else {
+      return url;
+    }
+
+    if (project.loop && videoId) {
+      embedUrl += `&loop=1&playlist=${videoId}`;
+    }
+
+    return embedUrl;
   };
 
   const getThumbnailUrl = (project: any) => {
@@ -276,50 +303,75 @@ export function Work() {
                       aria-label={`View project: ${project.title}`}
                       className={`group relative flex flex-col border border-foreground/10 overflow-hidden w-full bg-background ${aspectClass}`}
                     >
-                      <div className="w-full h-full">
-                        <HoverVideoPlayer
-                          imageUrl={getThumbnailUrl(project)}
-                          videoUrl={project.videoUrl}
-                          altText={project.title}
-                          baseOpacity="opacity-100"
-                          baseGrayscale="grayscale"
+                      {playingVideoId === project.id ? (
+                        <div className="w-full h-full relative z-50 bg-black">
+                          {project.videoUrl?.includes('youtu') ? (
+                            <iframe
+                              src={getEmbedUrl(project)}
+                              allow="autoplay; fullscreen; encrypted-media"
+                              allowFullScreen
+                              className="w-full h-full border-0 absolute inset-0"
+                            />
+                          ) : (
+                            <video
+                              src={project.videoUrl}
+                              controls
+                              autoPlay
+                              loop={project.loop}
+                              className="w-full h-full object-contain absolute inset-0"
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <div 
+                          className="w-full h-full cursor-pointer"
+                          onClick={() => setPlayingVideoId(project.id)}
+                          role="button"
                         >
-                          {/* Gradient Overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none"></div>
+                          <HoverVideoPlayer
+                            imageUrl={getThumbnailUrl(project)}
+                            videoUrl={project.videoUrl}
+                            altText={project.title}
+                            baseOpacity="opacity-100"
+                            baseGrayscale="grayscale"
+                          >
+                            {/* Gradient Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none"></div>
 
-                          {/* Card Content */}
-                          <div className="relative h-full flex flex-col justify-between p-2.5 sm:p-3 md:p-3.5 xl:p-4 z-10 pointer-events-none">
-                            {/* Top Row: Icon & Optional Track/Artist Link */}
-                            <div className="flex items-center justify-between text-white/90 drop-shadow-md">
-                              <Clapperboard size={14} strokeWidth={2} />
-                              {(project.trackUrl || project.externalUrl || project.postUrl) && (
-                                <a
-                                  href={project.trackUrl || project.externalUrl || project.postUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="flex items-center gap-1 text-[8px] sm:text-[9px] font-mono font-bold uppercase tracking-wider bg-black/75 hover:bg-accent text-white px-2 py-0.5 rounded-sm border border-white/20 transition-all duration-300 pointer-events-auto"
-                                  title="Listen to track / artist"
-                                >
-                                  <Music size={10} />
-                                  <span>Listen / Track</span>
-                                  <ExternalLink size={9} />
-                                </a>
-                              )}
-                            </div>
+                            {/* Card Content */}
+                            <div className="relative h-full flex flex-col justify-between p-2.5 sm:p-3 md:p-3.5 xl:p-4 z-10 pointer-events-none">
+                              {/* Top Row: Icon & Optional Track/Artist Link */}
+                              <div className="flex items-center justify-between text-white/90 drop-shadow-md">
+                                <Clapperboard size={14} strokeWidth={2} />
+                                {(project.trackUrl || project.externalUrl || project.postUrl) && (
+                                  <a
+                                    href={project.trackUrl || project.externalUrl || project.postUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="flex items-center gap-1 text-[8px] sm:text-[9px] font-mono font-bold uppercase tracking-wider bg-black/75 hover:bg-accent text-white px-2 py-0.5 rounded-sm border border-white/20 transition-all duration-300 pointer-events-auto"
+                                    title="Listen to track / artist"
+                                  >
+                                    <Music size={10} />
+                                    <span>Listen / Track</span>
+                                    <ExternalLink size={9} />
+                                  </a>
+                                )}
+                              </div>
 
-                            {/* Bottom Row: Title and Subtitle */}
-                            <div className="flex flex-col items-start justify-end gap-0.5 sm:gap-1">
-                              <h3 className="font-display font-bold text-xs sm:text-sm md:text-[13px] lg:text-sm xl:text-base tracking-tight text-white group-hover:text-accent transition-colors uppercase drop-shadow-md line-clamp-2 leading-tight">
-                                {project.title}
-                              </h3>
-                              <p className="font-mono text-[7px] sm:text-[8px] uppercase tracking-widest text-accent drop-shadow-md">
-                                {project.category}
-                              </p>
+                              {/* Bottom Row: Title and Subtitle */}
+                              <div className="flex flex-col items-start justify-end gap-0.5 sm:gap-1">
+                                <h3 className="font-display font-bold text-xs sm:text-sm md:text-[13px] lg:text-sm xl:text-base tracking-tight text-white group-hover:text-accent transition-colors uppercase drop-shadow-md line-clamp-2 leading-tight">
+                                  {project.title}
+                                </h3>
+                                <p className="font-mono text-[7px] sm:text-[8px] uppercase tracking-widest text-accent drop-shadow-md">
+                                  {project.category}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        </HoverVideoPlayer>
-                      </div>
+                          </HoverVideoPlayer>
+                        </div>
+                      )}
                     </motion.div>
                   );
                 })}
