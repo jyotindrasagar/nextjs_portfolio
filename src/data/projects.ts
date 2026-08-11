@@ -118,6 +118,16 @@ const rawProjects: ProjectInput[] = [
     pinPosition: 7
   },
   {
+    title: 'ALA Engineering — Logo Animation',
+    category: 'Commercial',
+    subCategory: 'Logo Animations',
+    videoUrl: ' https://www.youtube.com/watch?v=-YCDIamM4u0',
+    description: 'Logo animation created by Dieablo for ALA Engineering, featuring clean motion design and a polished animated treatment of the engineering brand identity.',
+    pinPosition: 8
+  },
+
+
+  {
     title: 'Music Release Promo',
     category: 'teasers',
     videoUrl: 'https://www.youtube.com/watch?v=kUQn52ZEDeg',
