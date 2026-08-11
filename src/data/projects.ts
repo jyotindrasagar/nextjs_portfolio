@@ -133,6 +133,7 @@ const rawProjects: ProjectInput[] = [
     description: 'Commercial product explainer animation created by DieabloFX for Springwel, featuring motion graphics, typography animation, product visualization, educational animation, furniture marketing, mattress buying guide, and commercial video production.',
     pinPosition: 70
   },
+  /*
   {
     title: 'Drift home Highlights 1',
     category: 'social',
@@ -140,6 +141,7 @@ const rawProjects: ProjectInput[] = [
     description: 'Motorsport promotional video for The Drift Home featuring cinematic event editing, automotive storytelling, motion graphics, color grading, drifting highlights, timed racing coverage, and commercial video production.',
     pinPosition: 1
   },
+   */
   {
     title: 'Kobe Bryant',
     category: 'Social',
