@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Navigation } from '../components/Navigation';
 import { Hero } from '../components/Hero';
 import { CADOverlay } from '../components/CADOverlay';
@@ -76,7 +76,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 100);
+    }, 450);
     return () => clearTimeout(timer);
   }, []);
 
@@ -86,6 +86,46 @@ export default function Home() {
 
   return (
     <>
+      {/* Snappy Initial Loading Screen */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="fixed inset-0 z-[10000] bg-background flex flex-col items-center justify-center select-none"
+          >
+            <div className="relative w-14 h-14 flex items-center justify-center">
+              {/* Single Snappy Border Draw (0% to 100% starting from top) */}
+              <svg className="absolute inset-0 w-full h-full -rotate-90 overflow-visible" viewBox="0 0 100 100">
+                {/* Track line */}
+                <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="2" className="text-foreground/10" fill="none" />
+                {/* Snappy active draw line */}
+                <motion.circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  stroke="var(--accent)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  fill="none"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.45, ease: "easeInOut" }}
+                  className="drop-shadow-[0_0_10px_rgba(234,135,156,0.85)]"
+                />
+              </svg>
+
+              {/* Compact Logo */}
+              <img
+                src="/dieablofx.svg"
+                alt="DieabloFX"
+                className="w-7 h-7 object-contain logo-image"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="fixed inset-0 z-0 pointer-events-none">
         <CADOverlay loading={loading} targetRef={fadeRef} />
         <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/0 to-background/0 dark:from-background/90 dark:via-background/0 dark:to-background/0" />
