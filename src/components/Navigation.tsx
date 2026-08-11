@@ -193,7 +193,7 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
         </div>
 
         {/* Desktop Nav links */}
-        <div className="hidden lg:flex items-center gap-2.5 lg:gap-3 xl:gap-7 text-[10px] lg:text-[11px] xl:text-xs uppercase tracking-[0.06em] lg:tracking-[0.08em] xl:tracking-[0.16em] font-display font-bold justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
+        <div className="hidden lg:flex items-center gap-2.5 lg:gap-3.5 xl:gap-7 text-[10px] lg:text-[11px] xl:text-xs uppercase tracking-[0.06em] lg:tracking-[0.08em] xl:tracking-[0.16em] font-display font-bold justify-center absolute left-[48.5%] top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
           {navLinks.map((link) => (
             <a
               key={link.id}
