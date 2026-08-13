@@ -108,11 +108,22 @@ export default function AdminBlogsPage() {
       content: sections
     };
 
+    let error;
     if (editingId) {
-      await supabase.from('blogs').update(blogData).eq('id', editingId);
+      const { error: updateError } = await supabase.from('blogs').update(blogData).eq('id', editingId);
+      error = updateError;
     } else {
-      await supabase.from('blogs').insert([blogData]);
+      const { error: insertError } = await supabase.from('blogs').insert([blogData]);
+      error = insertError;
     }
+    
+    if (error) {
+      console.error(error);
+      alert("Error saving blog: " + error.message);
+      return;
+    }
+
+    alert("Blog saved successfully!");
     
     resetForm();
     await loadBlogs();
