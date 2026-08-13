@@ -177,14 +177,14 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
             className="font-display font-bold tracking-[0.15em] lg:tracking-[0.18em] text-xs sm:text-sm uppercase hover:opacity-80 transition-opacity flex items-center"
           >
             <span className="sr-only">DIEABLO FX</span>
-            <div aria-hidden="true" className="flex items-center gap-0">
+            <div aria-hidden="true" className="flex items-center gap-[0.15em]">
               <motion.img 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 src={logoUrl} 
                 alt="DieabloFX Logo" 
-                className="h-[0.75em] w-auto object-contain logo-image mr-[0.08em] invert dark:invert-0" 
+                className="h-[0.85em] w-auto object-contain logo-image invert dark:invert-0" 
               />
               <motion.div 
                 initial={{ opacity: 0 }}
