@@ -7,6 +7,7 @@ const logoUrl = '/dieablofx.svg';
 interface NavigationProps {
   theme: 'light' | 'dark';
   toggleTheme: () => void;
+  compact?: boolean;
 }
 
 const navLinks = [
@@ -18,7 +19,7 @@ const navLinks = [
   { id: 'contact', label: 'Contact' }
 ];
 
-export function Navigation({ theme, toggleTheme }: NavigationProps) {
+export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
   const { scrollY } = useScroll();
   const navHeight = useTransform(scrollY, [0, 100], [80, 60]);
   const navBorder = useTransform(
@@ -127,14 +128,14 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
 
 
   const handleScroll = (e: React.MouseEvent<HTMLElement>, id: string) => {
+    if (compact) return;
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      setMobileMenuOpen(false); // Close mobile menu if open
+      setMobileMenuOpen(false);
       isScrollingRef.current = true;
       element.scrollIntoView({ behavior: 'smooth' });
       
-      // Reset the scrolling flag after smooth scroll is expected to finish
       setTimeout(() => {
         isScrollingRef.current = false;
       }, 1000);
@@ -145,29 +146,35 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
     <>
       <motion.nav
         aria-label="Main Navigation"
-        style={{ height: navHeight, borderBottomColor: navBorder, borderBottomWidth: '1px' }}
-        className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 bg-background/95 transition-colors duration-500 border-b select-none"
+        style={compact ? {} : { height: navHeight, borderBottomColor: navBorder, borderBottomWidth: '1px' }}
+        className={`${
+          compact 
+            ? 'relative w-full flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 bg-transparent select-none z-[60]'
+            : 'fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 bg-background/95 transition-colors duration-500 border-b select-none'
+        }`}
       >
         {/* Brand logo */}
-        <div className="shrink-0 flex items-center">
-          {/* Mobile Menu Toggle */}
-          <button 
-            aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
-            aria-expanded={mobileMenuOpen}
-            className="lg:hidden mr-3 p-2 -ml-2 text-foreground/80 hover:text-foreground transition-colors"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+        <div className="shrink-0 flex items-center gap-4 sm:gap-6">
+          {!compact && (
+            <button 
+              aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
+              aria-expanded={mobileMenuOpen}
+              className="lg:hidden mr-3 p-2 -ml-2 text-foreground/80 hover:text-foreground transition-colors"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          )}
 
           <a 
-            href="#" 
+            href="/" 
             onClick={(e) => {
+              if (compact) return;
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
               setMobileMenuOpen(false);
             }}
-            className="font-display font-bold tracking-[0.15em] lg:tracking-[0.18em] text-xs sm:text-sm uppercase hover:opacity-80 transition-opacity"
+            className="font-display font-bold tracking-[0.15em] lg:tracking-[0.18em] text-xs sm:text-sm uppercase hover:opacity-80 transition-opacity flex items-center"
           >
             <span className="sr-only">DIEABLO FX</span>
             <div aria-hidden="true" className="flex items-center gap-0">
@@ -190,89 +197,131 @@ export function Navigation({ theme, toggleTheme }: NavigationProps) {
               </motion.div>
             </div>
           </a>
+
+          {compact && (
+            <div className="hidden sm:block h-4 w-[1px] bg-foreground/20"></div>
+          )}
+          {compact && (
+            <span className="hidden sm:block font-mono text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-foreground/60">
+              Project Blogs
+            </span>
+          )}
         </div>
 
         {/* Desktop Nav links */}
-        <div className="hidden lg:flex items-center h-full gap-1 lg:gap-1.5 xl:gap-4 text-[10px] lg:text-[11px] xl:text-xs uppercase tracking-[0.06em] lg:tracking-[0.08em] xl:tracking-[0.16em] font-display font-bold justify-center absolute left-[48.5%] top-0 bottom-0 -translate-x-1/2 whitespace-nowrap">
-          {navLinks.map((link) => (
-            <a
-              key={link.id}
-              href={`#${link.id}`}
-              onClick={(e) => {
-                handleScroll(e, link.id);
-                setActiveSection(link.id);
-              }}
-              className={`h-full px-2 lg:px-2.5 xl:px-3.5 flex items-center justify-center hover:text-accent transition-colors relative ${
-                activeSection === link.id ? 'text-accent' : 'text-foreground font-bold'
-              }`}
-            >
-              <span>{link.label}</span>
-              {activeSection === link.id && (
-                <motion.div
-                  layoutId="nav-indicator"
-                  className="absolute bottom-0 left-2 right-2 h-[2px] bg-accent"
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                />
-              )}
-            </a>
-          ))}
-        </div>
+        {!compact && (
+          <div className="hidden lg:flex items-center h-full gap-1 lg:gap-1.5 xl:gap-4 text-[10px] lg:text-[11px] xl:text-xs uppercase tracking-[0.06em] lg:tracking-[0.08em] xl:tracking-[0.16em] font-display font-bold justify-center absolute left-[48.5%] top-0 bottom-0 -translate-x-1/2 whitespace-nowrap">
+            {navLinks.map((link) => (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                onClick={(e) => {
+                  handleScroll(e, link.id);
+                  setActiveSection(link.id);
+                }}
+                className={`h-full px-2 lg:px-2.5 xl:px-3.5 flex items-center justify-center hover:text-accent transition-colors relative ${
+                  activeSection === link.id ? 'text-accent' : 'text-foreground font-bold'
+                }`}
+              >
+                <span>{link.label}</span>
+                {activeSection === link.id && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute bottom-0 left-2 right-2 h-[2px] bg-accent"
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                  />
+                )}
+              </a>
+            ))}
+          </div>
+        )}
 
         {/* Action button & theme toggle */}
         <div className="shrink-0 flex justify-end items-center gap-1.5 sm:gap-2 lg:gap-2.5 xl:gap-4 ml-auto z-10">
+          
+          {compact && (
+            <div className="hidden sm:flex items-center gap-4 mr-4">
+              <a href="https://x.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Twitter (X)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4l11.733 16h4.267l-11.733 -16z"></path>
+                  <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path>
+                </svg>
+              </a>
+              <a href="https://instagram.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Instagram">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </a>
+              <a href="mailto:hello@dieablo.com" className="text-foreground/50 hover:text-foreground transition-colors" title="Email">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+              </a>
+              <a href="https://discord.com/users/dieablo" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Discord">
+                <svg width="18" height="18" viewBox="0 0 127.14 96.36" fill="currentColor">
+                  <path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.08 0A72.37 72.37 0 0 0 45.67 0a105.14 105.14 0 0 0-26.22 8.09C2.79 32.65-1.73 56.6 .37 80.05a105.73 105.73 0 0 0 32.17 16.31 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.31c2.26-26.4-3.32-50-19.13-71.98zM42.49 65.16c-5.36 0-9.8-4.93-9.8-11s4.38-11 9.8-11 9.88 4.93 9.8 11-4.43 11-9.8 11zm42.16 0c-5.36 0-9.8-4.93-9.8-11s4.38-11 9.8-11 9.88 4.93 9.8 11-4.43 11-9.8 11z" />
+                </svg>
+              </a>
+            </div>
+          )}
 
           {/* Watch Showreel Button */}
-          <button 
-            onClick={(e) => {
-              handleScroll(e, 'work');
-              setActiveSection('work');
-              window.dispatchEvent(new CustomEvent('openShowreel'));
-            }}
-            className="hidden sm:flex bg-accent text-white px-2.5 lg:px-3 xl:px-4 py-1.5 lg:py-2 xl:py-2.5 rounded-[2px] font-display font-bold text-[9px] lg:text-[10px] xl:text-xs uppercase tracking-[0.08em] lg:tracking-[0.1em] xl:tracking-[0.16em] transition-all duration-300 items-center gap-1.5 lg:gap-2 xl:gap-2.5 group hover:bg-accent/90 shadow-sm shrink-0 whitespace-nowrap"
-          >
-            <span>Watch Showreel</span>
-            <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-xs sm:text-sm leading-none font-light">↗</span>
-          </button>
-
-
+          {!compact && (
+            <button 
+              onClick={(e) => {
+                handleScroll(e, 'work');
+                setActiveSection('work');
+                window.dispatchEvent(new CustomEvent('openShowreel'));
+              }}
+              className="hidden sm:flex bg-accent text-white px-5 lg:px-6 py-2 lg:py-2.5 rounded-md font-display font-bold text-[10px] lg:text-xs uppercase tracking-[0.15em] transition-all duration-300 items-center justify-center gap-2 group hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.25)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.4)] hover:-translate-y-0.5 shrink-0 whitespace-nowrap"
+            >
+              <span className="mt-[2px]">Watch Showreel</span>
+              <span className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300 text-[14px] leading-none font-medium flex items-center justify-center">↗</span>
+            </button>
+          )}
 
           {/* Music Button Container with Hover Slider */}
-          <div className="relative group/music flex flex-col items-center">
-            <button
-              onClick={toggleMusic}
-              className="relative w-8 h-8 sm:w-8 sm:h-8 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-all duration-300 group"
-              title={isPlaying ? "Mute Music" : "Play Music"}
-            >
-              {/* Dashed ring */}
-              <div className={`absolute inset-0 rounded-full border border-dashed border-foreground/30 transition-transform duration-[3000ms] ease-linear ${isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}></div>
-              
-              {/* Icon */}
-              <div className="relative">
-                <Music size={14} className={`transition-colors duration-300 ${isPlaying ? 'text-accent' : 'text-foreground/70 group-hover:text-foreground'}`} />
-                {!isPlaying && (
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-[1.5px] bg-foreground/70 -rotate-45 group-hover:bg-foreground transition-colors duration-300"></div>
+          {!compact && (
+            <div className="relative group/music flex flex-col items-center">
+              <button
+                onClick={toggleMusic}
+                className="relative w-8 h-8 sm:w-8 sm:h-8 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-all duration-300 group"
+                title={isPlaying ? "Mute Music" : "Play Music"}
+              >
+                {/* Dashed ring */}
+                <div className={`absolute inset-0 rounded-full border border-dashed border-foreground/30 transition-transform duration-[3000ms] ease-linear ${isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}></div>
+                
+                {/* Icon */}
+                <div className="relative">
+                  <Music size={14} className={`transition-colors duration-300 ${isPlaying ? 'text-accent' : 'text-foreground/70 group-hover:text-foreground'}`} />
+                  {!isPlaying && (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-[1.5px] bg-foreground/70 -rotate-45 group-hover:bg-foreground transition-colors duration-300"></div>
+                  )}
+                </div>
+                
+                {/* Subtle glow when playing */}
+                {isPlaying && (
+                  <div className="absolute inset-0 rounded-full bg-accent/10 blur-md -z-10 animate-pulse"></div>
                 )}
-              </div>
-              
-              {/* Subtle glow when playing */}
-              {isPlaying && (
-                <div className="absolute inset-0 rounded-full bg-accent/10 blur-md -z-10 animate-pulse"></div>
-              )}
-            </button>
+              </button>
 
-            {/* The Volume Slider (appears on hover, vertical dropdown) */}
-            <div className="absolute top-full mt-2 opacity-0 h-0 group-hover/music:opacity-100 group-hover/music:h-24 transition-all duration-300 overflow-hidden flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm border border-foreground/10 rounded-full w-8">
-              <input 
-                type="range" 
-                min="0" 
-                max="1" 
-                step="0.05" 
-                value={volume}
-                onChange={handleVolumeChange}
-                className="w-16 h-1 bg-foreground/20 rounded-lg appearance-none cursor-pointer accent-accent -rotate-90 origin-center"
-              />
+              {/* The Volume Slider (appears on hover, vertical dropdown) */}
+              <div className="absolute top-full mt-2 opacity-0 h-0 group-hover/music:opacity-100 group-hover/music:h-24 transition-all duration-300 overflow-hidden flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm border border-foreground/10 rounded-full w-8">
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="1" 
+                  step="0.05" 
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="w-16 h-1 bg-foreground/20 rounded-lg appearance-none cursor-pointer accent-accent -rotate-90 origin-center"
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Theme (Day/Night) Toggle */}
           <button 

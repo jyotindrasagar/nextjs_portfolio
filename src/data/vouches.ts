@@ -1,9 +1,9 @@
 export interface Vouch {
   id: string;
   name: string;
-  handle: string;
   avatar: string;
   link: string;
+  linkType?: 'social' | 'portfolio';
   role?: string;
   verified?: boolean;
 }
@@ -17,15 +17,25 @@ export interface Vouch {
   {
     id: 'unique-id-1',
     name: 'Alex Rivera',
-    handle: '@alex_vfx',
     role: 'Lead VFX Artist & Editor',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop',
     link: 'https://twitter.com/alex_vfx',
+    linkType: 'social', // 'social' or 'portfolio'
     verified: true,
   },
 ===================================================================
 */
 
 export const vouches: Vouch[] = [
+  {
+    id: '1',
+    name: 'Domenico Pepe',
+    role: 'video Editor',
+    avatar: 'https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/vouch%20logos/domz.jpg',
+    link: 'https://ytjobs.co/@happydomz',
+    linkType: 'portfolio',
+    verified: true,
+  },
 
 ];
+

@@ -3,14 +3,12 @@ import { AnimatedSection } from './AnimatedSection';
 
 export function About() {
   return (
-    <section id="about" className="relative pt-16 pb-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 z-20 overflow-hidden">
-      {/* Top Border constrained by padding */}
-      <div className="absolute top-0 left-4 md:left-8 lg:left-12 xl:left-16 right-4 md:right-8 lg:right-12 xl:right-16 h-[1px] bg-foreground/10"></div>
+    <section id="about" className="relative pt-16 pb-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 z-20 border-t border-foreground/10 overflow-hidden">
 
       {/* Dust Particles Removed for Performance */}
 
       {/* CAD reference label */}
-      <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-foreground/90 mb-4 md:mb-6 uppercase">
+      <div className="flex items-center gap-2.5 text-[13px] md:text-[15px] tracking-[0.25em] font-mono font-extrabold text-foreground/90 mb-4 md:mb-6 uppercase">
         <span className="text-accent">❖</span>
         <span>SYS.ABOUT // PHILOSOPHY</span>
       </div>
@@ -18,7 +16,7 @@ export function About() {
       <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
         {/* Left narrative content */}
         <AnimatedSection className="flex-1 max-w-2xl z-10">
-          <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground uppercase mb-8">
+          <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase mb-8">
             Visual Storytelling,<br />
             My Way
           </h2>
@@ -40,7 +38,7 @@ export function About() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 pt-8 border-t border-foreground/15 font-mono text-[11px] md:text-[13px] uppercase tracking-[0.18em] text-foreground/90 font-medium">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 pt-8 border-t border-foreground/15 font-sans text-sm md:text-base uppercase tracking-wider text-foreground/90 font-medium">
             <div>
               <h4 className="text-accent font-bold mb-4 text-[12px] md:text-[14px] tracking-[0.2em]">// CORE CAPABILITIES</h4>
               <ul className="space-y-2 font-semibold">

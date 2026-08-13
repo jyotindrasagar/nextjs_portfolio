@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageSquare, Send, Mail, User, Trash2 } from 'lucide-react';
+import { Heart, MessageSquare, Send, Mail, User, Pencil, Check, X } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client';
 
@@ -53,13 +53,16 @@ interface Comment {
   likes: number;
   liked?: boolean;
   parentId?: string;
+  isEdited?: boolean;
 }
 
 export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loadingComments, setLoadingComments] = useState(true);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
   const [mounted, setMounted] = useState(false);
   const supabase = createClient();
 
@@ -130,7 +133,8 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
                 createdAt: c.created_at,
                 likes: c.likes_count || 0,
                 liked: false,
-                parentId: parentId
+                parentId: parentId,
+                isEdited: c.is_edited || false
               };
             }));
           }
@@ -273,24 +277,33 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
     }
   };
 
-  const handleDeleteComment = async (commentId: string) => {
-    setDeletingId(null);
-    // Optimistically remove from state
-    setComments(comments.filter(c => c.id !== commentId));
+  const handleSaveEdit = async (commentId: string, parentId?: string) => {
+    if (!editText.trim() || !user) return;
+
+    setSavingEdit(true);
+
+    const updatedText = editText.trim();
+
+    // Optimistically update comment in UI
+    setComments(comments.map(c => c.id === commentId ? { ...c, text: updatedText, isEdited: true } : c));
+    setEditingId(null);
 
     try {
-      if (breakdownId && !commentId.startsWith('demo-')) {
+      if (breakdownId) {
+        const dbText = parentId ? `[reply:${parentId}] ${updatedText}` : updatedText;
         const { error } = await supabase
           .from('comments')
-          .delete()
+          .update({ text: dbText, is_edited: true })
           .eq('id', commentId);
 
         if (error) {
-          console.error('Failed to delete comment from database:', error.message);
+          console.error('Failed to update comment in database:', error.message);
         }
       }
     } catch (err) {
-      console.error('Error deleting comment:', err);
+      console.error('Error editing comment:', err);
+    } finally {
+      setSavingEdit(false);
     }
   };
 
@@ -430,16 +443,18 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
             <MessageSquare size={32} className="text-foreground/30" />
             <h4 className="font-display font-bold text-lg uppercase tracking-wide">Join the conversation</h4>
             <p className="font-mono text-xs text-foreground/60 max-w-md">
-              Sign in via Google to leave a comment, like this breakdown, and customize your profile.
+              Sign in via Google or 6-digit code to leave a comment, like this breakdown, and edit your thoughts.
             </p>
             <Link 
               href="/login"
               className="mt-2 bg-foreground text-background hover:bg-accent font-mono text-xs font-bold uppercase tracking-widest px-6 py-3 rounded transition-colors"
             >
-              Sign In with Google
+              Sign In to Participate
             </Link>
           </div>
-        )}        {/* Comments List */}
+        )}
+
+        {/* Comments List */}
         <div className="flex flex-col gap-6">
           <AnimatePresence>
             {rootComments.map((comment) => {
@@ -477,46 +492,59 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
                           {displayAuthor}
                         </span>
                       </div>
-                      <span suppressHydrationWarning className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest">
+                      <span suppressHydrationWarning className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest flex items-center gap-1.5">
                         {formattedTime}
+                        {comment.isEdited && <span className="text-foreground/30 text-[9px]">(edited)</span>}
                       </span>
                     </div>
-                    <p className="font-sans text-sm text-foreground/80 leading-relaxed pl-11">
-                      {comment.text}
-                    </p>
+
+                    {/* Comment Body or Edit Input */}
+                    {editingId === comment.id ? (
+                      <div className="flex flex-col gap-2 pl-11">
+                        <textarea
+                          value={editText}
+                          onChange={(e) => setEditText(e.target.value)}
+                          className="w-full bg-background border border-accent/40 rounded p-3 font-sans text-sm text-foreground outline-none focus:border-accent resize-y min-h-[80px]"
+                        />
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => setEditingId(null)}
+                            className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border border-foreground/10 rounded text-foreground/60 hover:text-foreground transition-colors"
+                          >
+                            <X size={12} /> Cancel
+                          </button>
+                          <button
+                            onClick={() => handleSaveEdit(comment.id)}
+                            disabled={savingEdit || !editText.trim()}
+                            className="flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 bg-accent text-black rounded transition-all hover:brightness-110 disabled:opacity-50"
+                          >
+                            <Check size={12} /> {savingEdit ? 'Saving...' : 'Save Edit'}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="font-sans text-sm text-foreground/80 leading-relaxed pl-11">
+                        {comment.text}
+                      </p>
+                    )}
 
                     {/* Comment Actions Footer */}
                     <div className="flex items-center justify-between pt-2 border-t border-foreground/5">
                       <div className="flex items-center gap-3">
-                        {/* Delete Confirmation or Button */}
-                        {user && comment.userId === user.id ? (
-                          deletingId === comment.id ? (
-                            <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 px-3 py-1 rounded">
-                              <span className="font-mono text-[10px] text-red-400 uppercase tracking-wider">Delete comment?</span>
-                              <button
-                                onClick={() => handleDeleteComment(comment.id)}
-                                className="font-mono text-[10px] font-bold text-red-400 hover:text-white uppercase tracking-wider bg-red-500 px-2 py-0.5 rounded transition-colors"
-                              >
-                                Confirm
-                              </button>
-                              <button
-                                onClick={() => setDeletingId(null)}
-                                className="font-mono text-[10px] text-foreground/60 hover:text-foreground uppercase tracking-wider px-1 transition-colors"
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => setDeletingId(comment.id)}
-                              className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-red-400/70 hover:text-red-400 hover:bg-red-500/10 px-2.5 py-1 rounded transition-colors"
-                              title="Delete your comment"
-                            >
-                              <Trash2 size={13} />
-                              <span>Delete</span>
-                            </button>
-                          )
-                        ) : null}
+                        {/* Edit Button (Only for comment author) */}
+                        {user && comment.userId === user.id && (
+                          <button
+                            onClick={() => {
+                              setEditingId(comment.id);
+                              setEditText(comment.text);
+                            }}
+                            className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-accent/80 hover:text-accent hover:bg-accent/10 px-2.5 py-1 rounded transition-colors"
+                            title="Edit your comment"
+                          >
+                            <Pencil size={13} />
+                            <span>Edit</span>
+                          </button>
+                        )}
 
                         {/* Reply Button (Only for top-level comments) */}
                         {user && (
@@ -586,42 +614,55 @@ export function BreakdownInteraction({ breakdownId }: { breakdownId?: string }) 
                                   {replyAuthor}
                                 </span>
                               </div>
-                              <span suppressHydrationWarning className="font-mono text-[9px] text-foreground/40 uppercase tracking-widest">
+                              <span suppressHydrationWarning className="font-mono text-[9px] text-foreground/40 uppercase tracking-widest flex items-center gap-1">
                                 {replyTime}
+                                {reply.isEdited && <span className="text-foreground/30 text-[8px]">(edited)</span>}
                               </span>
                             </div>
-                            <p className="font-sans text-xs md:text-sm text-foreground/80 leading-relaxed pl-8">
-                              {reply.text}
-                            </p>
+
+                            {/* Reply Body or Edit Input */}
+                            {editingId === reply.id ? (
+                              <div className="flex flex-col gap-2 pl-8">
+                                <textarea
+                                  value={editText}
+                                  onChange={(e) => setEditText(e.target.value)}
+                                  className="w-full bg-background border border-accent/40 rounded p-2 font-sans text-xs text-foreground outline-none focus:border-accent resize-y min-h-[60px]"
+                                />
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    onClick={() => setEditingId(null)}
+                                    className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider px-2 py-1 border border-foreground/10 rounded text-foreground/60 hover:text-foreground transition-colors"
+                                  >
+                                    <X size={10} /> Cancel
+                                  </button>
+                                  <button
+                                    onClick={() => handleSaveEdit(reply.id, reply.parentId)}
+                                    disabled={savingEdit || !editText.trim()}
+                                    className="flex items-center gap-1 font-mono text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 bg-accent text-black rounded transition-all hover:brightness-110 disabled:opacity-50"
+                                  >
+                                    <Check size={10} /> {savingEdit ? 'Saving...' : 'Save Edit'}
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <p className="font-sans text-xs md:text-sm text-foreground/80 leading-relaxed pl-8">
+                                {reply.text}
+                              </p>
+                            )}
 
                             {/* Reply Actions */}
                             <div className="flex items-center justify-between pt-1.5 border-t border-foreground/5">
                               {user && reply.userId === user.id ? (
-                                deletingId === reply.id ? (
-                                  <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 px-2 py-0.5 rounded">
-                                    <span className="font-mono text-[9px] text-red-400 uppercase tracking-wider">Delete?</span>
-                                    <button
-                                      onClick={() => handleDeleteComment(reply.id)}
-                                      className="font-mono text-[9px] font-bold text-red-400 hover:text-white uppercase tracking-wider bg-red-500 px-1.5 py-0.5 rounded transition-colors"
-                                    >
-                                      Confirm
-                                    </button>
-                                    <button
-                                      onClick={() => setDeletingId(null)}
-                                      className="font-mono text-[9px] text-foreground/60 hover:text-foreground uppercase tracking-wider px-0.5 transition-colors"
-                                    >
-                                      Cancel
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <button
-                                    onClick={() => setDeletingId(reply.id)}
-                                    className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-red-400/70 hover:text-red-400 hover:bg-red-500/10 px-2 py-0.5 rounded transition-colors"
-                                  >
-                                    <Trash2 size={11} />
-                                    <span>Delete</span>
-                                  </button>
-                                )
+                                <button
+                                  onClick={() => {
+                                    setEditingId(reply.id);
+                                    setEditText(reply.text);
+                                  }}
+                                  className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-accent/80 hover:text-accent hover:bg-accent/10 px-2 py-0.5 rounded transition-colors"
+                                >
+                                  <Pencil size={11} />
+                                  <span>Edit</span>
+                                </button>
                               ) : <div />}
 
                               <button 

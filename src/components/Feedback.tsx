@@ -265,8 +265,7 @@ export function Feedback() {
   };
 
   return (
-    <section className="relative pt-10 md:pt-20 pb-6 md:pb-12 px-0 overflow-hidden">
-      <div className="absolute top-0 left-4 md:left-8 lg:left-12 xl:left-16 right-4 md:right-8 lg:right-12 xl:right-16 h-[1px] bg-foreground/10"></div>
+    <section className="relative pt-10 md:pt-20 pb-6 md:pb-12 px-0 border-t border-foreground/10 overflow-hidden">
 
       <AnimatePresence>
         {selectedTestimonialIndex !== null && (
@@ -281,12 +280,12 @@ export function Feedback() {
       </AnimatePresence>
 
       <AnimatedSection className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mb-4 md:mb-8 flex flex-col items-start text-left">
-        <div className="flex items-center gap-2 text-[10px] sm:text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-accent mb-2 md:mb-4 uppercase">
+        <div className="flex items-center gap-2 text-[11px] sm:text-[13px] md:text-[15px] tracking-[0.25em] font-mono font-extrabold text-accent mb-2 md:mb-4 uppercase">
           <span>❖</span>
           <span>SYS.FEEDBACK // TESTIMONIALS</span>
         </div>
 
-        <h2 className="font-display font-bold text-2xl sm:text-4xl md:text-5xl tracking-tight text-foreground uppercase mb-3 md:mb-4">
+        <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase mb-3 md:mb-4">
           Collaborator <span className="text-accent">Feedback</span>
         </h2>
         <p className="font-mono text-[10px] sm:text-xs md:text-sm text-foreground/40 tracking-widest uppercase max-w-xl leading-relaxed">

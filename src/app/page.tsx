@@ -146,12 +146,15 @@ export default function Home() {
       <div className="relative z-10 min-h-screen w-full bg-transparent text-foreground transition-colors duration-500 overflow-x-hidden">
         <main className="relative w-full">
           <Hero loading={loading} />
-          <LazySection id="work" height="100vh"><Work /></LazySection>
-          <LazySection id="breakdowns" height="100vh"><Projects /></LazySection>
-          <LazySection id="about" height="100vh"><About /></LazySection>
-          <div ref={fadeRef}>
-            <LazySection id="feedback" height="50vh"><Feedback /></LazySection>
-            <LazySection id="contact" height="50vh"><Contact /></LazySection>
+          
+          <div className="relative w-full bg-background/40 dark:bg-[#0F0F10]/50 backdrop-blur-[3px] border-t border-foreground/5 shadow-[0_-10px_40px_rgba(0,0,0,0.3)] -mt-24 pt-24">
+            <LazySection id="work" height="100vh"><Work /></LazySection>
+            <LazySection id="breakdowns" height="100vh"><Projects /></LazySection>
+            <LazySection id="about" height="100vh"><About /></LazySection>
+            <div ref={fadeRef}>
+              <LazySection id="feedback" height="50vh"><Feedback /></LazySection>
+              <LazySection id="contact" height="50vh"><Contact /></LazySection>
+            </div>
           </div>
         </main>
       </div>

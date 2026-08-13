@@ -25,6 +25,7 @@ export interface BreakdownData {
   headerMedia?: InlineMedia;
   content: string;
   sections?: BreakdownSection[];
+  isHighlight?: boolean;
 }
 
 /* 
@@ -64,6 +65,30 @@ export interface BreakdownData {
 ====================================================================
 */
 
+const createDummy = (id: string, title: string, category: 'my-work' | 'inspiration', isHighlight: boolean) => ({
+  id,
+  title,
+  excerpt: "Wait a bit! Working on this feature to bring you in-depth breakdowns.",
+  category,
+  date: "COMING SOON",
+  readTime: "0 MIN READ",
+  tools: ["After Effects", "Nuke"],
+  image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
+  videoUrl: "",
+  headerMedia: {
+    type: "image" as const,
+    url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
+    caption: ""
+  },
+  content: "<p>Wait a bit, working on this feature! More content coming soon.</p>",
+  sections: [],
+  isHighlight
+});
+
 export const breakdowns: BreakdownData[] = [
-  // Add your custom project breakdowns here using the template above!
+  createDummy("dummy-1", "VFX Breakdown 01", "my-work", true),
+  createDummy("dummy-2", "Motion Design 02", "my-work", true),
+  createDummy("dummy-3", "Color Grading 01", "my-work", false),
+  createDummy("dummy-4", "Inspiring Edits 01", "inspiration", true),
+  createDummy("dummy-5", "Cinematography Study", "inspiration", false),
 ];

@@ -4,7 +4,6 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
-import { CustomCursor } from "@/components/CustomCursor";
 
 const display = Orbitron({
   subsets: ["latin"],
@@ -221,7 +220,6 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
-        <CustomCursor />
         {children}
         <Analytics />
         <SpeedInsights />

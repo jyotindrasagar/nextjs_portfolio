@@ -62,7 +62,11 @@ function ProfileForm() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push('/');
+    if (returnTo) {
+      router.push(returnTo);
+    } else {
+      router.push('/');
+    }
     router.refresh();
   };
 
@@ -240,11 +244,21 @@ function ProfileForm() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="font-mono text-[10px] text-foreground/70 tracking-widest uppercase">
-                Username
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="font-mono text-[10px] text-foreground/70 tracking-widest uppercase">
+                  Username <span className="text-accent">*</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setUsername(user?.email?.split('@')[0] || '')}
+                  className="font-mono text-[9px] text-accent/70 hover:text-accent uppercase tracking-widest transition-colors"
+                >
+                  Auto-generate
+                </button>
+              </div>
               <input
                 type="text"
+                required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="display_name"

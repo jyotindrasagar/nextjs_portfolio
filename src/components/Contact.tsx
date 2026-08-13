@@ -122,9 +122,7 @@ export function Contact() {
 
   return (
     <>
-      <section id="contact" className="relative pt-12 md:pt-16 pb-5 xl:pb-12 bg-transparent overflow-hidden">
-        {/* Top Border constrained by padding */}
-        <div className="absolute top-0 left-4 md:left-8 lg:left-12 xl:left-16 right-4 md:right-8 lg:right-12 xl:right-16 h-[1px] bg-foreground/10"></div>
+      <section id="contact" className="relative pt-12 md:pt-16 pb-5 xl:pb-12 bg-transparent border-t border-foreground/10 overflow-hidden">
 
         <AnimatedSection className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
           <div className="w-full">

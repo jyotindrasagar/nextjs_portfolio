@@ -165,13 +165,13 @@ export function Work() {
       <AnimatedSection>
         <div className="flex flex-col border-b border-foreground/10 pb-8 mb-16 gap-6 relative min-h-[80px]">
           <div>
-            <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground uppercase">
+            <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase">
               My Works
             </h2>
             <p className="sr-only">
               Motion Designer and Video Editor specializing in high-end product advertisements, 3D animation, motion graphics, CGI, VFX compositing, documentaries, commercial videos, UI animation, camera tracking, and cinematic visual storytelling using Blender, After Effects, DaVinci Resolve, Premiere Pro, Unreal Engine, Substance 3D, SynthEyes, and Boris FX.
             </p>
-            <p className="text-foreground/50 text-[11px] font-mono uppercase tracking-widest mt-2">
+            <p className="text-foreground/50 text-[13px] md:text-[14px] font-mono uppercase tracking-widest mt-2">
               Selected projects & visual stories
             </p>
           </div>
@@ -389,7 +389,7 @@ export function Work() {
                           <Wrench size={18} />
                         </div>
                         <h4 className="font-display font-bold text-xs md:text-sm uppercase tracking-wider text-foreground/80 leading-snug max-w-[240px]">
-                          HOLD ON TRYNNA LOAD MOURE STUFF UP IN HERE
+                          HOLD ON TRYNNA LOAD MORE STUFF UP IN HERE
                         </h4>
                         <span className="font-mono text-[10px] text-accent tracking-widest uppercase font-bold">
                           GIVE ME THE WRENCH 🔧

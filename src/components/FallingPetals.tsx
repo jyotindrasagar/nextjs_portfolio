@@ -10,7 +10,7 @@ export function FallingPetals() {
   useEffect(() => {
     setMounted(true);
     const handleResize = () => {
-      setPetalCount(window.innerWidth < 1024 ? 5 : 12);
+      setPetalCount(window.innerWidth < 1024 ? 3 : 8);
     };
     handleResize(); // trigger on mount
     window.addEventListener('resize', handleResize);

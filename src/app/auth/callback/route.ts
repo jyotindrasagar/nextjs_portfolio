@@ -10,14 +10,25 @@ export async function GET(request: Request) {
   if (code) {
     const cookieStore = await cookies()
     const supabase = createClient(cookieStore)
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data: authData, error } = await supabase.auth.exchangeCodeForSession(code)
     
-    if (!error) {
-      const next = searchParams.get('next')
-      const targetUrl = next 
-        ? `${origin}/profile?returnTo=${encodeURIComponent(next)}` 
-        : `${origin}/profile`
-      return NextResponse.redirect(targetUrl)
+    if (!error && authData?.session?.user) {
+      const next = searchParams.get('next') || '/'
+      
+      // Check if user has completed profile (username exists)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', authData.session.user.id)
+        .single()
+        
+      if (profile && profile.username) {
+        // Has profile, go straight to next
+        return NextResponse.redirect(`${origin}${next}`)
+      } else {
+        // Needs profile setup
+        return NextResponse.redirect(`${origin}/profile?returnTo=${encodeURIComponent(next)}`)
+      }
     }
   }
 
