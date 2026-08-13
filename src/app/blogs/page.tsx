@@ -1,16 +1,45 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navigation } from '../../components/Navigation';
-import { breakdowns } from '../../data/breakdowns';
+import { Footer } from '../../components/Footer';
+import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 
 export default function BlogsPage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [allTags, setAllTags] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const allTags = Array.from(new Set(breakdowns.flatMap(b => b.tools)));
+  const supabase = createClient();
+  const fadeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    loadBlogs();
+  }, []);
+
+  async function loadBlogs() {
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (data) {
+      setBlogs(data);
+      // Extract unique tags
+      const tagsSet = new Set<string>();
+      data.forEach(blog => {
+        if (blog.tags && Array.isArray(blog.tags)) {
+          blog.tags.forEach((tag: string) => tagsSet.add(tag));
+        }
+      });
+      setAllTags(Array.from(tagsSet));
+    }
+    setLoading(false);
+  }
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
@@ -43,8 +72,8 @@ export default function BlogsPage() {
   };
 
   const filteredBreakdowns = activeTag 
-    ? breakdowns.filter(item => item.tools.includes(activeTag)) 
-    : breakdowns;
+    ? blogs.filter(item => item.tags && item.tags.includes(activeTag)) 
+    : blogs;
 
   return (
     <>
@@ -56,11 +85,11 @@ export default function BlogsPage() {
         <Navigation theme={theme} toggleTheme={toggleTheme} compact={true} />
       </div>
 
-      <div className="relative z-10 min-h-screen w-full bg-transparent text-foreground pt-12 pb-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 transition-colors duration-500 overflow-x-hidden">
-        <main className="relative w-full max-w-7xl mx-auto flex flex-col gap-12">
+      <div className="relative z-10 w-full bg-transparent text-foreground pt-12 transition-colors duration-500 overflow-x-hidden min-h-screen flex flex-col">
+        <main className="relative w-full max-w-7xl mx-auto flex flex-col gap-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pb-24 flex-1">
           
           {/* Top Actions & Filters */}
-          <div className="flex flex-col lg:flex-row justify-end items-start lg:items-center gap-6 border-b border-foreground/10 pb-8">
+          <div className="flex flex-col lg:flex-row justify-end items-start lg:items-center gap-6 border-b border-foreground/10 pb-8 mt-8">
             {/* Tag Filters */}
             <div className="flex flex-wrap items-center gap-2">
               <button
@@ -89,90 +118,92 @@ export default function BlogsPage() {
             </div>
           </div>
 
-          {/* Lightweight Cards Grid - Generic Blog Style */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full select-none gap-8 relative z-30">
-            <AnimatePresence mode="wait">
-              {filteredBreakdowns.map((item) => (
-                <Link
-                  href={`/breakdowns/${item.id}`}
-                  key={item.id}
-                  className="block group"
-                >
+          {loading ? (
+            <div className="w-full py-20 flex justify-center text-foreground/40 font-mono tracking-widest text-xs uppercase">
+              Loading Blogs...
+            </div>
+          ) : (
+            /* Masonry Layout */
+            <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8 w-full select-none relative z-30">
+              <AnimatePresence mode="popLayout">
+                {filteredBreakdowns.map((item) => (
                   <motion.div
+                    key={item.id}
+                    layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
-                    whileHover={{ y: -6, transition: { duration: 0.3 } }}
-                    className="group flex flex-col cursor-pointer gap-4"
+                    className="break-inside-avoid"
                   >
-                    {/* Thumbnail Image */}
-                    <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-foreground/10 shadow-sm bg-panels">
-                      <div className="absolute inset-0 z-0">
+                    <Link
+                      href={`/breakdowns/${item.slug || item.id}`}
+                      className="block group flex flex-col cursor-pointer gap-4"
+                    >
+                      {/* Fluid Thumbnail Image */}
+                      <div className="relative w-full rounded-xl overflow-hidden border border-foreground/10 shadow-sm bg-panels">
                         <img 
-                          src={item.image} 
+                          src={item.thumbnail_url || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop"} 
                           alt={item.title}
-                          className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
+                          className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
                           loading="lazy"
                         />
                       </div>
-                    </div>
 
-                    {/* Content Below Image */}
-                    <div className="flex flex-col gap-2 px-1">
-                      {/* Meta Tags */}
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-mono text-[9px] font-extrabold tracking-[0.2em] uppercase text-accent bg-accent/10 px-2 py-0.5 rounded">
-                          {item.category === 'my-work' ? 'PROJECT' : 'INSPIRATION'}
-                        </span>
-                        {item.readTime && (
-                          <>
-                            <span className="text-foreground/30">•</span>
-                            <span className="font-mono text-[9px] text-foreground/50 tracking-wider uppercase">
-                              {item.readTime}
-                            </span>
-                          </>
-                        )}
-                        {item.date && (
-                          <>
-                            <span className="text-foreground/30">•</span>
-                            <span className="font-mono text-[9px] text-foreground/50 tracking-wider uppercase">
-                              {item.date}
-                            </span>
-                          </>
-                        )}
+                      {/* Content Below Image */}
+                      <div className="flex flex-col gap-2 px-1">
+                        {/* Meta Tags */}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-mono text-[9px] font-extrabold tracking-[0.2em] uppercase text-accent bg-accent/10 px-2 py-0.5 rounded">
+                            {item.category === 'my-work' ? 'PROJECT' : 'INSPIRATION'}
+                          </span>
+                          {item.read_time && (
+                            <>
+                              <span className="text-foreground/30">•</span>
+                              <span className="font-mono text-[9px] text-foreground/50 tracking-wider uppercase">
+                                {item.read_time}
+                              </span>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="font-display font-bold text-xl md:text-2xl uppercase tracking-wide text-foreground group-hover:text-accent transition-colors duration-300 mt-1">
+                          {item.title}
+                        </h3>
+                        
+                        {/* Highlighted Description */}
+                        <p className="font-sans text-sm text-foreground/70 line-clamp-3 leading-relaxed">
+                          {item.excerpt}
+                        </p>
+
+                        {/* Read More Link */}
+                        <div className="mt-2">
+                          <span className="font-mono text-[10px] font-bold tracking-[0.25em] uppercase text-foreground/40 group-hover:text-accent group-hover:translate-x-1 transition-all duration-300 inline-block">
+                            READ FULL POST →
+                          </span>
+                        </div>
                       </div>
-
-                      {/* Title */}
-                      <h3 className="font-display font-bold text-xl md:text-2xl uppercase tracking-wide text-foreground group-hover:text-accent transition-colors duration-300 mt-1">
-                        {item.title}
-                      </h3>
-                      
-                      {/* Highlighted Description */}
-                      <p className="font-sans text-sm text-foreground/70 line-clamp-3 leading-relaxed">
-                        {item.excerpt}
-                      </p>
-
-                      {/* Read More Link */}
-                      <div className="mt-2">
-                        <span className="font-mono text-[10px] font-bold tracking-[0.25em] uppercase text-foreground/40 group-hover:text-accent group-hover:translate-x-1 transition-all duration-300 inline-block">
-                          READ FULL POST →
-                        </span>
-                      </div>
-                    </div>
+                    </Link>
                   </motion.div>
-                </Link>
-              ))}
+                ))}
 
-              {filteredBreakdowns.length === 0 && (
-                <div className="col-span-full py-12 flex flex-col items-center justify-center text-foreground/40 font-mono tracking-widest text-xs uppercase">
-                  No blogs available for this tag.
-                </div>
-              )}
-            </AnimatePresence>
-          </div>
+                {filteredBreakdowns.length === 0 && (
+                  <div className="col-span-full py-12 flex flex-col items-center justify-center text-foreground/40 font-mono tracking-widest text-xs uppercase break-inside-avoid">
+                    No blogs available.
+                  </div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
 
         </main>
+        
+        {/* Universal Footer */}
+        <div className="relative w-full bg-background/40 dark:bg-[#0F0F10]/50 backdrop-blur-[3px] border-t border-foreground/5 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+          <Footer />
+        </div>
+
       </div>
     </>
   );

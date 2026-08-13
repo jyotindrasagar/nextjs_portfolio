@@ -1,23 +1,33 @@
-import { breakdowns } from '@/data/breakdowns';
 import { notFound } from 'next/navigation';
 import { Calendar, Clock, Tag, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { BreakdownInteraction } from '@/components/BreakdownInteraction';
-
 import { ProfileHeaderButton } from '@/components/ProfileHeaderButton';
-
-export function generateStaticParams() {
-  return breakdowns.map((b) => ({
-    id: b.id,
-  }));
-}
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 
 export default async function BreakdownPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
-  const breakdown = breakdowns.find((b) => b.id === resolvedParams.id);
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { data: breakdown } = await supabase
+    .from('blogs')
+    .select('*')
+    .or(`id.eq.${resolvedParams.id},slug.eq.${resolvedParams.id}`)
+    .single();
 
   if (!breakdown) {
     notFound();
+  }
+
+  // Parse sections
+  let sections: any[] = [];
+  try {
+    sections = typeof breakdown.content === 'string' ? JSON.parse(breakdown.content) : breakdown.content;
+    if (!Array.isArray(sections)) sections = [];
+  } catch (e) {
+    sections = [];
   }
 
   return (
@@ -26,42 +36,46 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
         {/* Top Bar Navigation */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-foreground/10">
           <Link 
-            href="/#breakdowns"
+            href="/blogs"
             className="inline-flex items-center gap-2 font-mono text-xs font-bold tracking-widest uppercase text-foreground/60 hover:text-accent transition-colors group"
           >
             <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            Back to Breakdowns
+            Back to Blogs
           </Link>
-          
-          <ProfileHeaderButton />
+          <div className="flex items-center gap-4">
+            <Link 
+              href="/blogs"
+              className="font-mono text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase text-accent hover:text-white transition-colors hidden sm:flex items-center gap-2 bg-accent/10 hover:bg-accent border border-accent/20 px-4 py-1.5 rounded group"
+            >
+              <span>Full Blogs Section</span>
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
+            <ProfileHeaderButton />
+          </div>
         </div>
 
         <article className="flex flex-col gap-10">
-          {/* Header Media (Video or Hero Image) */}
-          <div className="w-full aspect-video md:aspect-[21/9] shrink-0 bg-black relative overflow-hidden group rounded-xl border border-foreground/15 shadow-2xl">
-            {breakdown.headerMedia?.type === 'video' || breakdown.videoUrl ? (
-              <video 
-                src={breakdown.headerMedia?.url || breakdown.videoUrl} 
-                className="w-full h-full object-cover" 
-                controls 
-                autoPlay 
-                playsInline
-                loop
-                muted
-              />
-            ) : (
-              <img 
-                src={breakdown.headerMedia?.url || breakdown.image} 
-                alt={breakdown.title}
-                className="w-full h-full object-cover"
-              />
-            )}
-            {breakdown.headerMedia?.caption && (
-              <div className="absolute bottom-3 left-4 right-4 text-[11px] font-mono text-white/70 bg-black/60 px-3 py-1.5 rounded backdrop-blur-sm pointer-events-none">
-                {breakdown.headerMedia.caption}
-              </div>
-            )}
-          </div>
+          {/* Header Media (CDN Video or Image) */}
+          {(breakdown.thumbnail_url || breakdown.video_url) && (
+            <div className="w-full aspect-video md:aspect-[21/9] shrink-0 bg-black relative overflow-hidden group rounded-xl border border-foreground/15 shadow-2xl">
+              {breakdown.video_url ? (
+                <video 
+                  src={breakdown.video_url} 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <img 
+                  src={breakdown.thumbnail_url} 
+                  alt={breakdown.title}
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+          )}
 
           {/* Main Article Body */}
           <div className="flex flex-col gap-10">
@@ -70,17 +84,17 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
             <div className="flex flex-col gap-4 border-b border-foreground/10 pb-8">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="font-mono text-[10px] md:text-[11px] tracking-[0.25em] font-extrabold uppercase px-3 py-1 bg-accent/15 border border-accent/30 text-accent rounded-md">
-                  {breakdown.category === 'my-work' ? '❖ MY WORK BREAKDOWN' : '❖ INSPIRED WORK BREAKDOWN'}
+                  {breakdown.category === 'my-work' ? '❖ MY WORK' : '❖ INSPIRATION'}
                 </span>
                 
-                {breakdown.date && (
+                {breakdown.created_at && (
                   <span className="font-mono text-xs text-foreground/50 flex items-center gap-1">
-                    <Calendar size={12} /> {breakdown.date}
+                    <Calendar size={12} /> {new Date(breakdown.created_at).toLocaleDateString()}
                   </span>
                 )}
-                {breakdown.readTime && (
+                {breakdown.read_time && (
                   <span className="font-mono text-xs text-foreground/50 flex items-center gap-1">
-                    <Clock size={12} /> {breakdown.readTime}
+                    <Clock size={12} /> {breakdown.read_time}
                   </span>
                 )}
               </div>
@@ -93,73 +107,56 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
                 {breakdown.excerpt}
               </p>
 
-              {/* Tools Used Badges */}
-              {breakdown.tools && breakdown.tools.length > 0 && (
+              {/* Tags Badges */}
+              {breakdown.tags && breakdown.tags.length > 0 && (
                 <div className="flex flex-wrap items-center gap-2 mt-2">
                   <span className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest flex items-center gap-1 mr-1">
-                    <Tag size={11} /> TOOLS:
+                    <Tag size={11} /> TAGS:
                   </span>
-                  {breakdown.tools.map((tool, idx) => (
+                  {breakdown.tags.map((tag: string, idx: number) => (
                     <span 
                       key={idx} 
                       className="font-mono text-[10px] md:text-[11px] font-bold tracking-wider text-foreground/80 bg-foreground/5 border border-foreground/10 px-2.5 py-1 rounded"
                     >
-                      {tool}
+                      {tag}
                     </span>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Main Content Paragraph */}
-            <div className="font-sans font-light text-base md:text-lg text-foreground/90 leading-relaxed max-w-4xl whitespace-pre-line border-l-2 border-accent/40 pl-4 md:pl-6 py-1">
-              {breakdown.content}
-            </div>
-
-            {/* Rich Sections (Inline CDN Images & Videos) */}
-            {breakdown.sections && breakdown.sections.length > 0 && (
-              <div className="flex flex-col gap-12 mt-4">
-                {breakdown.sections.map((section, index) => (
-                  <div key={index} className="flex flex-col gap-4 border-t border-foreground/10 pt-8">
-                    {section.title && (
-                      <h3 className="font-display font-bold text-xl md:text-2xl text-foreground uppercase tracking-wide flex items-center gap-2">
-                        <span className="text-accent text-sm font-mono font-normal">[{index + 1}]</span>
-                        {section.title}
-                      </h3>
+            {/* Dynamic Blog Sections from DB */}
+            {sections && sections.length > 0 && (
+              <div className="flex flex-col gap-10 mt-4">
+                {sections.map((section: any, index: number) => (
+                  <div key={index} className="flex flex-col gap-4">
+                    {section.type === 'text' && section.content && (
+                      <div 
+                        className="font-sans font-light text-base md:text-lg text-foreground/90 leading-relaxed max-w-4xl"
+                        dangerouslySetInnerHTML={{ __html: section.content }}
+                      />
                     )}
 
-                    {section.text && (
-                      <p className="font-sans font-light text-sm md:text-base text-foreground/80 leading-relaxed max-w-3xl">
-                        {section.text}
-                      </p>
+                    {section.type === 'image' && section.url && (
+                      <div className="my-4 w-full overflow-hidden rounded-lg border border-foreground/15 shadow-xl bg-black/60">
+                        <img 
+                          src={section.url} 
+                          alt="Blog media"
+                          className="w-full h-auto object-contain hover:scale-[1.01] transition-transform duration-500 max-h-[80vh]" 
+                        />
+                      </div>
                     )}
 
-                    {/* Inline CDN Media Embed */}
-                    {section.media && (
-                      <div className="my-4 flex flex-col gap-2">
-                        <div className="w-full overflow-hidden rounded-lg border border-foreground/15 bg-black/60 shadow-xl relative group">
-                          {section.media.type === 'video' ? (
-                            <video 
-                              src={section.media.url} 
-                              className="w-full max-h-[500px] object-cover" 
-                              controls 
-                              playsInline 
-                              loop 
-                              muted 
-                            />
-                          ) : (
-                            <img 
-                              src={section.media.url} 
-                              alt={section.media.caption || section.title || 'Breakdown detail'} 
-                              className="w-full max-h-[500px] object-cover hover:scale-[1.01] transition-transform duration-500" 
-                            />
-                          )}
-                        </div>
-                        {section.media.caption && (
-                          <span className="font-mono text-[11px] text-foreground/50 tracking-wider uppercase text-center md:text-left">
-                            ▲ {section.media.caption}
-                          </span>
-                        )}
+                    {section.type === 'youtube' && section.url && (
+                      <div className="my-4 w-full aspect-video rounded-lg border border-foreground/15 shadow-xl bg-black overflow-hidden">
+                        <iframe 
+                          src={section.url} 
+                          title="YouTube video player" 
+                          frameBorder="0" 
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                          allowFullScreen
+                          className="w-full h-full"
+                        ></iframe>
                       </div>
                     )}
                   </div>

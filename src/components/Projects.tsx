@@ -1,27 +1,33 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { breakdowns, type BreakdownData } from '../data/breakdowns';
 import Link from 'next/link';
 import { HoverVideoPlayer } from './HoverVideoPlayer';
 import { AnimatedSection } from './AnimatedSection';
+import { createClient } from '@/utils/supabase/client';
 
 import { Wrench } from 'lucide-react';
 
 export function Projects() {
   const [activeTab, setActiveTab] = useState<'my-work' | 'inspiration'>('my-work');
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isSectionOpen, setIsSectionOpen] = useState(false);
+  const [blogs, setBlogs] = useState<any[]>([]);
 
-  // First filter by category
-  const categoryBreakdowns = breakdowns.filter((item) => item.category === activeTab);
-  
-  // Then filter by highlight if not expanded
-  const displayBreakdowns = isExpanded 
-    ? categoryBreakdowns 
-    : categoryBreakdowns.filter(item => item.isHighlight);
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('blogs')
+        .select('*')
+        .eq('is_highlight', true)
+        .order('created_at', { ascending: false });
+      
+      if (data) setBlogs(data);
+    };
+    fetchBlogs();
+  }, []);
 
-  const hasMore = categoryBreakdowns.length > displayBreakdowns.length;
+  const displayBreakdowns = blogs.filter((item) => item.category === activeTab).slice(0, 2);
 
   return (
     <>
@@ -80,15 +86,6 @@ export function Projects() {
                       className="flex flex-col items-start sm:items-end gap-3 w-full sm:w-auto overflow-hidden"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      {/* Link to Blogs Page */}
-                      <Link 
-                        href="/blogs"
-                        className="font-mono text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase text-accent hover:text-white transition-colors flex items-center gap-2 bg-accent/10 hover:bg-accent border border-accent/20 px-4 py-1.5 rounded group ml-auto whitespace-nowrap"
-                      >
-                        <span>Go to Full Blogs Section</span>
-                        <span className="group-hover:translate-x-1 transition-transform">→</span>
-                      </Link>
-
                       {/* Category Switcher Buttons */}
                       <div className="flex items-center p-1 bg-background/40 backdrop-blur-md border border-foreground/10 rounded-md shadow-sm relative z-40 ml-auto whitespace-nowrap">
                         {[
@@ -99,7 +96,6 @@ export function Projects() {
                             key={tab.id}
                             onClick={() => {
                               setActiveTab(tab.id as 'my-work' | 'inspiration');
-                              setIsExpanded(false); 
                             }}
                             className={`relative font-display text-[9px] md:text-[10px] font-bold tracking-[0.15em] uppercase px-4 py-1.5 md:py-2 rounded transition-colors duration-300 flex items-center justify-center ${
                               activeTab === tab.id
@@ -157,7 +153,7 @@ export function Projects() {
                   <AnimatePresence mode="wait">
                     {displayBreakdowns.map((item) => (
                       <Link
-                        href={`/breakdowns/${item.id}`}
+                        href={`/breakdowns/${item.slug || item.id}`}
                         key={item.id}
                         className="block group"
                       >
@@ -176,8 +172,8 @@ export function Projects() {
                       >
                         {/* Lightweight Poster Image by Default -> Video ONLY loads on Hover */}
                         <HoverVideoPlayer 
-                          imageUrl={item.image}
-                          videoUrl={item.videoUrl}
+                          imageUrl={item.thumbnail_url || ''}
+                          videoUrl={item.video_url || ''}
                           altText={item.title}
                           baseOpacity="opacity-100"
                           baseGrayscale="grayscale"
@@ -217,8 +213,8 @@ export function Projects() {
                       </Link>
                     ))}
 
-                    {/* Translucent Placeholder Card if count < 4 and Expanded or Not filtering */}
-                    {displayBreakdowns.length < 4 && isExpanded && (
+                    {/* Translucent Placeholder Card if count < 2 */}
+                    {displayBreakdowns.length < 2 && (
                       <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -241,20 +237,18 @@ export function Projects() {
                   </AnimatePresence>
                 </div>
 
-                {/* Load More Button */}
-                {hasMore && (
-                  <AnimatedSection>
-                    <div className="w-full flex justify-center mt-4">
-                      <button
-                        onClick={() => setIsExpanded(true)}
-                        className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 px-8 py-3 rounded-md transition-colors text-foreground flex items-center gap-2"
-                      >
-                        <span>Load More Breakdowns</span>
-                        <span>↓</span>
-                      </button>
-                    </div>
-                  </AnimatedSection>
-                )}
+                {/* Go to Blogs Button */}
+                <AnimatedSection>
+                  <div className="w-full flex justify-center mt-4">
+                    <Link
+                      href="/blogs"
+                      className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 px-8 py-3 rounded-md transition-colors text-foreground flex items-center gap-2"
+                    >
+                      <span>Go To Full Blogs Section</span>
+                      <span>→</span>
+                    </Link>
+                  </div>
+                </AnimatedSection>
               </motion.div>
             )}
           </AnimatePresence>
