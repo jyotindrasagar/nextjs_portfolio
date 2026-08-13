@@ -7,6 +7,7 @@ import { AnimatedSection } from './AnimatedSection';
 import { createClient } from '@/utils/supabase/client';
 
 import { Wrench } from 'lucide-react';
+import AccordionGallery from './AccordionGallery';
 
 export function Projects() {
   const [activeTab, setActiveTab] = useState<'my-work' | 'inspiration'>('my-work');
@@ -148,93 +149,29 @@ export function Projects() {
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="overflow-hidden"
               >
-                {/* Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full select-none gap-6 pb-4 relative z-30">
-                  <AnimatePresence mode="wait">
-                    {displayBreakdowns.map((item) => (
-                      <Link
-                        href={`/breakdowns/${item.slug || item.id}`}
-                        key={item.id}
-                        className="block group"
-                      >
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          transition={{ duration: 0.4, ease: "easeOut" }}
-                        whileHover={{ 
-                          y: -6, 
-                          scale: 1.015,
-                          boxShadow: '0 20px 40px -15px rgba(255,184,198,0.2)',
-                          transition: { duration: 0.3 }
-                        }}
-                        className="group flex flex-col cursor-pointer bg-panels border border-foreground/10 shadow-md relative overflow-hidden rounded-xl aspect-video"
-                      >
-                        {/* Lightweight Poster Image by Default -> Video ONLY loads on Hover */}
-                        <HoverVideoPlayer 
-                          imageUrl={item.thumbnail_url || ''}
-                          videoUrl={item.video_url || ''}
-                          altText={item.title}
-                          baseOpacity="opacity-100"
-                          baseGrayscale="grayscale"
-                        />
-                        
-                        {/* Vignette Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-500 z-10 pointer-events-none"></div>
-
-                        {/* Text Overlay */}
-                        <div className="absolute inset-0 flex flex-col justify-end items-start z-20 p-6 text-left gap-2 pointer-events-none">
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-[9px] font-extrabold tracking-[0.2em] uppercase px-2 py-0.5 bg-accent/20 border border-accent/40 text-accent rounded">
-                              {item.category === 'my-work' ? 'PROJECT' : 'INSPIRATION'}
-                            </span>
-                            {item.readTime && (
-                              <span className="font-mono text-[10px] text-white/60 tracking-wider">
-                                {item.readTime}
-                              </span>
-                            )}
-                          </div>
-
-                          <h3 className="font-display font-bold text-lg md:text-xl uppercase tracking-wide text-white group-hover:text-accent transition-colors duration-300">
-                            {item.title}
-                          </h3>
-                          
-                          <p className="font-mono text-[11px] text-white/70 line-clamp-2 leading-relaxed">
-                            {item.excerpt}
-                          </p>
-
-                          <div className="mt-2 pt-2 border-t border-white/10 w-full flex justify-between items-center">
-                            <span className="font-mono text-[10px] font-bold tracking-[0.25em] uppercase text-accent group-hover:translate-x-1 transition-transform duration-300">
-                              EXPLORE BREAKDOWN →
-                            </span>
-                          </div>
-                        </div>
-                        </motion.div>
-                      </Link>
-                    ))}
-
-                    {/* Translucent Placeholder Card if count < 2 */}
-                    {displayBreakdowns.length < 2 && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="group flex flex-col items-center justify-center border border-dashed border-foreground/20 bg-foreground/[0.03] backdrop-blur-md rounded-xl p-6 text-center w-full aspect-video pointer-events-none select-none overflow-hidden"
-                      >
-                        <div className="flex flex-col items-center justify-center gap-3 p-4">
-                          <div className="w-10 h-10 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-accent animate-pulse">
-                            <Wrench size={18} />
-                          </div>
-                          <h4 className="font-display font-bold text-xs md:text-sm uppercase tracking-wider text-foreground/80 leading-snug max-w-[240px]">
-                            HOLD ON TRYNNA LOAD MORE STUFF UP IN HERE
-                          </h4>
-                          <span className="font-mono text-[10px] text-accent tracking-widest uppercase font-bold">
-                            GIVE ME THE WRENCH 🔧
-                          </span>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                {/* Accordion Gallery replacing the old grid */}
+                <div className="w-full relative z-30 pb-4">
+                  <AccordionGallery
+                    items={
+                      displayBreakdowns.length > 0 
+                      ? displayBreakdowns.map((item) => ({
+                          image: item.thumbnail_url || 'https://picsum.photos/id/1015/900/1200',
+                          label: item.title,
+                          link: `/breakdowns/${item.slug || item.id}`,
+                          alt: item.title
+                        }))
+                      : [
+                          { image: 'https://picsum.photos/id/1015/900/1200', label: 'HOLD ON TRYNNA LOAD MORE STUFF', link: '#' },
+                          { image: 'https://picsum.photos/id/1018/900/1200', label: 'GIVE ME THE WRENCH 🔧', link: '#' }
+                        ] // Fallbacks if empty
+                    }
+                    defaultIndex={0}
+                    expandRatio={0.52}
+                    trigger="hover"
+                    height={460}
+                    accentColor="#ea879c" // Accent color
+                    overlayColor="#000000"
+                  />
                 </div>
 
                 {/* Go to Blogs Button */}

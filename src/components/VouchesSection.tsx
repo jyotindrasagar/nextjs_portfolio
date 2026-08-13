@@ -10,8 +10,11 @@ export function VouchesSection() {
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Repeat vouches 4x to ensure smooth infinite loop scroll
-  const displayVouches = [...vouches, ...vouches, ...vouches, ...vouches];
+  // Ensure we have enough items to fill the screen for seamless infinite scroll
+  // We need at least enough copies to cover ultra-wide monitors, even if there's only 1 vouch.
+  const minItems = 30; // 30 items is safe for 4k/5k screens
+  const repeatCount = Math.max(4, Math.ceil(minItems / Math.max(1, vouches.length)));
+  const displayVouches = Array.from({ length: repeatCount }).flatMap(() => vouches);
 
   // Continuous infinite scroll state
   const containerRef = useRef<HTMLDivElement | null>(null);
