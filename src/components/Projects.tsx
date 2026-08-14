@@ -65,7 +65,7 @@ export function Projects() {
               </div>
 
               {/* 2. BUTTON */}
-              <div className="flex justify-end items-start row-start-1 col-start-2">
+              <div className="flex justify-end items-center row-start-1 col-start-2">
                 <button 
                   onClick={(e) => { e.stopPropagation(); setIsSectionOpen(!isSectionOpen); }}
                   className="relative w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.5)] hover:-translate-y-0.5"
