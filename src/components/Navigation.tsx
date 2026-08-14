@@ -377,7 +377,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
               setActiveSection('work');
               window.dispatchEvent(new CustomEvent('openShowreel'));
             }}
-            className="flex bg-accent text-white px-4 py-3 rounded-[2px] font-display font-bold text-[10px] sm:text-xs uppercase tracking-[0.18em] transition-all duration-300 items-center justify-between group hover:bg-accent/90 w-full"
+            className="flex bg-accent text-white px-4 py-3 rounded-[3px] font-display font-bold text-[10px] sm:text-xs uppercase tracking-[0.18em] transition-all duration-300 items-center justify-between group hover:bg-accent/90 w-full"
           >
             <span>Watch Showreel</span>
             <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-base leading-none font-light">↗</span>
