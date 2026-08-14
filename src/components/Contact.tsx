@@ -155,10 +155,10 @@ export function Contact() {
                   <div className="flex flex-wrap items-center gap-6 mb-8 xl:mb-16">
                     <button
                       onClick={openCalendly}
-                      className="flex items-center gap-6 px-6 py-4 border border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-300 group"
+                      className="flex items-center gap-6 px-6 py-4 bg-foreground text-background border border-foreground hover:bg-transparent hover:text-foreground transition-all duration-300 group rounded-[3px]"
                     >
                       <span className="text-[11px] font-mono font-bold tracking-widest uppercase">BOOK A CALL</span>
-                      <Calendar size={14} className="opacity-70 group-hover:opacity-100" />
+                      <Calendar size={14} className="opacity-90 group-hover:opacity-100" />
                     </button>
                     <div className="flex items-center gap-3 text-[11px] font-mono font-semibold tracking-widest uppercase text-foreground/70">
                       <div className="w-1.5 h-1.5 rounded-full border border-foreground/70" />
