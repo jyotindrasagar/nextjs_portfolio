@@ -241,7 +241,7 @@ export function Work() {
                   <button
                     key={subCat}
                     onClick={() => setActiveSubCategory(subCat)}
-                    className={`px-4 py-2.5 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-md text-center w-full ${
+                    className={`text-left px-4 py-2.5 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-md w-full ${
                       activeSubCategory === subCat
                         ? 'border border-transparent text-white bg-accent'
                         : 'border border-white/20 text-white/90 bg-transparent hover:border-white/40 hover:bg-white/5'
