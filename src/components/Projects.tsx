@@ -156,7 +156,7 @@ export function Projects() {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="group flex flex-col items-center justify-center border border-dashed border-foreground/20 bg-foreground/[0.03] backdrop-blur-md rounded-xl p-6 text-center w-full aspect-video pointer-events-none select-none overflow-hidden"
+                      className="group flex flex-col items-center justify-center border border-dashed border-foreground/20 bg-foreground/[0.03] backdrop-blur-md rounded-xl p-6 text-center w-full max-w-2xl mx-auto h-[250px] md:h-[300px] pointer-events-none select-none overflow-hidden"
                     >
                       <div className="flex flex-col items-center justify-center gap-3 p-4">
                         <div className="w-10 h-10 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-accent animate-pulse">
