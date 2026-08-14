@@ -204,7 +204,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
             <button
               aria-label="View All Work"
               onClick={() => scrollToSection('work')}
-              className="bg-accent text-white px-6 py-4 md:px-8 md:py-4.5 rounded-md text-[12px] md:text-[13px] font-display font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.5)] hover:-translate-y-0.5"
+              className="bg-accent text-white px-6 py-4 md:px-8 md:py-4.5 rounded-[3px] text-[12px] md:text-[13px] font-display font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.5)] hover:-translate-y-0.5"
             >
               <span>View All Work</span>
               <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-base leading-none font-bold">↗</span>
@@ -213,7 +213,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
             <button
               aria-label="Contact Me"
               onClick={() => scrollToSection('contact')}
-              className="bg-transparent border border-white/60 text-white px-6 py-4 md:px-8 md:py-4.5 rounded-md text-[12px] md:text-[13px] font-display font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5"
+              className="bg-transparent border border-white/60 text-white px-6 py-4 md:px-8 md:py-4.5 rounded-[3px] text-[12px] md:text-[13px] font-display font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5"
             >
               <span>Contact Me</span>
               <span className="text-[16px] opacity-80 leading-none">≡</span>

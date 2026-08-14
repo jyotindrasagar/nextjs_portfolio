@@ -212,7 +212,7 @@ export function Contact() {
                         onChange={handleChange}
                         placeholder="Enter your name"
                         required
-                        className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-lg"
+                        className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-[3px]"
                       />
                     </div>
                     <div className="flex flex-col gap-3">
@@ -224,7 +224,7 @@ export function Contact() {
                         onChange={handleChange}
                         placeholder="hello@dieablo.com"
                         required
-                        className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-lg"
+                        className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-[3px]"
                       />
                     </div>
                   </div>
@@ -239,7 +239,7 @@ export function Contact() {
                         value={formData.company}
                         onChange={handleChange}
                         placeholder="Your brand or company"
-                        className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-lg"
+                        className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-[3px]"
                       />
                     </div>
                     <div className="flex flex-col gap-3">
@@ -249,7 +249,7 @@ export function Contact() {
                           name="projectType"
                           value={formData.projectType}
                           onChange={handleChange}
-                          className="w-full appearance-none bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer rounded-lg"
+                          className="w-full appearance-none bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer rounded-[3px]"
                         >
                           <option value="" disabled className="bg-background text-foreground">Select project type</option>
                           <option value="Visual Effects / Compositing" className="bg-background text-foreground">Visual Effects / Compositing</option>
@@ -273,7 +273,7 @@ export function Contact() {
                       rows={4}
                       placeholder="Tell me about your project, goals, and vision..."
                       required
-                      className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 p-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-lg resize-none"
+                      className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 p-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-[3px] resize-none"
                     />
                   </div>
 
@@ -286,7 +286,7 @@ export function Contact() {
                           name="budget"
                           value={formData.budget}
                           onChange={handleChange}
-                          className="w-full appearance-none bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer rounded-lg"
+                          className="w-full appearance-none bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer rounded-[3px]"
                         >
                           <option value="" disabled className="bg-background text-foreground">Select budget range</option>
                           <option value="< $1,000" className="bg-background text-foreground">&lt; $1,000</option>
@@ -304,7 +304,7 @@ export function Contact() {
                           name="timeline"
                           value={formData.timeline}
                           onChange={handleChange}
-                          className="w-full appearance-none bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer rounded-lg"
+                          className="w-full appearance-none bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono focus:border-accent focus:outline-none transition-colors text-foreground font-medium cursor-pointer rounded-[3px]"
                         >
                           <option value="" disabled className="bg-background text-foreground">Select timeline</option>
                           <option value="ASAP (< 1 Week)" className="bg-background text-foreground">ASAP (&lt; 1 Week)</option>
@@ -326,7 +326,7 @@ export function Contact() {
                       value={formData.references}
                       onChange={handleChange}
                       placeholder="Paste link to your files here..."
-                      className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-lg"
+                      className="bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 px-4 py-4 text-sm md:text-base font-mono text-foreground font-medium focus:border-accent focus:outline-none transition-colors placeholder:text-foreground/40 rounded-[3px]"
                     />
                   </div>
 
@@ -350,7 +350,7 @@ export function Contact() {
                     <button
                       type="submit"
                       disabled={status === 'loading'}
-                      className="w-full sm:w-auto flex items-center justify-center gap-4 bg-accent border border-white text-white dark:bg-white dark:border-accent dark:text-black px-10 py-4.5 text-[12px] md:text-[13px] font-mono font-extrabold tracking-[0.25em] uppercase transition-colors duration-300 hover:bg-white hover:text-accent dark:hover:bg-accent dark:hover:text-white group disabled:opacity-50 disabled:cursor-not-allowed shadow-md rounded-lg"
+                      className="w-full sm:w-auto flex items-center justify-center gap-4 bg-accent border border-white text-white dark:bg-white dark:border-accent dark:text-black px-10 py-4.5 text-[12px] md:text-[13px] font-mono font-extrabold tracking-[0.25em] uppercase transition-colors duration-300 hover:bg-white hover:text-accent dark:hover:bg-accent dark:hover:text-white group disabled:opacity-50 disabled:cursor-not-allowed shadow-md rounded-[3px]"
                     >
                       {status === 'loading' ? (
                         <>
