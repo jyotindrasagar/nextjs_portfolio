@@ -55,24 +55,15 @@ export const metadata: Metadata = {
     description: "Official Portfolio of Jyotindra Narayan Kalyani, professionally known as Dieablo, featuring motion design, VFX, 3D animation & video editing under the personal creative brand DieabloFX.",
     url: "https://dieablo.com/",
     siteName: "DieabloFX",
-    images: [
-      {
-        url: "https://dieablo.com/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "DieabloFX",
-      },
-    ],
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DieabloFX | CVideo Editor & Motion Designer",
-    description: "Portfolio of DieabloFX — Video Editor, Motion Designer,Creative Director, and VFX Artist.",
+    title: "DieabloFX | Video Editor & Motion Designer",
+    description: "Portfolio of DieabloFX — Video Editor, Motion Designer, Creative Director, and VFX Artist.",
     creator: "@dieablofx",
     site: "@dieablofx",
-    images: ["https://dieablo.com/twitter-image"],
   },
 };
 
