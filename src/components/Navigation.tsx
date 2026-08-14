@@ -219,12 +219,20 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
                   handleScroll(e, link.id);
                   setActiveSection(link.id);
                 }}
-                className={`h-full px-2 lg:px-2.5 xl:px-3.5 flex items-center justify-center hover:text-accent transition-colors relative ${
-                  activeSection === link.id ? 'text-accent' : 'text-foreground font-bold'
-                }`}
+                className={
+                  link.id === 'contact'
+                    ? `ml-2 xl:ml-4 px-4 py-1.5 xl:px-5 xl:py-2 rounded-md font-display font-bold text-[9px] xl:text-[10px] uppercase tracking-[0.15em] transition-all duration-300 flex items-center justify-center group hover:-translate-y-0.5 ${
+                        activeSection === link.id
+                          ? 'bg-accent text-white shadow-[0_4px_14px_rgba(234,135,156,0.3)]'
+                          : 'bg-transparent border border-accent text-accent hover:bg-accent hover:text-white hover:shadow-[0_6px_20px_rgba(234,135,156,0.4)]'
+                      }`
+                    : `h-full px-2 lg:px-2.5 xl:px-3.5 flex items-center justify-center hover:text-accent transition-colors relative ${
+                        activeSection === link.id ? 'text-accent' : 'text-foreground font-bold'
+                      }`
+                }
               >
                 <span>{link.label}</span>
-                {activeSection === link.id && (
+                {link.id !== 'contact' && activeSection === link.id && (
                   <motion.div
                     layoutId="nav-indicator"
                     className="absolute bottom-0 left-2 right-2 h-[2px] bg-accent"

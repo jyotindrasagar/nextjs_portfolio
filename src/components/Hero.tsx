@@ -85,7 +85,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
   useAnimationFrame((t, delta) => {
     if (contentWidth === 0) return;
 
-    if (!isDragging) {
+    if (!isHovered && !isDragging) {
       const moveBy = 0.03 * delta; // Slightly slower than feedback cards
       x.set(x.get() - moveBy);
     }
@@ -204,7 +204,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
             <button
               aria-label="View All Work"
               onClick={() => scrollToSection('work')}
-              className="bg-accent text-white px-6 py-4 md:px-8 md:py-4.5 text-[12px] md:text-[13px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:bg-accent/90 shadow-md"
+              className="bg-accent text-white px-6 py-4 md:px-8 md:py-4.5 rounded-md text-[12px] md:text-[13px] font-display font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.5)] hover:-translate-y-0.5"
             >
               <span>View All Work</span>
               <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-base leading-none font-bold">↗</span>
@@ -213,7 +213,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
             <button
               aria-label="Contact Me"
               onClick={() => scrollToSection('contact')}
-              className="bg-transparent border border-foreground text-foreground px-6 py-4 md:px-8 md:py-4.5 text-[12px] md:text-[13px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:bg-foreground/10"
+              className="bg-transparent border border-white/60 text-white px-6 py-4 md:px-8 md:py-4.5 rounded-md text-[12px] md:text-[13px] font-display font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5"
             >
               <span>Contact Me</span>
               <span className="text-[16px] opacity-80 leading-none">≡</span>
@@ -387,6 +387,8 @@ export function Hero({ loading = false }: { loading?: boolean }) {
             <div
               className="absolute inset-0 w-full h-full overflow-hidden flex items-center opacity-100 cursor-grab active:cursor-grabbing"
               style={{ maskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)' }}
+              onPointerEnter={(e) => { if (e.pointerType === 'mouse') setIsHovered(true) }}
+              onPointerLeave={(e) => { if (e.pointerType === 'mouse') setIsHovered(false) }}
             >
               <motion.div
                 className="flex items-center min-w-max"
@@ -408,17 +410,18 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                         className="flex-shrink-0 flex items-center justify-center group/logo"
                       >
                         {client.svgLogo ? (
-                          <div className="transition-all duration-300 opacity-70 group-hover/logo:opacity-100 group-hover/logo:![filter:none] [&>svg]:transition-all [&>svg]:duration-300 hover:[&>svg]:!filter-none">
+                          <div className="transition-all duration-300 opacity-70 group-hover/logo:scale-110 group-hover/logo:opacity-100 group-hover/logo:![filter:none] [&>svg]:transition-all [&>svg]:duration-300 hover:[&>svg]:!filter-none">
                             {client.svgLogo}
                           </div>
                         ) : client.imagePath ? (
                           <img
+                            draggable={false}
                             src={client.imagePath}
                             alt={client.name}
-                            className={`h-7 sm:h-9 md:h-10 w-auto object-contain transition-all duration-300 opacity-80 group-hover/logo:opacity-100 group-hover/logo:![filter:none] ${client.filterClass || 'brightness-0 invert'}`}
+                            className={`h-7 sm:h-9 md:h-10 w-auto object-contain transition-all duration-300 opacity-80 group-hover/logo:scale-110 group-hover/logo:opacity-100 group-hover/logo:![filter:none] ${client.filterClass || 'brightness-0 invert'}`}
                           />
                         ) : (
-                          <div className={`${client.fontStyle} leading-none text-xs sm:text-sm transition-colors duration-300 group-hover/logo:text-accent`}>{client.textLogo}</div>
+                          <div className={`${client.fontStyle} leading-none text-xs sm:text-sm transition-all duration-300 group-hover/logo:scale-110 group-hover/logo:text-accent`}>{client.textLogo}</div>
                         )}
                       </div>
                     ))}
