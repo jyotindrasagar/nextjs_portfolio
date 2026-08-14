@@ -166,7 +166,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
             <h1 className="sr-only">DieabloFX | Video Editor & Motion Designer</h1>
             <motion.div
               aria-hidden="true"
-              className="flex items-baseline flex-nowrap whitespace-nowrap mb-6 text-6xl md:text-8xl lg:text-[8rem] xl:text-[6.5rem] 2xl:text-[8rem]"
+              className="flex items-center flex-nowrap whitespace-nowrap mb-6 text-6xl md:text-8xl lg:text-[8rem] xl:text-[6.5rem] 2xl:text-[8rem]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
@@ -177,7 +177,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 src={logoUrl}
                 alt="DieabloFX Logo"
-                className="h-[0.85em] w-auto object-contain logo-image invert dark:invert-0 -mr-[0.06em] shrink-0"
+                className="h-[0.82em] w-auto object-contain logo-image invert dark:invert-0 -mr-[0.06em] shrink-0"
               />
               <div
                 className="font-display font-bold tracking-tight text-foreground leading-none"
@@ -194,9 +194,9 @@ export function Hero({ loading = false }: { loading?: boolean }) {
             <div className="w-12 h-[2px] bg-accent mb-6 md:mb-8"></div>
 
             <p className="text-[11px] md:text-[13px] font-mono font-medium tracking-[0.18em] leading-[2] text-foreground/85 uppercase max-w-sm mb-8 md:mb-12">
-              I direct ideas, craft stories,<br />
-              and deliver visuals that leave<br />
-              a lasting impact.
+              I work with direct ideas, craft stories,<br />
+              and make visuals using tools<br />
+              that I have in my bag :)
             </p>
           </div>
 
