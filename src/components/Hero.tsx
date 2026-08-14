@@ -177,7 +177,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 src={logoUrl}
                 alt="DieabloFX Logo"
-                className="h-[0.82em] w-auto object-contain logo-image invert dark:invert-0 -mr-[0.06em]"
+                className="h-[0.82em] w-auto object-contain logo-image invert dark:invert-0 -mr-[0.06em] translate-y-[0.08em]"
               />
               <div
                 className="font-display font-bold tracking-tight text-foreground leading-none"
