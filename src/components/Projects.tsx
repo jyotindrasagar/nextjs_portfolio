@@ -33,20 +33,22 @@ export function Projects() {
   return (
     <>
       <section className={`relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 border-t border-foreground/10 transition-all duration-300 ${isSectionOpen ? 'pt-24 pb-24 min-h-[100px]' : 'pt-8 pb-8 min-h-0'}`} id="breakdowns">
-        <AnimatedSection>
-          {/* CAD reference label */}
-          <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-accent mb-8 uppercase">
-            <span>❖</span>
-            <span>SYS.PROCESS // BLUEPRINTS_BREAKDOWN</span>
-          </div>
-        </AnimatedSection>
+        <div 
+          onClick={() => setIsSectionOpen(!isSectionOpen)}
+          className="cursor-pointer group select-none"
+        >
+          <AnimatedSection>
+            {/* CAD reference label */}
+            <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-accent mb-8 uppercase">
+              <span>❖</span>
+              <span>SYS.PROCESS // BLUEPRINTS_BREAKDOWN</span>
+            </div>
+          </AnimatedSection>
 
-        <div className="flex flex-col gap-12">
           <AnimatedSection>
             {/* Header Text, Category Switcher & Toggle Button */}
             <div 
-              onClick={() => setIsSectionOpen(!isSectionOpen)}
-              className={`grid grid-cols-[1fr_auto] transition-all duration-300 cursor-pointer select-none group ${
+              className={`grid grid-cols-[1fr_auto] transition-all duration-300 ${
                 isSectionOpen 
                 ? 'gap-y-6 md:gap-y-8 gap-x-8 border-b border-foreground/10 pb-8' 
                 : 'gap-y-0 gap-x-8 border-b-0 pb-0'
@@ -121,6 +123,9 @@ export function Projects() {
               </AnimatePresence>
             </div>
           </AnimatedSection>
+        </div>
+
+        <div className="flex flex-col gap-12 mt-12">
 
           {/* Full Uncollapsed Grid Section */}
           <AnimatePresence>
