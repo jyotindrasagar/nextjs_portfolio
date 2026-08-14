@@ -276,9 +276,10 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
                 setActiveSection('work');
                 window.dispatchEvent(new CustomEvent('openShowreel'));
               }}
-              className="hidden sm:flex bg-accent text-white px-5 lg:px-6 py-2 lg:py-2.5 rounded-md font-display font-bold text-[10px] lg:text-xs uppercase tracking-[0.15em] transition-all duration-300 items-center justify-center gap-2 group hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.25)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.4)] hover:-translate-y-0.5 shrink-0 whitespace-nowrap"
+              title="Watch Showreel"
+              className="hidden sm:flex bg-accent text-white px-5 py-2 lg:w-8 lg:h-8 lg:p-0 xl:w-auto xl:h-auto xl:px-6 xl:py-2.5 rounded-md lg:rounded-full xl:rounded-md font-display font-bold text-[10px] lg:text-xs uppercase tracking-[0.15em] transition-all duration-300 items-center justify-center gap-2 lg:gap-0 xl:gap-2 group hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.25)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.4)] hover:-translate-y-0.5 shrink-0 whitespace-nowrap"
             >
-              <span className="mt-[2px]">Watch Showreel</span>
+              <span className="mt-[2px] block lg:hidden xl:block">Watch Showreel</span>
               <span className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300 text-[14px] leading-none font-medium flex items-center justify-center">↗</span>
             </button>
           )}

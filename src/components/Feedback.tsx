@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, useAnimationFrame, useMotionValue, AnimatePresence } from 'framer-motion';
 import { AnimatedSection } from './AnimatedSection';
 import { testimonials, Testimonial } from '../data/feedback';
@@ -58,16 +59,23 @@ function ReadMoreModal({
   onPrev: () => void;
 }) {
   const testimonial = testimonials[currentIndex];
+  const [mounted, setMounted] = useState(false);
 
-  // Add keyboard navigation
+  // Add keyboard navigation and body scroll lock
   useEffect(() => {
+    setMounted(true);
+    document.body.style.overflow = 'hidden';
+    
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') onNext();
       if (e.key === 'ArrowLeft') onPrev();
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
   }, [onNext, onPrev, onClose]);
 
   // Add wheel/trackpad horizontal scroll navigation with cooldown to prevent rapid firing
@@ -85,12 +93,14 @@ function ReadMoreModal({
     }
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-background/80 backdrop-blur-md"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8 bg-background/80 backdrop-blur-md"
       onClick={onClose}
       onWheel={handleWheel}
     >
@@ -200,7 +210,8 @@ function ReadMoreModal({
           ))}
         </div>
       </motion.div>
-    </motion.div>
+    </motion.div>,
+    document.body
   );
 }
 
@@ -216,14 +227,22 @@ export function Feedback() {
   const secondSetFirstCardRef = useRef<HTMLDivElement>(null);
 
   // Duplicate testimonials enough times to seamlessly loop.
-  // 4 sets should be more than enough to cover even ultra-wide monitors.
-  const displayTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
+  // 6 sets ensure it covers even ultra-wide monitors effortlessly.
+  const displayTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials, ...testimonials, ...testimonials];
 
   useEffect(() => {
+    let initialized = false;
     const measure = () => {
       if (firstCardRef.current && secondSetFirstCardRef.current) {
         // The exact loop distance is the difference in position between the first card of set 1 and the first card of set 2.
-        setContentWidth(secondSetFirstCardRef.current.offsetLeft - firstCardRef.current.offsetLeft);
+        const width = secondSetFirstCardRef.current.offsetLeft - firstCardRef.current.offsetLeft;
+        setContentWidth(width);
+        
+        // Initialize x to the middle of our 6 duplicated sets to guarantee buffer on both sides
+        if (!initialized && width > 0) {
+          x.set(-width);
+          initialized = true;
+        }
       }
     };
 
@@ -247,11 +266,16 @@ export function Feedback() {
       x.set(x.get() - moveBy);
     }
 
-    const currentX = x.get();
-    if (currentX <= -contentWidth) {
-      x.set(currentX + contentWidth);
-    } else if (currentX > 0) {
-      x.set(currentX - contentWidth);
+    if (!isDragging) {
+      const currentX = x.get();
+      // Keep x safely within the middle sets to ensure infinite buffer on both ends.
+      if (currentX <= -3 * contentWidth || currentX > -contentWidth) {
+        const remainder = currentX % contentWidth;
+        let newX = remainder;
+        if (newX > 0) newX -= contentWidth; // Normalize to negative
+        newX -= contentWidth; // Shift into the safe [-2*CW, -CW] zone
+        x.set(newX);
+      }
     }
   });
 
@@ -299,9 +323,9 @@ export function Feedback() {
         <div className="absolute top-0 bottom-0 right-0 w-[24px] sm:w-[64px] z-30 bg-gradient-to-l from-background to-transparent pointer-events-none"></div>
         
         <div
-          className="overflow-hidden w-full cursor-grab active:cursor-grabbing py-1 md:py-4"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          className="overflow-hidden w-full cursor-grab active:cursor-grabbing py-6 md:py-10"
+          onPointerEnter={(e) => { if (e.pointerType === 'mouse') setIsHovered(true) }}
+          onPointerLeave={(e) => { if (e.pointerType === 'mouse') setIsHovered(false) }}
         >
           <motion.div
             ref={contentRef}
@@ -322,7 +346,7 @@ export function Feedback() {
                 <div
                   key={idx}
                   ref={idx === 0 ? firstCardRef : idx === testimonials.length ? secondSetFirstCardRef : null}
-                  className="flex-shrink-0 w-[45vw] sm:w-[340px] md:w-[400px] lg:w-[540px] h-[270px] sm:h-[370px] md:h-[420px] p-3 sm:p-6 md:p-8 border border-foreground/10 bg-foreground/[0.03] backdrop-blur-xl relative group hover:bg-foreground/[0.05] transition-all duration-500 flex flex-col rounded-xl shadow-[0_0_15px_rgba(255,184,198,0.15)] hover:shadow-[0_0_30px_rgba(255,184,198,0.4)] justify-between"
+                  className="flex-shrink-0 w-[65vw] sm:w-[340px] md:w-[400px] lg:w-[540px] h-[230px] sm:h-[370px] md:h-[420px] p-4 sm:p-6 md:p-8 border border-foreground/10 bg-foreground/[0.03] backdrop-blur-xl relative group hover:bg-foreground/[0.05] transition-all duration-500 flex flex-col rounded-xl shadow-[0_0_25px_rgba(255,184,198,0.05)] hover:shadow-[0_0_40px_rgba(255,184,198,0.15)] justify-between overflow-hidden"
                 >
                   <div
                     className="relative z-20 flex-grow flex flex-col justify-center cursor-pointer group/text"
@@ -332,7 +356,7 @@ export function Feedback() {
                     <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
 
                     <div className={`flex-grow flex flex-col ${isLongQuote ? 'justify-start pt-1' : 'justify-center'}`}>
-                      <p className="font-sans font-light text-[10px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-5 sm:line-clamp-[6] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0">
+                      <p className="font-sans font-light text-[12px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0">
                         {isLongQuote && (
                           <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif float-left mr-1 sm:mr-2 mt-[-4px] md:mt-[-10px] h-3 leading-none opacity-0">“</span>
                         )}
@@ -341,8 +365,8 @@ export function Feedback() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between mt-2 sm:mt-6 pt-2 sm:pt-5 border-t border-foreground/10 relative z-20">
-                    <div className="flex items-center gap-2 sm:gap-4">
+                  <div className="flex items-center justify-between mt-2 sm:mt-6 pt-2 sm:pt-5 border-t border-foreground/10 relative z-20 w-full min-w-0">
+                    <div className="flex items-center gap-2 sm:gap-4 w-full min-w-0">
                       {testimonial.avatar ? (
                         <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-foreground/20 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity shadow-lg">
                           <img
@@ -357,22 +381,24 @@ export function Feedback() {
                         </div>
                       )}
 
-                      <div className="flex flex-col min-w-0">
-                        <h4 className="font-mono font-bold text-[10px] sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1 sm:gap-2 truncate">
+                      <div className="flex flex-col min-w-0 w-full">
+                        <h4 className="font-mono font-bold text-[11px] sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1 sm:gap-2 truncate w-full">
                           {testimonial.link ? (
-                            <a href={testimonial.link} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors flex items-center gap-1 truncate">
+                            <a href={testimonial.link} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors flex items-center gap-1 truncate min-w-0">
                               <span className="truncate">{testimonial.author}</span> <span className="opacity-70 text-[8px] sm:text-[10px] shrink-0">↗</span>
                             </a>
                           ) : (
                             <span className="truncate">{testimonial.author}</span>
                           )}
-                          <VerifiedBadge hasLink={Boolean(testimonial.link)} />
+                          <div className="shrink-0">
+                            <VerifiedBadge hasLink={Boolean(testimonial.link)} />
+                          </div>
                         </h4>
-                        <p className="font-sans text-[8.5px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate">
+                        <p className="font-sans text-[9px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full">
                           {testimonial.role} {testimonial.company ? `• ${testimonial.company}` : ''}
                         </p>
                         {testimonial.project && (
-                          <p className="font-mono text-[7px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-0.5 sm:mt-2 font-bold truncate">
+                          <p className="font-mono text-[8px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-0.5 sm:mt-2 font-bold truncate w-full">
                             {testimonial.project}
                           </p>
                         )}

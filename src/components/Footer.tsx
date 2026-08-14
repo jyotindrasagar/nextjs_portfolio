@@ -29,13 +29,13 @@ export function Footer() {
         )}
       </AnimatePresence>
 
-      <footer className="mt-6 xl:mt-16 border-t border-foreground/10 px-4 md:px-8 lg:px-12 xl:px-16 pt-4 xl:pt-8 pb-4 xl:pb-12 flex flex-row items-center justify-between gap-4 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/50 select-none">
-        <div className="shrink-0">
+      <footer className="mt-6 xl:mt-16 border-t border-foreground/10 px-4 md:px-8 lg:px-12 xl:px-16 pt-6 md:pt-4 xl:pt-8 pb-8 md:pb-4 xl:pb-12 flex flex-col md:flex-row items-center justify-center md:justify-between gap-5 md:gap-4 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/50 select-none">
+        <div className="shrink-0 text-center md:text-left">
           <span>&copy; SINCE 2021 // ALL RIGHTS RESERVED</span>
         </div>
 
         {/* Social Links */}
-        <div className="flex flex-wrap items-center justify-end gap-3.5 sm:gap-5 md:gap-6">
+        <div className="flex flex-wrap items-center justify-center md:justify-end gap-5 sm:gap-5 md:gap-6">
           <a aria-label="Instagram profile" href="https://instagram.com/dieablofx" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>

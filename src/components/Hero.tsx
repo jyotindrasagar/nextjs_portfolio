@@ -1,5 +1,5 @@
 "use client";
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView, AnimatePresence, useMotionValue, useAnimationFrame } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 
 const roles = [
@@ -49,6 +49,58 @@ export function Hero({ loading = false }: { loading?: boolean }) {
   const isDesktop = windowWidth >= 1024;
 
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
+
+  // --- Carousel State ---
+  const [contentWidth, setContentWidth] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const x = useMotionValue(0);
+
+  const firstLogoRef = useRef<HTMLDivElement>(null);
+  const secondSetFirstLogoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let initialized = false;
+    const measure = () => {
+      if (firstLogoRef.current && secondSetFirstLogoRef.current) {
+        const width = secondSetFirstLogoRef.current.offsetLeft - firstLogoRef.current.offsetLeft;
+        setContentWidth(width);
+        if (!initialized && width > 0) {
+          x.set(-width);
+          initialized = true;
+        }
+      }
+    };
+
+    measure();
+    window.addEventListener('resize', measure);
+    const timer = setTimeout(measure, 500);
+
+    return () => {
+      window.removeEventListener('resize', measure);
+      clearTimeout(timer);
+    };
+  }, []);
+
+  useAnimationFrame((t, delta) => {
+    if (contentWidth === 0) return;
+
+    if (!isDragging) {
+      const moveBy = 0.03 * delta; // Slightly slower than feedback cards
+      x.set(x.get() - moveBy);
+    }
+
+    if (!isDragging) {
+      const currentX = x.get();
+      if (currentX <= -3 * contentWidth || currentX > -contentWidth) {
+        const remainder = currentX % contentWidth;
+        let newX = remainder;
+        if (newX > 0) newX -= contentWidth;
+        newX -= contentWidth;
+        x.set(newX);
+      }
+    }
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -333,30 +385,40 @@ export function Hero({ loading = false }: { loading?: boolean }) {
           <div className="col-span-1 lg:col-span-4 xl:col-span-5 relative min-h-[140px] flex items-end pb-4 lg:pb-6 px-3 md:px-4 lg:px-5 overflow-hidden">
             {/* Carousel spanning all over */}
             <div
-              className="absolute inset-0 w-full h-full overflow-hidden flex items-center opacity-100"
+              className="absolute inset-0 w-full h-full overflow-hidden flex items-center opacity-100 cursor-grab active:cursor-grabbing"
               style={{ maskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)' }}
             >
               <motion.div
                 className="flex items-center min-w-max"
-                animate={{ x: ["0%", "-50%"] }}
-                transition={{ duration: 250, repeat: Infinity, ease: "linear", repeatType: "loop" }}
-                style={{ willChange: "transform" }}
+                style={{ x, willChange: "transform" }}
+                drag="x"
+                dragConstraints={{ left: -10000, right: 10000 }}
+                dragElastic={0}
+                dragMomentum={false}
+                onDragStart={() => setIsDragging(true)}
+                onDragEnd={() => setIsDragging(false)}
               >
-                {/* Repeat logos twice for seamless infinite scroll */}
-                {[...Array(2)].map((_, i) => (
+                {/* 6 sets for robust infinite math */}
+                {[...Array(6)].map((_, i) => (
                   <div key={i} className="flex gap-8 sm:gap-12 lg:gap-16 items-center pr-8 sm:pr-12 lg:pr-16">
                     {displayClients.map((client, j) => (
-                      <div key={`${i}-${j}`} className="flex-shrink-0 flex items-center justify-center">
+                      <div 
+                        key={`${i}-${j}`} 
+                        ref={i === 0 && j === 0 ? firstLogoRef : i === 1 && j === 0 ? secondSetFirstLogoRef : null}
+                        className="flex-shrink-0 flex items-center justify-center group/logo"
+                      >
                         {client.svgLogo ? (
-                          client.svgLogo
+                          <div className="transition-all duration-300 opacity-70 group-hover/logo:opacity-100 group-hover/logo:![filter:none] [&>svg]:transition-all [&>svg]:duration-300 hover:[&>svg]:!filter-none">
+                            {client.svgLogo}
+                          </div>
                         ) : client.imagePath ? (
                           <img
                             src={client.imagePath}
                             alt={client.name}
-                            className={`h-7 sm:h-9 md:h-10 w-auto object-contain ${client.filterClass || 'brightness-0 invert'}`}
+                            className={`h-7 sm:h-9 md:h-10 w-auto object-contain transition-all duration-300 opacity-80 group-hover/logo:opacity-100 group-hover/logo:![filter:none] ${client.filterClass || 'brightness-0 invert'}`}
                           />
                         ) : (
-                          <div className={`${client.fontStyle} leading-none text-xs sm:text-sm`}>{client.textLogo}</div>
+                          <div className={`${client.fontStyle} leading-none text-xs sm:text-sm transition-colors duration-300 group-hover/logo:text-accent`}>{client.textLogo}</div>
                         )}
                       </div>
                     ))}
