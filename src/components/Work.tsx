@@ -122,10 +122,10 @@ export function Work() {
         <button
           onClick={() => goToPage(currentPage - 1)}
           disabled={currentPage === 0}
-          className="flex items-center gap-1 px-4 py-1.5 bg-foreground/[0.02] backdrop-blur-xl border border-foreground/20 text-foreground/80 hover:bg-foreground/[0.04] hover:border-foreground/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
+          className="flex items-center justify-center gap-1.5 font-display text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-white bg-transparent border border-white/20 hover:border-accent hover:bg-accent/90 shadow-[0_0_15px_rgba(234,135,156,0)] hover:shadow-[0_0_15px_rgba(234,135,156,0.3)] hover:-translate-y-0.5 disabled:opacity-20 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-transparent disabled:hover:border-white/20"
         >
           <ChevronLeft size={14} />
-          <span className="tracking-widest">PREV</span>
+          <span>PREV</span>
         </button>
         <div className="flex items-center gap-2">
           {Array.from({ length: totalPages }, (_, i) => (
@@ -145,9 +145,9 @@ export function Work() {
         <button
           onClick={() => goToPage(currentPage + 1)}
           disabled={currentPage >= totalPages - 1}
-          className="flex items-center gap-1 px-4 py-1.5 bg-foreground/[0.02] backdrop-blur-xl border border-foreground/20 text-foreground/80 hover:bg-foreground/[0.04] hover:border-foreground/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
+          className="flex items-center justify-center gap-1.5 font-display text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-white bg-transparent border border-white/20 hover:border-accent hover:bg-accent/90 shadow-[0_0_15px_rgba(234,135,156,0)] hover:shadow-[0_0_15px_rgba(234,135,156,0.3)] hover:-translate-y-0.5 disabled:opacity-20 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-transparent disabled:hover:border-white/20"
         >
-          <span className="tracking-widest">NEXT</span>
+          <span>NEXT</span>
           <ChevronRight size={14} />
         </button>
       </div>
@@ -191,9 +191,9 @@ export function Work() {
                         : { boxShadow: "0px 0px 20px rgba(255,184,198,0.6)" }
                     }
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className={`px-6 py-2.5 md:px-8 md:py-3 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-md ${activeCategory === cat
-                      ? 'border border-transparent text-white bg-accent scale-105 shadow-[0_4px_14px_rgba(234,135,156,0.3)]'
-                      : 'border border-accent/60 text-accent bg-transparent hover:border-accent hover:text-white hover:bg-accent/20 hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
+                    className={`px-6 py-2.5 md:px-8 md:py-3 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.2em] rounded-full ${activeCategory === cat
+                      ? 'border border-transparent text-white bg-accent/90 scale-105 shadow-[0_0_15px_rgba(234,135,156,0.3)]'
+                      : 'border border-accent/60 text-accent bg-transparent hover:border-accent hover:text-white hover:bg-accent/90 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(234,135,156,0.3)]'
                       }`}
                   >
                     {cat}
@@ -206,9 +206,9 @@ export function Work() {
                   key={cat}
                   aria-label={`Filter by ${cat} category`}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2.5 md:px-6 md:py-3 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-md ${activeCategory === cat
-                    ? 'border border-transparent text-white bg-accent shadow-[0_4px_14px_rgba(234,135,156,0.3)] scale-105'
-                    : 'border border-white/20 text-white/90 bg-transparent hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
+                  className={`px-5 py-2 md:px-6 md:py-2.5 transition-all duration-300 cursor-pointer text-[9px] md:text-[10px] font-display font-bold uppercase tracking-[0.2em] rounded-full ${activeCategory === cat
+                    ? 'border border-transparent text-white bg-accent/90 shadow-[0_0_15px_rgba(234,135,156,0.3)] scale-105'
+                    : 'border border-white/20 text-white/90 bg-transparent hover:border-accent hover:text-white hover:bg-accent/90 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(234,135,156,0.3)]'
                     }`}
                 >
                   {cat}
