@@ -38,44 +38,74 @@ export function About() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 pt-8 border-t border-foreground/15 font-sans text-sm md:text-base uppercase tracking-wider text-foreground/90 font-medium">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 mt-12 pt-8 border-t border-foreground/15 text-foreground/80 font-light text-sm md:text-base leading-relaxed">
             <div>
-              <h4 className="text-accent font-bold mb-4 text-[12px] md:text-[14px] tracking-[0.2em]">// CORE CAPABILITIES</h4>
-              <ul className="space-y-2 font-semibold">
-                <li className="hover:text-accent transition-colors">Creative Direction</li>
-                <li className="hover:text-accent transition-colors">Motion & Stage Graphics</li>
-                <li className="hover:text-accent transition-colors">3D & 2D Animation</li>
-                <li className="hover:text-accent transition-colors">Track & Simulation</li>
-                <li className="hover:text-accent transition-colors">Ads and Promotional Marketing</li>
-                <li className="hover:text-accent transition-colors">Music Videos</li>
+              <h4 className="text-accent font-mono font-bold mb-5 text-[11px] md:text-[13px] tracking-[0.2em] uppercase">// CORE CAPABILITIES</h4>
+              <ul className="space-y-3.5">
+                <li className="flex items-center gap-3 group">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors shrink-0"></span>
+                  <span className="group-hover:text-foreground transition-colors">Creative Direction</span>
+                </li>
+                <li className="flex items-center gap-3 group">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors shrink-0"></span>
+                  <span className="group-hover:text-foreground transition-colors">Motion & Stage Graphics</span>
+                </li>
+                <li className="flex items-center gap-3 group">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors shrink-0"></span>
+                  <span className="group-hover:text-foreground transition-colors">3D & 2D Animation</span>
+                </li>
+                <li className="flex items-center gap-3 group">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors shrink-0"></span>
+                  <span className="group-hover:text-foreground transition-colors">Track & Simulation</span>
+                </li>
+                <li className="flex items-center gap-3 group">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors shrink-0"></span>
+                  <span className="group-hover:text-foreground transition-colors">Ads and Promotional Marketing</span>
+                </li>
+                <li className="flex items-center gap-3 group">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors shrink-0"></span>
+                  <span className="group-hover:text-foreground transition-colors">Music Videos</span>
+                </li>
               </ul>
             </div>
             <div>
-              <h4 className="text-accent font-bold mb-4 text-[12px] md:text-[14px] tracking-[0.2em]">// ENGINE SETUP</h4>
-              <ul className="space-y-3 font-semibold">
-                <li className="flex items-center justify-between">
-                  <span>AFTER EFFECTS / AE</span>
-                  <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/AfterEffects.svg" className="w-6 h-6 object-contain" alt="After Effects" loading="lazy" />
+              <h4 className="text-accent font-mono font-bold mb-5 text-[11px] md:text-[13px] tracking-[0.2em] uppercase">// ENGINE SETUP</h4>
+              <ul className="space-y-3.5">
+                <li className="flex items-center justify-between group">
+                  <div className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors shrink-0"></span>
+                    <span className="group-hover:text-foreground transition-colors">After Effects / AE</span>
+                  </div>
+                  <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/AfterEffects.svg" className="w-[18px] h-[18px] object-contain opacity-80 group-hover:opacity-100 transition-opacity" alt="After Effects" loading="lazy" />
                 </li>
-                <li className="flex items-center justify-between">
-                  <span>PREMIERE PRO / DAVINCI</span>
+                <li className="flex items-center justify-between group">
+                  <div className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors shrink-0"></span>
+                    <span className="group-hover:text-foreground transition-colors">Premiere Pro / DaVinci</span>
+                  </div>
                   <div className="flex gap-2">
-                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/Premiere_Pro.svg" className="w-6 h-6 object-contain" alt="Premiere Pro" loading="lazy" />
-                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/DaVinci_Resolve_Studio.png" className="w-6 h-6 object-contain" alt="DaVinci Resolve" loading="lazy" />
+                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/Premiere_Pro.svg" className="w-[18px] h-[18px] object-contain opacity-80 group-hover:opacity-100 transition-opacity" alt="Premiere Pro" loading="lazy" />
+                    <img src="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/DaVinci_Resolve_Studio.png" className="w-[18px] h-[18px] object-contain opacity-80 group-hover:opacity-100 transition-opacity" alt="DaVinci Resolve" loading="lazy" />
                   </div>
                 </li>
-                <li className="flex items-center justify-between">
-                  <span>BLENDER / UNREAL ENGINE</span>
+                <li className="flex items-center justify-between group">
+                  <div className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors shrink-0"></span>
+                    <span className="group-hover:text-foreground transition-colors">Blender / Unreal Engine</span>
+                  </div>
                   <div className="flex gap-2">
-                    <img src="https://cdn.simpleicons.org/blender/ea7600" className="w-6 h-6" alt="Blender" loading="lazy" />
-                    <img src="https://cdn.simpleicons.org/unrealengine" className="w-6 h-6 opacity-80 dark:invert" alt="Unreal" loading="lazy" />
+                    <img src="https://cdn.simpleicons.org/blender/ea7600" className="w-[18px] h-[18px] opacity-80 group-hover:opacity-100 transition-opacity" alt="Blender" loading="lazy" />
+                    <img src="https://cdn.simpleicons.org/unrealengine" className="w-[18px] h-[18px] opacity-60 dark:invert group-hover:opacity-100 transition-opacity" alt="Unreal" loading="lazy" />
                   </div>
                 </li>
-                <li className="flex items-center justify-between">
-                  <span>SYNTHEYES & MOCHA PRO</span>
+                <li className="flex items-center justify-between group">
+                  <div className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors shrink-0"></span>
+                    <span className="group-hover:text-foreground transition-colors">SynthEyes & Mocha Pro</span>
+                  </div>
                   <div className="flex gap-2">
-                    <img src="/syntheyes.png" className="w-6 h-6 object-cover rounded-sm" alt="Syntheyes" loading="lazy" />
-                    <img src="/mochapro.jpg" className="w-6 h-6 object-cover rounded-sm" alt="Mocha Pro" loading="lazy" />
+                    <img src="/syntheyes.png" className="w-[18px] h-[18px] object-cover rounded-[2px] opacity-80 group-hover:opacity-100 transition-opacity" alt="Syntheyes" loading="lazy" />
+                    <img src="/mochapro.jpg" className="w-[18px] h-[18px] object-cover rounded-[2px] opacity-80 group-hover:opacity-100 transition-opacity" alt="Mocha Pro" loading="lazy" />
                   </div>
                 </li>
               </ul>
