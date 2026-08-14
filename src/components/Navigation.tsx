@@ -148,8 +148,8 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
         aria-label="Main Navigation"
         style={compact ? {} : { height: navHeight, borderBottomColor: navBorder, borderBottomWidth: '1px' }}
         className={`${compact
-            ? 'relative w-full flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 bg-transparent select-none z-[60]'
-            : 'fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 bg-background/95 transition-colors duration-500 border-b select-none'
+          ? 'relative w-full flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 bg-transparent select-none z-[60]'
+          : 'fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 bg-background/95 transition-colors duration-500 border-b select-none'
           }`}
       >
         {/* Brand logo */}
@@ -176,20 +176,20 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
             className="font-display font-bold tracking-[0.15em] lg:tracking-[0.18em] text-xs sm:text-sm uppercase hover:opacity-80 transition-opacity flex items-center"
           >
             <span className="sr-only">DIEABLO FX</span>
-            <div aria-hidden="true" className="flex items-baseline flex-nowrap whitespace-nowrap">
+            <div aria-hidden="true" className="flex items-center flex-nowrap whitespace-nowrap">
               <motion.img
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 src={logoUrl}
                 alt="DieabloFX Logo"
-                className="h-[0.85em] w-auto object-contain logo-image invert dark:invert-0 mr-[0.1em] shrink-0"
+                className="h-[0.82em] w-auto object-contain logo-image invert dark:invert-0 mr-[0.1em] shrink-0"
               />
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                className="flex items-baseline leading-none"
+                className="flex items-center leading-none"
               >
                 <span className="text-foreground">IEABLO</span>
                 <span className="text-accent">FX</span>
