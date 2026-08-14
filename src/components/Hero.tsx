@@ -177,7 +177,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 src={logoUrl}
                 alt="DieabloFX Logo"
-                className="h-[0.82em] w-auto object-contain logo-image invert dark:invert-0 -mr-[0.06em] mt-[0.08em] shrink-0"
+                className="h-[0.82em] w-auto object-contain logo-image invert dark:invert-0 -mr-[0.06em] shrink-0"
               />
               <div
                 className="font-display font-bold tracking-tight text-foreground leading-none"
@@ -404,8 +404,8 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="flex gap-8 sm:gap-12 lg:gap-16 items-center pr-8 sm:pr-12 lg:pr-16">
                     {displayClients.map((client, j) => (
-                      <div 
-                        key={`${i}-${j}`} 
+                      <div
+                        key={`${i}-${j}`}
                         ref={i === 0 && j === 0 ? firstLogoRef : i === 1 && j === 0 ? secondSetFirstLogoRef : null}
                         className="flex-shrink-0 flex items-center justify-center group/logo"
                       >

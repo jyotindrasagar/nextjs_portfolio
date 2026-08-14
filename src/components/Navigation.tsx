@@ -23,8 +23,8 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
   const { scrollY } = useScroll();
   const navHeight = useTransform(scrollY, [0, 100], [80, 60]);
   const navBorder = useTransform(
-    scrollY, 
-    [0, 100], 
+    scrollY,
+    [0, 100],
     ['rgba(0,0,0,0)', theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)']
   );
 
@@ -76,7 +76,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
         audioRef.current.play().then(() => {
           setIsPlaying(true);
           window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: 'bg-music' } }));
-        }).catch(() => {});
+        }).catch(() => { });
       }
     }
   };
@@ -92,11 +92,11 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
   useEffect(() => {
     const navIds = navLinks.map(link => link.id);
     let elements: HTMLElement[] = [];
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (isScrollingRef.current) return;
-        
+
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setActiveSection(entry.target.id);
@@ -135,7 +135,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
       setMobileMenuOpen(false);
       isScrollingRef.current = true;
       element.scrollIntoView({ behavior: 'smooth' });
-      
+
       setTimeout(() => {
         isScrollingRef.current = false;
       }, 1000);
@@ -147,16 +147,15 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
       <motion.nav
         aria-label="Main Navigation"
         style={compact ? {} : { height: navHeight, borderBottomColor: navBorder, borderBottomWidth: '1px' }}
-        className={`${
-          compact 
+        className={`${compact
             ? 'relative w-full flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 bg-transparent select-none z-[60]'
             : 'fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 bg-background/95 transition-colors duration-500 border-b select-none'
-        }`}
+          }`}
       >
         {/* Brand logo */}
         <div className="shrink-0 flex items-center gap-4 sm:gap-6">
           {!compact && (
-            <button 
+            <button
               aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
               aria-expanded={mobileMenuOpen}
               className="lg:hidden mr-3 p-2 -ml-2 text-foreground/80 hover:text-foreground transition-colors"
@@ -166,8 +165,8 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
             </button>
           )}
 
-          <a 
-            href="/" 
+          <a
+            href="/"
             onClick={(e) => {
               if (compact) return;
               e.preventDefault();
@@ -178,15 +177,15 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
           >
             <span className="sr-only">DIEABLO FX</span>
             <div aria-hidden="true" className="flex items-center flex-nowrap whitespace-nowrap">
-              <motion.img 
+              <motion.img
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                src={logoUrl} 
-                alt="DieabloFX Logo" 
-                className="h-[0.82em] w-auto object-contain logo-image invert dark:invert-0 mr-[0.1em] mt-[0.08em] shrink-0" 
+                src={logoUrl}
+                alt="DieabloFX Logo"
+                className="h-[0.82em] w-auto object-contain logo-image invert dark:invert-0 mr-[0.1em] shrink-0"
               />
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
@@ -221,14 +220,12 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
                 }}
                 className={
                   link.id === 'contact'
-                    ? `ml-2 xl:ml-4 px-4 py-1.5 xl:px-5 xl:py-2 rounded-[3px] font-display font-bold text-[9px] xl:text-[10px] uppercase tracking-[0.15em] transition-all duration-300 flex items-center justify-center group hover:-translate-y-0.5 ${
-                        activeSection === link.id
-                          ? 'bg-accent text-white shadow-[0_4px_14px_rgba(234,135,156,0.3)]'
-                          : 'bg-transparent border border-accent text-accent hover:bg-accent hover:text-white hover:shadow-[0_6px_20px_rgba(234,135,156,0.4)]'
-                      }`
-                    : `h-full px-2 lg:px-2.5 xl:px-3.5 flex items-center justify-center hover:text-accent transition-colors relative ${
-                        activeSection === link.id ? 'text-accent' : 'text-foreground font-bold'
-                      }`
+                    ? `ml-2 xl:ml-4 px-4 py-1.5 xl:px-5 xl:py-2 rounded-[3px] font-display font-bold text-[9px] xl:text-[10px] uppercase tracking-[0.15em] transition-all duration-300 flex items-center justify-center group hover:-translate-y-0.5 ${activeSection === link.id
+                      ? 'bg-accent text-white shadow-[0_4px_14px_rgba(234,135,156,0.3)]'
+                      : 'bg-transparent border border-accent text-accent hover:bg-accent hover:text-white hover:shadow-[0_6px_20px_rgba(234,135,156,0.4)]'
+                    }`
+                    : `h-full px-2 lg:px-2.5 xl:px-3.5 flex items-center justify-center hover:text-accent transition-colors relative ${activeSection === link.id ? 'text-accent' : 'text-foreground font-bold'
+                    }`
                 }
               >
                 <span>{link.label}</span>
@@ -246,7 +243,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
 
         {/* Action button & theme toggle */}
         <div className="shrink-0 flex justify-end items-center gap-1.5 sm:gap-2 lg:gap-2.5 xl:gap-4 ml-auto z-10">
-          
+
           {compact && (
             <div className="hidden sm:flex items-center gap-4 mr-4">
               <a href="https://x.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Twitter (X)">
@@ -278,7 +275,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
 
           {/* Watch Showreel Button */}
           {!compact && (
-            <button 
+            <button
               onClick={(e) => {
                 handleScroll(e, 'work');
                 setActiveSection('work');
@@ -302,7 +299,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
               >
                 {/* Dashed ring */}
                 <div className={`absolute inset-0 rounded-full border border-dashed border-foreground/30 transition-transform duration-[3000ms] ease-linear ${isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}></div>
-                
+
                 {/* Icon */}
                 <div className="relative">
                   <Music size={14} className={`transition-colors duration-300 ${isPlaying ? 'text-accent' : 'text-foreground/70 group-hover:text-foreground'}`} />
@@ -310,7 +307,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-[1.5px] bg-foreground/70 -rotate-45 group-hover:bg-foreground transition-colors duration-300"></div>
                   )}
                 </div>
-                
+
                 {/* Subtle glow when playing */}
                 {isPlaying && (
                   <div className="absolute inset-0 rounded-full bg-accent/10 blur-md -z-10 animate-pulse"></div>
@@ -319,11 +316,11 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
 
               {/* The Volume Slider (appears on hover, vertical dropdown) */}
               <div className="absolute top-full mt-2 opacity-0 h-0 group-hover/music:opacity-100 group-hover/music:h-24 transition-all duration-300 overflow-hidden flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm border border-foreground/10 rounded-full w-8">
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="1" 
-                  step="0.05" 
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
                   value={volume}
                   onChange={handleVolumeChange}
                   className="w-16 h-1 bg-foreground/20 rounded-lg appearance-none cursor-pointer accent-accent -rotate-90 origin-center"
@@ -333,8 +330,8 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
           )}
 
           {/* Theme (Day/Night) Toggle */}
-          <button 
-            onClick={toggleTheme} 
+          <button
+            onClick={toggleTheme}
             aria-label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
             className="relative w-8 h-8 sm:w-8 sm:h-8 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-colors text-foreground/70 hover:text-foreground"
             title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
@@ -362,26 +359,25 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
                   handleScroll(e, link.id);
                   setActiveSection(link.id);
                 }}
-                className={`text-base font-display uppercase tracking-[0.18em] transition-colors ${
-                  activeSection === link.id ? 'text-accent font-extrabold' : 'text-foreground font-extrabold hover:text-accent'
-                }`}
+                className={`text-base font-display uppercase tracking-[0.18em] transition-colors ${activeSection === link.id ? 'text-accent font-extrabold' : 'text-foreground font-extrabold hover:text-accent'
+                  }`}
               >
                 {link.label}
               </a>
             ))}
-            
-          <button 
-            onClick={(e) => {
-              setMobileMenuOpen(false);
-              handleScroll(e, 'work');
-              setActiveSection('work');
-              window.dispatchEvent(new CustomEvent('openShowreel'));
-            }}
-            className="flex bg-accent text-white px-4 py-3 rounded-[3px] font-display font-bold text-[10px] sm:text-xs uppercase tracking-[0.18em] transition-all duration-300 items-center justify-between group hover:bg-accent/90 w-full"
-          >
-            <span>Watch Showreel</span>
-            <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-base leading-none font-light">↗</span>
-          </button>
+
+            <button
+              onClick={(e) => {
+                setMobileMenuOpen(false);
+                handleScroll(e, 'work');
+                setActiveSection('work');
+                window.dispatchEvent(new CustomEvent('openShowreel'));
+              }}
+              className="flex bg-accent text-white px-4 py-3 rounded-[3px] font-display font-bold text-[10px] sm:text-xs uppercase tracking-[0.18em] transition-all duration-300 items-center justify-between group hover:bg-accent/90 w-full"
+            >
+              <span>Watch Showreel</span>
+              <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-base leading-none font-light">↗</span>
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -389,4 +385,3 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
     </>
   );
 }
-
