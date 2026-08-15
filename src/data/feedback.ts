@@ -19,7 +19,7 @@ export const testimonials: Testimonial[] = [
     avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/ashley%20marie.jpg"
   },
   {
-    quote: "I've used Dieablo for outsourcing editing countless times and his work is out of this world. From his VFX compositing to simple cutting, I have always had a great experience working together. And Quick turn around with good communication makes him one of the best editors you can ask for.",
+    quote: "I've worked with Dieablo for outsourcing editing countless times and his work is out of this world. From his VFX compositing to simple cutting, I have always had a great experience working together. And Quick turn around with good communication makes him one of the best editors you can ask for.",
     author: "Luke Darby",
     role: "Videographer & Editor",
     company: "",
