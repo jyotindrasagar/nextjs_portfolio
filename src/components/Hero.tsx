@@ -54,10 +54,25 @@ export function Hero({ loading = false }: { loading?: boolean }) {
   const [contentWidth, setContentWidth] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [isStatsInView, setIsStatsInView] = useState(true);
+  const statsRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
 
   const firstLogoRef = useRef<HTMLDivElement>(null);
   const secondSetFirstLogoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsStatsInView(entry.isIntersecting);
+      },
+      { rootMargin: '200px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     let initialized = false;
@@ -83,7 +98,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
   }, []);
 
   useAnimationFrame((t, delta) => {
-    if (contentWidth === 0) return;
+    if (contentWidth === 0 || !isStatsInView) return;
 
     if (!isHovered && !isDragging) {
       const moveBy = 0.03 * delta; // Slightly slower than feedback cards
@@ -213,7 +228,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
             <button
               aria-label="Contact Me"
               onClick={() => scrollToSection('contact')}
-              className="bg-transparent border border-white/60 text-white px-6 py-4 md:px-8 md:py-4.5 rounded-[3px] text-[12px] md:text-[13px] font-display font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5"
+              className="bg-transparent border border-foreground/30 text-foreground px-6 py-4 md:px-8 md:py-4.5 rounded-[3px] text-[12px] md:text-[13px] font-display font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-between gap-6 md:gap-12 xl:gap-8 group sm:min-w-[190px] md:min-w-[230px] xl:min-w-[190px] hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5"
             >
               <span>Contact Me</span>
               <span className="text-[16px] opacity-80 leading-none">≡</span>
@@ -272,7 +287,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     baseOpacity="opacity-[0.99]"
                     baseGrayscale="grayscale-[40%]"
                     alwaysPlay={isDesktop}
-                    loadDelay={2000}
+                    loadDelay={1000}
                     volume={0.88}
                   >
                     <div className="absolute bottom-4 left-4 z-20 flex flex-col">
@@ -296,7 +311,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     baseOpacity="opacity-[0.99]"
                     baseGrayscale="grayscale-[40%]"
                     alwaysPlay={isDesktop}
-                    loadDelay={3000}
+                    loadDelay={2000}
                   >
                     <div className="absolute bottom-4 left-4 z-20 flex flex-col">
                       <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[3].title}</span>
@@ -325,7 +340,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                   baseOpacity="opacity-[0.99]"
                   baseGrayscale="grayscale-[40%]"
                   alwaysPlay={isDesktop}
-                  loadDelay={4000}
+                  loadDelay={2000}
                 >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
                     <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[1].title}</span>
@@ -348,7 +363,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                   baseOpacity="opacity-[0.99]"
                   baseGrayscale="grayscale-[40%]"
                   alwaysPlay={isDesktop}
-                  loadDelay={4000}
+                  loadDelay={2000}
                 >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
                     <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[4].title}</span>
@@ -376,7 +391,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
 
 
       {/* Bottom Stats Section */}
-      <div className="w-full mt-4 z-20">
+      <div ref={statsRef} className="w-full mt-4 z-20">
         <div
           className="grid grid-cols-1 lg:grid-cols-12 border-t border-b border-white/50 dark:border-accent/50 divide-y lg:divide-y-0 lg:divide-x divide-white/50 dark:divide-accent/50 px-4 md:px-6 lg:px-6 xl:px-16 bg-[#ea879c] dark:bg-black text-white relative overflow-hidden"
         >

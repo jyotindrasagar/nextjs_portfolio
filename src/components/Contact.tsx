@@ -168,27 +168,33 @@ export function Contact() {
                 </div>
 
                 {/* Bottom Info Grid: Quick Channels (ALL SCREENS) & Timezone Engine (DESKTOP XL ONLY) */}
-                <div className="grid pt-8 xl:pt-10 border-t border-foreground/15 grid-cols-1 xl:grid-cols-2 gap-8 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.15em] text-foreground/85">
-                  <div className="flex flex-col gap-4">
-                    <h4 className="text-accent font-bold tracking-widest">// QUICK CHANNELS</h4>
+                <div className="grid pt-8 xl:pt-10 border-t border-foreground/15 grid-cols-1 xl:grid-cols-2 gap-8 text-[11px] sm:text-[12px] uppercase text-foreground/85">
+                  <div className="flex flex-col gap-3">
+                    <h4 className="text-accent font-mono font-bold text-[11px] md:text-[12px] tracking-[0.2em]">// QUICK CHANNELS</h4>
                     <div className="flex flex-col gap-1.5">
-                      <button aria-label="Copy Email address" onClick={() => handleCopy('hello@dieablo.com', 'EMAIL')} className="hover:text-accent transition-colors font-bold text-left text-[11px] sm:text-[12px] flex items-center gap-2 group">
+                      <button 
+                        aria-label="Copy Email address" 
+                        onClick={() => handleCopy('hello@dieablo.com', 'EMAIL')} 
+                        className="hover:text-accent transition-colors font-display font-bold text-left text-xs sm:text-sm tracking-[0.15em] flex items-center gap-2.5 group cursor-pointer text-foreground"
+                      >
+                        <Mail size={15} className="text-accent opacity-90 group-hover:scale-110 transition-transform shrink-0" strokeWidth={1.75} />
                         <span>HELLO@DIEABLO.COM</span>
                         {copiedToast === 'EMAIL' && (
-                          <span className="text-[10px] bg-accent text-black font-extrabold px-2 py-0.5 rounded shadow-[0_0_10px_rgba(255,184,198,0.5)]">✓ COPIED</span>
+                          <span className="text-[10px] bg-accent text-black font-mono font-extrabold px-2 py-0.5 rounded shadow-[0_0_10px_rgba(255,184,198,0.5)]">✓ COPIED</span>
                         )}
                       </button>
                     </div>
-                    <Mail size={15} className="opacity-70 mt-1" strokeWidth={1.5} />
                   </div>
 
-                  <div className="hidden xl:flex flex-col gap-4">
-                    <h4 className="text-accent font-bold tracking-widest">// TIMEZONE ENGINE</h4>
-                    <div className="flex flex-col gap-1.5">
-                      <span className="font-bold text-[11px] sm:text-[12px]">LOCAL CLOCK // {time}</span>
-                      <span className="text-foreground/60 font-semibold">STABLE FEED</span>
+                  <div className="hidden xl:flex flex-col gap-3">
+                    <h4 className="text-accent font-mono font-bold text-[11px] md:text-[12px] tracking-[0.2em]">// TIMEZONE ENGINE</h4>
+                    <div className="flex flex-col gap-1 font-mono">
+                      <div className="flex items-center gap-2.5 text-foreground font-bold text-xs sm:text-sm tracking-[0.15em]">
+                        <Clock size={15} className="text-accent opacity-90 shrink-0" strokeWidth={1.75} />
+                        <span>LOCAL CLOCK // {time}</span>
+                      </div>
+                      <span className="text-foreground/50 text-[10px] tracking-[0.2em] font-semibold pl-6">STABLE FEED</span>
                     </div>
-                    <Clock size={15} className="opacity-70 mt-1" strokeWidth={1.5} />
                   </div>
                 </div>
               </div>

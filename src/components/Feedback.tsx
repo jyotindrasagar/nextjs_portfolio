@@ -100,7 +100,7 @@ function ReadMoreModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8 bg-background/80 backdrop-blur-md"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8 bg-black/60 dark:bg-black/80 backdrop-blur-md"
       onClick={onClose}
       onWheel={handleWheel}
     >
@@ -109,12 +109,12 @@ function ReadMoreModal({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.95 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-4xl max-h-[90vh] md:max-h-[80vh] flex flex-col border border-foreground/10 bg-[#0a0a0a]/90 backdrop-blur-xl shadow-2xl rounded-xl overflow-hidden"
+        className="relative w-full max-w-4xl max-h-[90vh] md:max-h-[80vh] flex flex-col border border-foreground/15 bg-background dark:bg-[#0a0a0a]/95 backdrop-blur-2xl shadow-2xl rounded-xl overflow-hidden"
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 md:top-6 md:right-6 text-foreground/50 hover:text-foreground transition-colors z-50"
+          className="absolute top-4 right-4 md:top-6 md:right-6 text-foreground/50 hover:text-foreground hover:text-accent transition-colors z-50 p-2 cursor-pointer"
         >
           <X size={24} />
         </button>
@@ -170,7 +170,7 @@ function ReadMoreModal({
                     )}
                     <VerifiedBadge hasLink={Boolean(testimonial.link)} />
                   </h4>
-                  <p className="font-sans text-[11px] md:text-xs text-foreground/50 mt-1">
+                  <p className="font-sans text-[11px] md:text-xs text-foreground/60 mt-1">
                     {testimonial.role} {testimonial.company ? `• ${testimonial.company}` : ''}
                   </p>
                   {testimonial.project && (
@@ -185,13 +185,13 @@ function ReadMoreModal({
               <div className="flex items-center justify-center md:justify-end gap-4">
                 <button 
                   onClick={onPrev}
-                  className="w-10 h-10 rounded-full border border-foreground/20 flex items-center justify-center text-foreground/70 hover:text-foreground hover:border-foreground/40 transition-colors"
+                  className="w-10 h-10 rounded-full border border-foreground/20 flex items-center justify-center text-foreground/70 hover:text-foreground hover:border-accent hover:text-accent hover:bg-accent/10 transition-all cursor-pointer"
                 >
                   <ArrowLeft size={18} />
                 </button>
                 <button 
                   onClick={onNext}
-                  className="w-10 h-10 rounded-full border border-foreground/20 flex items-center justify-center text-foreground/70 hover:text-foreground hover:border-foreground/40 transition-colors"
+                  className="w-10 h-10 rounded-full border border-foreground/20 flex items-center justify-center text-foreground/70 hover:text-foreground hover:border-accent hover:text-accent hover:bg-accent/10 transition-all cursor-pointer"
                 >
                   <ArrowRight size={18} />
                 </button>
@@ -220,11 +220,27 @@ export function Feedback() {
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedTestimonialIndex, setSelectedTestimonialIndex] = useState<number | null>(null);
+  const [isInView, setIsInView] = useState(false);
 
+  const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const firstCardRef = useRef<HTMLDivElement>(null);
   const secondSetFirstCardRef = useRef<HTMLDivElement>(null);
+
+  // Intersection observer to only run animation loop when in view
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { rootMargin: '200px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Duplicate testimonials enough times to seamlessly loop.
   // 6 sets ensure it covers even ultra-wide monitors effortlessly.
@@ -259,7 +275,7 @@ export function Feedback() {
   const x = useMotionValue(0);
 
   useAnimationFrame((t, delta) => {
-    if (contentWidth === 0 || selectedTestimonialIndex !== null) return; // Pause if modal is open
+    if (contentWidth === 0 || selectedTestimonialIndex !== null || !isInView) return; // Pause if modal is open or off-screen
 
     if (!isHovered && !isDragging) {
       const moveBy = 0.04 * delta;
@@ -289,7 +305,7 @@ export function Feedback() {
   };
 
   return (
-    <section className="relative pt-10 md:pt-20 pb-6 md:pb-12 px-0 border-t border-foreground/10 overflow-hidden">
+    <section id="feedback" ref={sectionRef} className="relative pt-10 md:pt-20 pb-6 md:pb-12 px-0 border-t border-foreground/10 overflow-hidden">
 
       <AnimatePresence>
         {selectedTestimonialIndex !== null && (
@@ -376,7 +392,7 @@ export function Feedback() {
                           />
                         </div>
                       ) : (
-                        <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-foreground/50 font-bold font-mono shrink-0 text-[10px] sm:text-sm shadow-lg">
+                        <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center text-foreground/50 font-bold font-mono shrink-0 text-[10px] sm:text-sm shadow-lg">
                           {testimonial.author.charAt(0)}
                         </div>
                       )}

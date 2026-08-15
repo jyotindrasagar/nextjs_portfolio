@@ -155,7 +155,7 @@ export function Work() {
   };
 
   return (
-    <section className="relative pt-0 pb-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 overflow-hidden">
+    <section id="work" className="relative pt-0 pb-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 overflow-hidden">
       {/* CAD reference label */}
       <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-foreground/90 mb-4 md:mb-6 uppercase relative z-10">
         <span className="text-accent">❖</span>
@@ -191,10 +191,11 @@ export function Work() {
                         : { boxShadow: "0px 0px 20px rgba(255,184,198,0.6)" }
                     }
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className={`px-6 py-2.5 md:px-8 md:py-3 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] ${activeCategory === cat
-                      ? 'border border-transparent text-white bg-accent scale-105 shadow-[0_4px_14px_rgba(234,135,156,0.3)]'
-                      : 'border border-accent/60 text-accent bg-transparent hover:border-accent hover:text-white hover:bg-accent/20 hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
-                      }`}
+                    className={`px-6 py-2.5 md:px-8 md:py-3 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] ${
+                      activeCategory === cat
+                        ? 'border border-transparent text-white bg-accent scale-105 shadow-[0_4px_14px_rgba(234,135,156,0.3)]'
+                        : 'border border-accent/60 text-accent bg-transparent hover:border-accent hover:text-white hover:bg-accent hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
+                    }`}
                   >
                     {cat}
                   </motion.button>
@@ -206,10 +207,11 @@ export function Work() {
                   key={cat}
                   aria-label={`Filter by ${cat} category`}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2.5 md:px-6 md:py-3 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] ${activeCategory === cat
-                    ? 'border border-transparent text-white bg-accent shadow-[0_4px_14px_rgba(234,135,156,0.3)] scale-105'
-                    : 'border border-white/20 text-white/90 bg-transparent hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
-                    }`}
+                  className={`px-4 py-2.5 md:px-6 md:py-3 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] ${
+                    activeCategory === cat
+                      ? 'border border-transparent text-white bg-accent shadow-[0_4px_14px_rgba(234,135,156,0.3)] scale-105'
+                      : 'border border-foreground/20 text-foreground/80 bg-transparent hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
+                  }`}
                 >
                   {cat}
                 </button>
@@ -243,8 +245,8 @@ export function Work() {
                     onClick={() => setActiveSubCategory(subCat)}
                     className={`text-left px-4 py-2.5 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] w-full ${
                       activeSubCategory === subCat
-                        ? 'border border-transparent text-white bg-accent'
-                        : 'border border-white/20 text-white/90 bg-transparent hover:border-white/40 hover:bg-white/5'
+                        ? 'border border-transparent text-white bg-accent shadow-[0_4px_14px_rgba(234,135,156,0.3)]'
+                        : 'border border-foreground/20 text-foreground/80 bg-transparent hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5'
                     }`}
                   >
                     {subCat}

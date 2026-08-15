@@ -6,41 +6,11 @@ import { Navigation } from '../components/Navigation';
 import { Hero } from '../components/Hero';
 import { CADOverlay } from '../components/CADOverlay';
 import { FallingPetals } from '../components/FallingPetals';
-
-import dynamic from 'next/dynamic';
-
-const Work = dynamic(() => import('../components/Work').then(m => m.Work), { ssr: false });
-const Projects = dynamic(() => import('../components/Projects').then(m => m.Projects), { ssr: false });
-const About = dynamic(() => import('../components/About').then(m => m.About), { ssr: false });
-const Feedback = dynamic(() => import('../components/Feedback').then(m => m.Feedback), { ssr: false });
-const Contact = dynamic(() => import('../components/Contact').then(m => m.Contact), { ssr: false });
-
-function LazySection({ id, children, height = "100vh" }: { id: string, children: React.ReactNode, height?: string }) {
-  const [hasMounted, setHasMounted] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setHasMounted(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '300px' } 
-    );
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <section id={id} ref={ref} style={{ minHeight: hasMounted ? "auto" : height }} className="relative w-full">
-      {hasMounted ? children : null}
-    </section>
-  );
-}
+import { Work } from '../components/Work';
+import { Projects } from '../components/Projects';
+import { About } from '../components/About';
+import { Feedback } from '../components/Feedback';
+import { Contact } from '../components/Contact';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -148,12 +118,12 @@ export default function Home() {
           <Hero loading={loading} />
           
           <div className="relative w-full bg-background/40 dark:bg-[#0F0F10]/50 backdrop-blur-[3px] border-t border-foreground/5 shadow-[0_-10px_40px_rgba(0,0,0,0.3)] -mt-24 pt-24">
-            <LazySection id="work" height="100vh"><Work /></LazySection>
-            <LazySection id="breakdowns" height="100vh"><Projects /></LazySection>
-            <LazySection id="about" height="100vh"><About /></LazySection>
+            <Work />
+            <Projects />
+            <About />
             <div ref={fadeRef}>
-              <LazySection id="feedback" height="50vh"><Feedback /></LazySection>
-              <LazySection id="contact" height="50vh"><Contact /></LazySection>
+              <Feedback />
+              <Contact />
             </div>
           </div>
         </main>
