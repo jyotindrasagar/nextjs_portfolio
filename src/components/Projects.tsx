@@ -178,18 +178,34 @@ export function Projects() {
                   )}
                 </div>
 
-                {/* Go to Blogs Button */}
-                <AnimatedSection>
-                  <div className="w-full flex justify-center mt-4">
+                {/* Go to Blogs Button & Under Development Notice */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                  className="w-full flex flex-col items-center justify-center gap-3 mt-6 text-center"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  >
                     <Link
                       href="/blogs"
-                      className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 px-8 py-3 rounded-md transition-colors text-foreground flex items-center gap-2"
+                      className="group font-mono text-[11px] font-bold tracking-[0.25em] uppercase bg-foreground/[0.04] hover:bg-accent text-foreground hover:text-white border border-foreground/15 hover:border-accent px-8 py-3.5 rounded-md transition-all duration-300 flex items-center gap-3 shadow-sm hover:shadow-[0_4px_16px_rgba(234,135,156,0.35)] cursor-pointer"
                     >
                       <span>Go To Full Blogs Section</span>
-                      <span>→</span>
+                      <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5 font-bold">→</span>
                     </Link>
+                  </motion.div>
+
+                  {/* Under Development Status Note */}
+                  <div className="flex items-center gap-2 font-mono text-[9px] md:text-[10px] tracking-[0.18em] uppercase text-foreground/50">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                    <span>Project under development // Full blog page in active build</span>
                   </div>
-                </AnimatedSection>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>

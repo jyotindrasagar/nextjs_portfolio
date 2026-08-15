@@ -88,8 +88,18 @@ export default function BlogsPage() {
       <div className="relative z-10 w-full bg-transparent text-foreground pt-12 transition-colors duration-500 overflow-x-hidden min-h-screen flex flex-col">
         <main className="relative w-full max-w-7xl mx-auto flex flex-col gap-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pb-24 flex-1">
           
+          {/* Under Development Banner */}
+          <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-4 py-3 rounded-md bg-foreground/[0.03] border border-foreground/10 text-foreground/80 font-mono text-[10px] md:text-[11px] tracking-wider uppercase">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" />
+              <span className="font-bold text-accent">Notice:</span>
+              <span>This project & full blog archive are currently under development.</span>
+            </div>
+            <span className="text-foreground/40 text-[9px] tracking-widest">[WIP // IN ACTIVE BUILD]</span>
+          </div>
+
           {/* Top Actions & Filters */}
-          <div className="flex flex-col lg:flex-row justify-end items-start lg:items-center gap-6 border-b border-foreground/10 pb-8 mt-8">
+          <div className="flex flex-col lg:flex-row justify-end items-start lg:items-center gap-6 border-b border-foreground/10 pb-8">
             {/* Tag Filters */}
             <div className="flex flex-wrap items-center gap-2">
               <button
