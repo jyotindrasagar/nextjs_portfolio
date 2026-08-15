@@ -431,8 +431,8 @@ export function Feedback() {
           </motion.div>
         </div>
 
-        {/* Industry Vouches Section */}
-        <VouchesSection />
+        {/* Industry Vouches / Creative Circle Section (Hidden) */}
+        {/* <VouchesSection /> */}
       </div>
     </section>
   );
