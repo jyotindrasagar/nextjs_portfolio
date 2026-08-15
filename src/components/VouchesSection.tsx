@@ -51,7 +51,7 @@ export function VouchesSection() {
         className="group relative inline-flex items-center gap-3 px-6 py-3 rounded-full border border-foreground/15 bg-panels/40 backdrop-blur-sm text-foreground text-xs sm:text-sm font-mono font-bold tracking-[0.2em] uppercase hover:border-accent hover:text-accent transition-all duration-300 shadow-md hover:shadow-[0_0_20px_rgba(254,205,211,0.25)]"
       >
         <ShieldCheck size={16} className="text-accent group-hover:scale-110 transition-transform" />
-        <span>// INDUSTRY VOUCHES ({vouches.length})</span>
+        <span>// CREATIVE CIRCLE ({vouches.length})</span>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
@@ -60,7 +60,7 @@ export function VouchesSection() {
         </motion.div>
       </button>
 
-      {/* Expandable Vouches Section */}
+      {/* Expandable Creative Circle Section */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -73,7 +73,7 @@ export function VouchesSection() {
             {/* Header Tag */}
             <div className="text-center mb-3">
               <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.25em] uppercase text-accent font-bold">
-                RECOMMENDED & VOUCHED BY INDUSTRY EDITORS
+                CREATIVE CIRCLE // INDUSTRY EDITORS & COLLABORATORS
               </span>
             </div>
 
