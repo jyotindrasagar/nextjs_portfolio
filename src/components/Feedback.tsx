@@ -243,8 +243,8 @@ export function Feedback() {
   }, []);
 
   // Duplicate testimonials enough times to seamlessly loop.
-  // 6 sets ensure it covers even ultra-wide monitors effortlessly.
-  const displayTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials, ...testimonials, ...testimonials];
+  // 4 sets provide full coverage on ultra-wide screens while keeping GPU composite overhead light.
+  const displayTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
 
   useEffect(() => {
     let initialized = false;
@@ -254,7 +254,7 @@ export function Feedback() {
         const width = secondSetFirstCardRef.current.offsetLeft - firstCardRef.current.offsetLeft;
         setContentWidth(width);
         
-        // Initialize x to the middle of our 6 duplicated sets to guarantee buffer on both sides
+        // Initialize x to the middle set to guarantee buffer on both sides
         if (!initialized && width > 0) {
           x.set(-width);
           initialized = true;
@@ -278,18 +278,20 @@ export function Feedback() {
     if (contentWidth === 0 || selectedTestimonialIndex !== null || !isInView) return; // Pause if modal is open or off-screen
 
     if (!isHovered && !isDragging) {
-      const moveBy = 0.04 * delta;
+      // Clamp delta to prevent erratic jumps on high-refresh 120Hz/144Hz displays
+      const clampedDelta = Math.min(delta, 32);
+      const moveBy = 0.04 * clampedDelta;
       x.set(x.get() - moveBy);
     }
 
     if (!isDragging) {
       const currentX = x.get();
       // Keep x safely within the middle sets to ensure infinite buffer on both ends.
-      if (currentX <= -3 * contentWidth || currentX > -contentWidth) {
+      if (currentX <= -2 * contentWidth || currentX > 0) {
         const remainder = currentX % contentWidth;
         let newX = remainder;
         if (newX > 0) newX -= contentWidth; // Normalize to negative
-        newX -= contentWidth; // Shift into the safe [-2*CW, -CW] zone
+        newX -= contentWidth;
         x.set(newX);
       }
     }
@@ -345,8 +347,8 @@ export function Feedback() {
         >
           <motion.div
             ref={contentRef}
-            className="flex gap-2.5 sm:gap-4 md:gap-6 w-max pl-3 sm:pl-8"
-            style={{ x }}
+            className="flex gap-2.5 sm:gap-4 md:gap-6 w-max pl-3 sm:pl-8 transform-gpu will-change-transform"
+            style={{ x, willChange: 'transform' }}
             drag="x"
             dragConstraints={{ left: -10000, right: 10000 }}
             dragElastic={0}
@@ -362,7 +364,7 @@ export function Feedback() {
                 <div
                   key={idx}
                   ref={idx === 0 ? firstCardRef : idx === testimonials.length ? secondSetFirstCardRef : null}
-                  className="flex-shrink-0 w-[65vw] sm:w-[340px] md:w-[400px] lg:w-[540px] h-[230px] sm:h-[370px] md:h-[420px] p-4 sm:p-6 md:p-8 border border-foreground/10 bg-foreground/[0.03] backdrop-blur-xl relative group hover:bg-foreground/[0.05] transition-all duration-500 flex flex-col rounded-xl shadow-[0_0_25px_rgba(255,184,198,0.05)] hover:shadow-[0_0_40px_rgba(255,184,198,0.15)] justify-between overflow-hidden"
+                  className="flex-shrink-0 w-[65vw] sm:w-[340px] md:w-[400px] lg:w-[540px] h-[230px] sm:h-[370px] md:h-[420px] p-4 sm:p-6 md:p-8 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform"
                 >
                   <div
                     className="relative z-20 flex-grow flex flex-col justify-center cursor-pointer group/text"
@@ -384,15 +386,17 @@ export function Feedback() {
                   <div className="flex items-center justify-between mt-2 sm:mt-6 pt-2 sm:pt-5 border-t border-foreground/10 relative z-20 w-full min-w-0">
                     <div className="flex items-center gap-2 sm:gap-4 w-full min-w-0">
                       {testimonial.avatar ? (
-                        <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-foreground/20 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity shadow-lg">
+                        <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-foreground/20 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity shadow-sm">
                           <img
                             src={testimonial.avatar}
                             alt={`${testimonial.author} Avatar`}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover"
                           />
                         </div>
                       ) : (
-                        <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center text-foreground/50 font-bold font-mono shrink-0 text-[10px] sm:text-sm shadow-lg">
+                        <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center text-foreground/50 font-bold font-mono shrink-0 text-[10px] sm:text-sm shadow-sm">
                           {testimonial.author.charAt(0)}
                         </div>
                       )}

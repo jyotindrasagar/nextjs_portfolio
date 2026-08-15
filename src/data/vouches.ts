@@ -36,6 +36,33 @@ export const vouches: Vouch[] = [
     linkType: 'portfolio',
     verified: true,
   },
+  {
+    id: '2',
+    name: 'Domenico Pepe',
+    role: 'video Editor',
+    avatar: 'https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/vouch%20logos/domz.jpg',
+    link: 'https://ytjobs.co/@happydomz',
+    linkType: 'portfolio',
+    verified: true,
+  },
+  {
+    id: '3',
+    name: 'Domenico Pepe',
+    role: 'video Editor',
+    avatar: 'https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/vouch%20logos/domz.jpg',
+    link: 'https://ytjobs.co/@happydomz',
+    linkType: 'portfolio',
+    verified: true,
+  },
+  {
+    id: '4',
+    name: 'Domenico Pepe',
+    role: 'video Editor',
+    avatar: 'https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/vouch%20logos/domz.jpg',
+    link: 'https://ytjobs.co/@happydomz',
+    linkType: 'portfolio',
+    verified: true,
+  },
 
 ];
 

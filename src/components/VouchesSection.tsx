@@ -11,9 +11,8 @@ export function VouchesSection() {
   const [isDragging, setIsDragging] = useState(false);
 
   // Ensure we have enough items to fill the screen for seamless infinite scroll
-  // We need at least enough copies to cover ultra-wide monitors, even if there's only 1 vouch.
-  const minItems = 30; // 30 items is safe for 4k/5k screens
-  const repeatCount = Math.max(4, Math.ceil(minItems / Math.max(1, vouches.length)));
+  const minItems = 12;
+  const repeatCount = Math.max(3, Math.ceil(minItems / Math.max(1, vouches.length)));
   const displayVouches = Array.from({ length: repeatCount }).flatMap(() => vouches);
 
   // Continuous infinite scroll state
@@ -32,7 +31,8 @@ export function VouchesSection() {
       const secondSetPos = secondSetFirstCardRef.current.offsetLeft;
       const setWidth = secondSetPos - firstPos;
 
-      let currentX = x.get() - baseSpeed * (delta / 16);
+      const clampedDelta = Math.min(delta, 32);
+      let currentX = x.get() - baseSpeed * (clampedDelta / 16);
 
       // Loop back smoothly once first set has scrolled off
       if (Math.abs(currentX) >= setWidth) {
@@ -48,7 +48,7 @@ export function VouchesSection() {
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="group relative inline-flex items-center gap-3 px-6 py-3 rounded-full border border-foreground/15 bg-panels/30 backdrop-blur-md text-foreground text-xs sm:text-sm font-mono font-bold tracking-[0.2em] uppercase hover:border-accent hover:text-accent transition-all duration-300 shadow-md hover:shadow-[0_0_20px_rgba(254,205,211,0.25)]"
+        className="group relative inline-flex items-center gap-3 px-6 py-3 rounded-full border border-foreground/15 bg-panels/40 backdrop-blur-sm text-foreground text-xs sm:text-sm font-mono font-bold tracking-[0.2em] uppercase hover:border-accent hover:text-accent transition-all duration-300 shadow-md hover:shadow-[0_0_20px_rgba(254,205,211,0.25)]"
       >
         <ShieldCheck size={16} className="text-accent group-hover:scale-110 transition-transform" />
         <span>// INDUSTRY VOUCHES ({vouches.length})</span>
@@ -85,8 +85,8 @@ export function VouchesSection() {
             >
               <motion.div
                 ref={containerRef}
-                className="flex gap-4 sm:gap-6 w-max px-6 py-2"
-                style={{ x }}
+                className="flex gap-4 sm:gap-6 w-max px-6 py-2 transform-gpu will-change-transform"
+                style={{ x, willChange: 'transform' }}
                 drag="x"
                 dragConstraints={{ left: -10000, right: 10000 }}
                 dragElastic={0}
@@ -105,13 +105,15 @@ export function VouchesSection() {
                           window.open(item.link, '_blank', 'noopener,noreferrer');
                         }
                       }}
-                      className="flex-shrink-0 flex items-center gap-3.5 px-4 py-3 rounded-full border border-foreground/10 bg-foreground/[0.03] backdrop-blur-xl hover:bg-foreground/[0.08] hover:border-accent/50 transition-all duration-300 cursor-pointer group shadow-sm hover:shadow-[0_0_20px_rgba(254,205,211,0.18)] min-w-[200px] sm:min-w-[220px]"
+                      className="flex-shrink-0 flex items-center gap-3.5 px-4 py-3 rounded-full border border-foreground/10 bg-panels/80 dark:bg-panels/50 hover:bg-panels/90 hover:border-accent/50 transition-colors duration-300 cursor-pointer group shadow-sm hover:shadow-[0_0_15px_rgba(254,205,211,0.15)] min-w-[200px] sm:min-w-[220px] transform-gpu will-change-transform"
                     >
                       {/* Profile Avatar */}
                       <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-foreground/20 shrink-0 group-hover:scale-105 transition-transform">
                         <img
                           src={item.avatar}
                           alt={item.name}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover"
                         />
                       </div>
