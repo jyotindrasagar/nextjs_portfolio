@@ -70,14 +70,14 @@ export const testimonials: Testimonial[] = [
   },
   {
     quote: "Dieablo’s visual effects genuinely stunned me. The way he brought the marketing video together made the whole piece feel much more polished and impactful. The VFX he added for the two the videos we commisioned him for were spot on and was exactly what we wanted.",
-    author: "Nimit ",
-    role: "Client Role / Title",               // e.g. "Content Creator", "CEO", "Singer/Songwriter"
-    company: "Company or Studio Name",         // Optional company/brand name
-    agency: "Agency Name",                     // Optional agency name
-    agencyLink: "https://agency-website.com",  // Optional agency website link
-    project: "Project - Marketing Video",      // Project or Collaboration Title
-    link: "https://instagram.com/client",
-    avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/jacob.jpeg"
+    author: "Nimit Thawranii",
+    role: "Founder",
+    company: "Company or Studio Name",
+    agency: "Blackbunny",
+    agencyLink: "https://www.hekayahaus.com/",
+    project: "Project - Marketing Video",
+    link: "https://www.blackbunny.ae/",
+    avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/nimit.jpg"
   },
 
 
