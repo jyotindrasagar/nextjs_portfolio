@@ -36,18 +36,8 @@ const initialFormData: FormData = {
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
-export function Contact() {
+function TimezoneClock() {
   const [time, setTime] = useState('');
-  const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [status, setStatus] = useState<FormStatus>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [copiedToast, setCopiedToast] = useState<string | null>(null);
-
-  const handleCopy = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedToast(label);
-    setTimeout(() => setCopiedToast(null), 2500);
-  };
 
   useEffect(() => {
     const updateTime = () => {
@@ -65,6 +55,26 @@ export function Contact() {
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  return (
+    <div className="flex items-center gap-2.5 text-foreground font-bold text-xs sm:text-sm tracking-[0.15em]">
+      <Clock size={15} className="text-accent opacity-90 shrink-0" strokeWidth={1.75} />
+      <span>LOCAL CLOCK // {time}</span>
+    </div>
+  );
+}
+
+export function Contact() {
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [status, setStatus] = useState<FormStatus>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [copiedToast, setCopiedToast] = useState<string | null>(null);
+
+  const handleCopy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedToast(label);
+    setTimeout(() => setCopiedToast(null), 2500);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -189,10 +199,7 @@ export function Contact() {
                   <div className="hidden xl:flex flex-col gap-3">
                     <h4 className="text-accent font-mono font-bold text-[11px] md:text-[12px] tracking-[0.2em]">// TIMEZONE ENGINE</h4>
                     <div className="flex flex-col gap-1 font-mono">
-                      <div className="flex items-center gap-2.5 text-foreground font-bold text-xs sm:text-sm tracking-[0.15em]">
-                        <Clock size={15} className="text-accent opacity-90 shrink-0" strokeWidth={1.75} />
-                        <span>LOCAL CLOCK // {time}</span>
-                      </div>
+                      <TimezoneClock />
                       <span className="text-foreground/50 text-[10px] tracking-[0.2em] font-semibold pl-6">STABLE FEED</span>
                     </div>
                   </div>

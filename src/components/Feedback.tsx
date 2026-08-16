@@ -215,6 +215,10 @@ function ReadMoreModal({
   );
 }
 
+// Duplicate testimonials enough times to seamlessly loop.
+// 4 sets provide full coverage on ultra-wide screens while keeping GPU composite overhead light.
+const displayTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
+
 export function Feedback() {
   const [contentWidth, setContentWidth] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -241,10 +245,6 @@ export function Feedback() {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
-
-  // Duplicate testimonials enough times to seamlessly loop.
-  // 4 sets provide full coverage on ultra-wide screens while keeping GPU composite overhead light.
-  const displayTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
 
   useEffect(() => {
     let initialized = false;

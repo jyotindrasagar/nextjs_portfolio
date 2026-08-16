@@ -91,7 +91,9 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
 
   useEffect(() => {
     const navIds = navLinks.map(link => link.id);
-    let elements: HTMLElement[] = [];
+    const elements = new Set<HTMLElement>();
+    let interval: ReturnType<typeof setInterval> | null = null;
+    let attempts = 0;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -107,20 +109,30 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
     );
 
     const tryObserve = () => {
+      attempts++;
       navIds.forEach((id) => {
         const element = document.getElementById(id);
-        if (element && !elements.includes(element)) {
+        if (element && !elements.has(element)) {
           observer.observe(element);
-          elements.push(element);
+          elements.add(element);
         }
       });
+
+      if (elements.size >= navIds.length || attempts >= 5) {
+        if (interval) {
+          clearInterval(interval);
+          interval = null;
+        }
+      }
     };
 
     tryObserve();
-    const interval = setInterval(tryObserve, 1000);
+    if (elements.size < navIds.length) {
+      interval = setInterval(tryObserve, 1000);
+    }
 
     return () => {
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
       observer.disconnect();
     };
   }, []);

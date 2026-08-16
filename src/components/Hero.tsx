@@ -34,6 +34,37 @@ const displayClients = baseClients.length > 0
   ? Array.from({ length: Math.ceil(12 / baseClients.length) }).flatMap(() => baseClients)
   : [];
 
+function HeroRoleRotator() {
+  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex items-center gap-3 text-[11px] md:text-[12px] tracking-[0.25em] font-mono font-semibold text-foreground/90 mb-4 md:mb-6 uppercase">
+      <span className="text-accent font-bold">+</span>
+      <div className="relative overflow-hidden h-[1.5em] w-full">
+        <AnimatePresence mode="popLayout">
+          <motion.span
+            key={currentRoleIndex}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="absolute inset-0 flex items-center whitespace-nowrap"
+          >
+            {roles[currentRoleIndex]}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
 export function Hero({ loading = false }: { loading?: boolean }) {
   const { scrollY } = useScroll();
   const yImages = useTransform(scrollY, [0, 500], [0, -30]);
@@ -47,8 +78,6 @@ export function Hero({ loading = false }: { loading?: boolean }) {
   }, []);
 
   const isDesktop = windowWidth >= 1024;
-
-  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
 
   // --- Carousel State ---
   const [contentWidth, setContentWidth] = useState(0);
@@ -117,13 +146,6 @@ export function Hero({ loading = false }: { loading?: boolean }) {
     }
   });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -160,23 +182,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
         <div className="flex-1 w-full xl:max-w-[40%] z-20 select-none relative mt-0 md:mt-8 lg:pl-8 xl:pl-10 shrink-0 xl:flex xl:flex-col xl:justify-between h-full">
 
           <div>
-            <div className="flex items-center gap-3 text-[11px] md:text-[12px] tracking-[0.25em] font-mono font-semibold text-foreground/90 mb-4 md:mb-6 uppercase">
-              <span className="text-accent font-bold">+</span>
-              <div className="relative overflow-hidden h-[1.5em] w-full">
-                <AnimatePresence mode="popLayout">
-                  <motion.span
-                    key={currentRoleIndex}
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -20, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="absolute inset-0 flex items-center whitespace-nowrap"
-                  >
-                    {roles[currentRoleIndex]}
-                  </motion.span>
-                </AnimatePresence>
-              </div>
-            </div>
+            <HeroRoleRotator />
 
             <h1 className="sr-only">DieabloFX | Video Editor & Motion Designer</h1>
             <motion.div

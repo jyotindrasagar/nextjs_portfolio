@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projectsData } from '../data/projects';
 import { HoverVideoPlayer } from './HoverVideoPlayer';
@@ -19,6 +19,56 @@ const categoryInfo: Record<string, { title: string; desc: string }> = {
 // Items per page: 6 = 2 rows × 3 cols on desktop, fits nicely on all screens
 const ITEMS_PER_PAGE = 6;
 
+interface PaginationControlsProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+// Pagination controls component (reused top and bottom)
+const PaginationControls = memo(function PaginationControls({
+  currentPage,
+  totalPages,
+  onPageChange
+}: PaginationControlsProps) {
+  if (totalPages <= 1) return null;
+  return (
+    <div className="flex items-center justify-center gap-4 font-mono text-xs">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 0}
+        className="flex items-center gap-1 px-4 py-1.5 bg-foreground/[0.02] backdrop-blur-xl border border-foreground/20 text-foreground/80 hover:bg-foreground/[0.04] hover:border-foreground/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
+      >
+        <ChevronLeft size={14} />
+        <span className="tracking-widest">PREV</span>
+      </button>
+      <div className="flex items-center gap-2">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => onPageChange(i)}
+            className={`w-2 h-2 rounded-full transition-all cursor-pointer ${i === currentPage
+                ? 'bg-accent scale-125'
+                : 'bg-foreground/30 hover:bg-foreground/50'
+              }`}
+          />
+        ))}
+      </div>
+      <span className="text-foreground/40 tracking-widest">
+        {currentPage + 1} / {totalPages}
+      </span>
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage >= totalPages - 1}
+        className="flex items-center gap-1 px-4 py-1.5 bg-foreground/[0.02] backdrop-blur-xl border border-foreground/20 text-foreground/80 hover:bg-foreground/[0.04] hover:border-foreground/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
+      >
+        <span className="tracking-widest">NEXT</span>
+        <ChevronRight size={14} />
+      </button>
+    </div>
+  );
+});
+
 export function Work() {
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
   const [activeSubCategory, setActiveSubCategory] = useState<string>('ALL');
@@ -26,24 +76,26 @@ export function Work() {
   const [currentPage, setCurrentPage] = useState(0);
   const categories = ['SHOWREEL', 'ALL', 'COMMERCIAL', 'DOCUMENTARY', 'SOCIAL', 'DEMOS', 'TEASERS'];
 
-  const filteredProjects = activeCategory === 'ALL'
-    ? projectsData.filter(p => p.category.toUpperCase() !== 'SOCIAL')
-    : projectsData.filter(p => {
-        if (p.category.toUpperCase() !== activeCategory) return false;
-        if (activeCategory === 'COMMERCIAL' && activeSubCategory !== 'ALL') {
-          return p.subCategory?.toUpperCase() === activeSubCategory;
-        }
-        return true;
-      });
+  const sortedProjects = useMemo(() => {
+    const filtered = activeCategory === 'ALL'
+      ? projectsData.filter(p => p.category.toUpperCase() !== 'SOCIAL')
+      : projectsData.filter(p => {
+          if (p.category.toUpperCase() !== activeCategory) return false;
+          if (activeCategory === 'COMMERCIAL' && activeSubCategory !== 'ALL') {
+            return p.subCategory?.toUpperCase() === activeSubCategory;
+          }
+          return true;
+        });
 
-  const sortedProjects = [...filteredProjects].sort((a, b) => {
-    if (a.pinPosition !== undefined && b.pinPosition !== undefined) {
-      return a.pinPosition - b.pinPosition;
-    }
-    if (a.pinPosition !== undefined) return -1;
-    if (b.pinPosition !== undefined) return 1;
-    return 0;
-  });
+    return [...filtered].sort((a, b) => {
+      if (a.pinPosition !== undefined && b.pinPosition !== undefined) {
+        return a.pinPosition - b.pinPosition;
+      }
+      if (a.pinPosition !== undefined) return -1;
+      if (b.pinPosition !== undefined) return 1;
+      return 0;
+    });
+  }, [activeCategory, activeSubCategory]);
 
   // Reset page when category changes
   useEffect(() => {
@@ -61,10 +113,12 @@ export function Work() {
 
   // Pagination
   const totalPages = Math.ceil(sortedProjects.length / ITEMS_PER_PAGE);
-  const paginatedProjects = sortedProjects.slice(
-    currentPage * ITEMS_PER_PAGE,
-    (currentPage + 1) * ITEMS_PER_PAGE
-  );
+  const paginatedProjects = useMemo(() => {
+    return sortedProjects.slice(
+      currentPage * ITEMS_PER_PAGE,
+      (currentPage + 1) * ITEMS_PER_PAGE
+    );
+  }, [sortedProjects, currentPage]);
 
   const goToPage = (page: number) => {
     setPlayingVideoId(null);
@@ -72,7 +126,7 @@ export function Work() {
   };
 
   const getEmbedUrl = (project: any) => {
-    const url = project?.videoUrl;
+    const url = project?.videoUrl?.trim();
     if (!url) return '';
 
     let embedUrl = '';
@@ -96,62 +150,23 @@ export function Work() {
   };
 
   const getThumbnailUrl = (project: any) => {
-    if (project.videoUrl) {
-      if (project.videoUrl.includes('youtube.com/watch?v=')) {
-        const id = project.videoUrl.split('v=')[1].split('&')[0];
+    const url = project?.videoUrl?.trim();
+    if (url) {
+      if (url.includes('youtube.com/watch?v=')) {
+        const id = url.split('v=')[1].split('&')[0];
         return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
       }
-      if (project.videoUrl.includes('youtu.be/')) {
-        const id = project.videoUrl.split('youtu.be/')[1].split('?')[0];
+      if (url.includes('youtu.be/')) {
+        const id = url.split('youtu.be/')[1].split('?')[0];
         return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
       }
-      if (project.videoUrl.includes('youtube.com/embed/')) {
-        const id = project.videoUrl.split('embed/')[1].split('?')[0];
+      if (url.includes('youtube.com/embed/')) {
+        const id = url.split('embed/')[1].split('?')[0];
         return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
       }
     }
 
     return undefined;
-  };
-
-  // Pagination controls component (reused top and bottom)
-  const PaginationControls = () => {
-    if (totalPages <= 1) return null;
-    return (
-      <div className="flex items-center justify-center gap-4 font-mono text-xs">
-        <button
-          onClick={() => goToPage(currentPage - 1)}
-          disabled={currentPage === 0}
-          className="flex items-center gap-1 px-4 py-1.5 bg-foreground/[0.02] backdrop-blur-xl border border-foreground/20 text-foreground/80 hover:bg-foreground/[0.04] hover:border-foreground/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
-        >
-          <ChevronLeft size={14} />
-          <span className="tracking-widest">PREV</span>
-        </button>
-        <div className="flex items-center gap-2">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => goToPage(i)}
-              className={`w-2 h-2 rounded-full transition-all cursor-pointer ${i === currentPage
-                  ? 'bg-accent scale-125'
-                  : 'bg-foreground/30 hover:bg-foreground/50'
-                }`}
-            />
-          ))}
-        </div>
-        <span className="text-foreground/40 tracking-widest">
-          {currentPage + 1} / {totalPages}
-        </span>
-        <button
-          onClick={() => goToPage(currentPage + 1)}
-          disabled={currentPage >= totalPages - 1}
-          className="flex items-center gap-1 px-4 py-1.5 bg-foreground/[0.02] backdrop-blur-xl border border-foreground/20 text-foreground/80 hover:bg-foreground/[0.04] hover:border-foreground/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
-        >
-          <span className="tracking-widest">NEXT</span>
-          <ChevronRight size={14} />
-        </button>
-      </div>
-    );
   };
 
   return (
@@ -181,24 +196,18 @@ export function Work() {
             {categories.map((cat) => {
               if (cat === 'SHOWREEL') {
                 return (
-                  <motion.button
+                  <button
                     key={cat}
                     aria-label={`Filter by ${cat} category`}
                     onClick={() => setActiveCategory(cat)}
-                    animate={
-                      activeCategory !== cat
-                        ? { boxShadow: ["0px 0px 4px rgba(255,184,198,0.2)", "0px 0px 16px rgba(255,184,198,0.6)", "0px 0px 4px rgba(255,184,198,0.2)"] }
-                        : { boxShadow: "0px 0px 20px rgba(255,184,198,0.6)" }
-                    }
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     className={`px-6 py-2.5 md:px-8 md:py-3 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] ${
                       activeCategory === cat
-                        ? 'border border-transparent text-white bg-accent scale-105 shadow-[0_4px_14px_rgba(234,135,156,0.3)]'
-                        : 'border border-accent/60 text-accent bg-transparent hover:border-accent hover:text-white hover:bg-accent hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
+                        ? 'border border-transparent text-white bg-accent scale-105 shadow-[0_0_20px_rgba(255,184,198,0.6)]'
+                        : 'border border-accent/60 text-accent bg-transparent animate-showreel-glow hover:border-accent hover:text-white hover:bg-accent hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
                     }`}
                   >
                     {cat}
-                  </motion.button>
+                  </button>
                 );
               }
 
@@ -280,7 +289,11 @@ export function Work() {
             <div className="relative w-full">
               {/* Top pagination - responsive positioning to avoid mobile overlap */}
               <div className="flex justify-center lg:justify-end lg:absolute lg:-top-14 lg:right-0 z-50 mb-6 lg:mb-0 w-full">
-                <PaginationControls />
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={goToPage}
+                />
               </div>
 
               {/* Grid — 1 col mobile, 2 cols iPad/tablet, 3 cols large desktop */}
@@ -379,7 +392,7 @@ export function Work() {
                 })}
 
                   {/* Translucent Placeholder Card if count < 4 */}
-                  {filteredProjects.length < 4 && (
+                  {sortedProjects.length < 4 && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
