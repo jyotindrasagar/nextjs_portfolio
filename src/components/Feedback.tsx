@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, useAnimationFrame, useMotionValue, AnimatePresence } from 'framer-motion';
 import { AnimatedSection } from './AnimatedSection';
@@ -135,8 +135,8 @@ function ReadMoreModal({
             <span className="md:hidden text-accent text-5xl font-serif absolute top-0 left-0 leading-none">”</span>
 
             {/* Scrollable Text */}
-            <div className="flex-grow overflow-y-auto pr-2 md:pr-4 mt-4 md:mt-0 pb-6 mb-4 custom-scrollbar">
-              <p className="font-sans font-light text-base md:text-lg lg:text-xl leading-relaxed text-foreground/90 whitespace-pre-wrap">
+            <div className={`flex-grow overflow-y-auto pr-2 md:pr-4 mt-4 md:mt-0 pb-6 mb-4 custom-scrollbar flex flex-col ${testimonial.quote.length > 200 ? 'justify-start' : 'justify-center items-center'}`}>
+              <p className={`font-sans font-light text-base md:text-lg lg:text-xl leading-relaxed text-foreground/90 whitespace-pre-wrap ${testimonial.quote.length > 200 ? 'text-left' : 'text-center'}`}>
                 {testimonial.quote}
               </p>
             </div>
@@ -215,11 +215,14 @@ function ReadMoreModal({
   );
 }
 
-// Duplicate testimonials enough times to seamlessly loop.
-// 4 sets provide full coverage on ultra-wide screens while keeping GPU composite overhead light.
-const displayTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
-
 export function Feedback() {
+  // Ensure enough items to seamlessly loop across any screen size
+  const displayTestimonials = useMemo(() => {
+    const minItems = 12;
+    const repeatCount = Math.max(3, Math.ceil(minItems / Math.max(1, testimonials.length)));
+    return Array.from({ length: repeatCount }).flatMap(() => testimonials);
+  }, [testimonials]);
+
   const [contentWidth, setContentWidth] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -270,7 +273,7 @@ export function Feedback() {
       window.removeEventListener('resize', measure);
       clearTimeout(timer);
     };
-  }, []);
+  }, [displayTestimonials]);
 
   const x = useMotionValue(0);
 
@@ -357,8 +360,8 @@ export function Feedback() {
             onDragEnd={() => setIsDragging(false)}
           >
             {displayTestimonials.map((testimonial, idx) => {
-              // Check if long quote starting from top
-              const isLongQuote = testimonial.quote.length > 400;
+              // Check if long quote that fills the card (left-aligned) or short quote (middle/center-aligned)
+              const isLongQuote = testimonial.quote.length > 200;
 
               return (
                 <div
@@ -373,8 +376,8 @@ export function Feedback() {
                     {/* Fixed Top-Left Quote Icon for all cards */}
                     <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
 
-                    <div className={`flex-grow flex flex-col ${isLongQuote ? 'justify-start pt-1' : 'justify-center'}`}>
-                      <p className="font-sans font-light text-[12px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0">
+                    <div className={`flex-grow flex flex-col ${isLongQuote ? 'justify-start pt-1' : 'justify-center items-center'}`}>
+                      <p className={`font-sans font-light text-[12px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0 ${isLongQuote ? 'text-left' : 'text-center'}`}>
                         {isLongQuote && (
                           <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif float-left mr-1 sm:mr-2 mt-[-4px] md:mt-[-10px] h-3 leading-none opacity-0">“</span>
                         )}

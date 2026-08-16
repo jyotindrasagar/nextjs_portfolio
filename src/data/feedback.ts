@@ -10,6 +10,15 @@ export interface Testimonial {
 
 export const testimonials: Testimonial[] = [
   {
+    quote: "Extremely talented and responsive. Would highly recommend for digital marketing.",
+    author: "Jacob Jhansen",
+    role: "CEO",
+    company: "ALA Engineering",
+    project: "Product Marketing Video",
+    link: "https://ala.engineering/eld",
+    avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/jacob.jpeg"
+  },
+  {
     quote: "Working with Dieablo was genuinely incredible. I asked him to create a VFX shot of a London train station sign with flickering lights revealing the release date of my music video, and he absolutely nailed the vision. He understood exactly what I was going for from the start, delivered before the deadline, and kept refining it until it was perfect.\n\nHis communication was amazing! Super responsive, clear, and easy to work with and the quality of the final result was way beyond what I expected, especially for such an amazing price.\n\nI’m extremely happy with the outcome and would 100% work with him again in the future. If you need any VFX work done, I fully recommend Dieablo. He did such a great job.",
     author: "Ashley Marie",
     role: "Singer/Songwriter",
@@ -18,6 +27,7 @@ export const testimonials: Testimonial[] = [
     link: "https://www.instagram.com/ashleymariesattic/",
     avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/ashley%20marie.jpg"
   },
+
   {
     quote: "I've worked with Dieablo for outsourcing editing countless times and his work is out of this world. From his VFX compositing to simple cutting, I have always had a great experience working together. And Quick turn around with good communication makes him one of the best editors you can ask for.",
     author: "Luke Darby",
@@ -32,11 +42,19 @@ export const testimonials: Testimonial[] = [
     author: "Valcs Documentaries",
     role: "Content Creator",
     company: "",
-    project: "Project - Youtube Documentaries ",
+    project: "Project - Youtube Documentaries",
     link: "",
     avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/valcs%20documentries.jpg"
   },
-
+  {
+    quote: "Extremely talented and responsive. Would highly recommend for digital marketing.",
+    author: "Jacob Jhansen",
+    role: "CEO",
+    company: "ALA Engineering",
+    project: "Product Marketing Video",
+    link: "https://ala.engineering/eld",
+    avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/jacob.jpeg"
+  },
 
 
 
