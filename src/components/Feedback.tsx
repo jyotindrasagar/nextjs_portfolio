@@ -160,36 +160,54 @@ function ReadMoreModal({
                 )}
 
                 <div>
-                  <h4 className="font-mono font-bold text-sm md:text-base tracking-wider text-foreground flex items-center gap-2">
-                    {testimonial.link ? (
-                      <a href={testimonial.link} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors flex items-center gap-1.5">
-                        {testimonial.author} <span className="opacity-70 text-[10px]">↗</span>
-                      </a>
-                    ) : (
-                      testimonial.author
-                    )}
-                    <VerifiedBadge hasLink={Boolean(testimonial.link)} />
-                  </h4>
-                  <p className="font-sans text-[11px] md:text-xs text-foreground/60 mt-1">
-                    {testimonial.role}
-                    {(testimonial.agency || testimonial.company) && (
-                      <span>
-                        {testimonial.role ? ' • ' : ''}
-                        {testimonial.agencyLink ? (
-                          <a
-                            href={testimonial.agencyLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-accent underline decoration-foreground/20 hover:decoration-accent transition-colors"
-                          >
-                            {testimonial.agency || testimonial.company} ↗
-                          </a>
-                        ) : (
-                          testimonial.agency || testimonial.company
-                        )}
-                      </span>
-                    )}
-                  </p>
+                  {(() => {
+                    const hasAgency = Boolean(testimonial.agency || testimonial.agencyLink);
+                    const authorLink = hasAgency ? (testimonial.agencyLink || testimonial.link) : testimonial.link;
+                    const subtitleLink = hasAgency ? testimonial.link : testimonial.agencyLink;
+                    const orgName = testimonial.agency || testimonial.company;
+
+                    return (
+                      <>
+                        <h4 className="font-mono font-bold text-sm md:text-base tracking-wider text-foreground flex items-center gap-2">
+                          {authorLink ? (
+                            <a
+                              href={authorLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:text-accent transition-colors flex items-center gap-1.5"
+                              title={hasAgency ? `Visit Agency: ${testimonial.agency || 'Agency'}` : `Visit ${testimonial.author}`}
+                            >
+                              {testimonial.author} <span className="opacity-70 text-[10px]">↗</span>
+                            </a>
+                          ) : (
+                            testimonial.author
+                          )}
+                          <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
+                        </h4>
+                        <p className="font-sans text-[11px] md:text-xs text-foreground/60 mt-1">
+                          {testimonial.role}
+                          {orgName && (
+                            <span>
+                              {testimonial.role ? ' • ' : ''}
+                              {subtitleLink ? (
+                                <a
+                                  href={subtitleLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="hover:text-accent underline decoration-foreground/20 hover:decoration-accent transition-colors"
+                                  title="Visit Client Profile"
+                                >
+                                  {orgName} ↗
+                                </a>
+                              ) : (
+                                orgName
+                              )}
+                            </span>
+                          )}
+                        </p>
+                      </>
+                    );
+                  })()}
                   {testimonial.project && (
                     <p className="font-mono text-[9px] md:text-[10px] text-accent tracking-widest uppercase mt-1.5 font-bold">
                       {testimonial.project}
@@ -422,39 +440,59 @@ export function Feedback() {
                       )}
 
                       <div className="flex flex-col min-w-0 w-full">
-                        <h4 className="font-mono font-bold text-[11px] sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1 sm:gap-2 truncate w-full">
-                          {testimonial.link ? (
-                            <a href={testimonial.link} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors flex items-center gap-1 truncate min-w-0">
-                              <span className="truncate">{testimonial.author}</span> <span className="opacity-70 text-[8px] sm:text-[10px] shrink-0">↗</span>
-                            </a>
-                          ) : (
-                            <span className="truncate">{testimonial.author}</span>
-                          )}
-                          <div className="shrink-0">
-                            <VerifiedBadge hasLink={Boolean(testimonial.link)} />
-                          </div>
-                        </h4>
-                        <p className="font-sans text-[9px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full">
-                          {testimonial.role}
-                          {(testimonial.agency || testimonial.company) && (
-                            <span>
-                              {testimonial.role ? ' • ' : ''}
-                              {testimonial.agencyLink ? (
-                                <a
-                                  href={testimonial.agencyLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="hover:text-accent underline decoration-foreground/20 hover:decoration-accent transition-colors"
-                                >
-                                  {testimonial.agency || testimonial.company} ↗
-                                </a>
-                              ) : (
-                                testimonial.agency || testimonial.company
-                              )}
-                            </span>
-                          )}
-                        </p>
+                        {(() => {
+                          const hasAgency = Boolean(testimonial.agency || testimonial.agencyLink);
+                          const authorLink = hasAgency ? (testimonial.agencyLink || testimonial.link) : testimonial.link;
+                          const subtitleLink = hasAgency ? testimonial.link : testimonial.agencyLink;
+                          const orgName = testimonial.agency || testimonial.company;
+
+                          return (
+                            <>
+                              <h4 className="font-mono font-bold text-[11px] sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1 sm:gap-2 truncate w-full">
+                                {authorLink ? (
+                                  <a
+                                    href={authorLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="hover:text-accent transition-colors flex items-center gap-1 truncate min-w-0"
+                                    title={hasAgency ? `Visit Agency: ${testimonial.agency || 'Agency'}` : `Visit ${testimonial.author}`}
+                                  >
+                                    <span className="truncate">{testimonial.author}</span>
+                                    <span className="opacity-70 text-[8px] sm:text-[10px] shrink-0">↗</span>
+                                  </a>
+                                ) : (
+                                  <span className="truncate">{testimonial.author}</span>
+                                )}
+                                <div className="shrink-0">
+                                  <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
+                                </div>
+                              </h4>
+                              <p className="font-sans text-[9px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full">
+                                {testimonial.role}
+                                {orgName && (
+                                  <span>
+                                    {testimonial.role ? ' • ' : ''}
+                                    {subtitleLink ? (
+                                      <a
+                                        href={subtitleLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="hover:text-accent underline decoration-foreground/20 hover:decoration-accent transition-colors"
+                                        title="Visit Client Profile"
+                                      >
+                                        {orgName} ↗
+                                      </a>
+                                    ) : (
+                                      orgName
+                                    )}
+                                  </span>
+                                )}
+                              </p>
+                            </>
+                          );
+                        })()}
                         {testimonial.project && (
                           <p className="font-mono text-[8px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-0.5 sm:mt-2 font-bold truncate w-full">
                             {testimonial.project}
