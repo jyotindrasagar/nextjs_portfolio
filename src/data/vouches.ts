@@ -3,8 +3,10 @@ export interface Vouch {
   name: string;
   avatar: string;
   link: string;
-  linkType?: 'social' | 'portfolio';
+  linkType?: 'social' | 'portfolio' | 'agency';
   role?: string;
+  agency?: string;
+  agencyLink?: string;
   verified?: boolean;
 }
 
@@ -18,9 +20,11 @@ export interface Vouch {
     id: 'unique-id-1',
     name: 'Alex Rivera',
     role: 'Lead VFX Artist & Editor',
+    agency: 'Creative Agency Name',       // Optional agency name
+    agencyLink: 'https://agency.com',     // Optional agency URL
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop',
     link: 'https://twitter.com/alex_vfx',
-    linkType: 'social', // 'social' or 'portfolio'
+    linkType: 'social', // 'social' | 'portfolio' | 'agency'
     verified: true,
   },
 ===================================================================

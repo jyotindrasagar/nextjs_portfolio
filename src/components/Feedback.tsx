@@ -135,8 +135,8 @@ function ReadMoreModal({
             <span className="md:hidden text-accent text-5xl font-serif absolute top-0 left-0 leading-none">”</span>
 
             {/* Scrollable Text */}
-            <div className={`flex-grow overflow-y-auto pr-2 md:pr-4 mt-4 md:mt-0 pb-6 mb-4 custom-scrollbar flex flex-col ${testimonial.quote.length > 200 ? 'justify-start' : 'justify-center items-center'}`}>
-              <p className={`font-sans font-light text-base md:text-lg lg:text-xl leading-relaxed text-foreground/90 whitespace-pre-wrap ${testimonial.quote.length > 200 ? 'text-left' : 'text-center'}`}>
+            <div className="flex-grow overflow-y-auto pr-2 md:pr-4 mt-4 md:mt-0 pb-6 mb-4 custom-scrollbar flex flex-col justify-start">
+              <p className="font-sans font-light text-base md:text-lg lg:text-xl leading-relaxed text-foreground/90 whitespace-pre-wrap text-left">
                 {testimonial.quote}
               </p>
             </div>

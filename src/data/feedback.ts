@@ -47,12 +47,12 @@ export const testimonials: Testimonial[] = [
     avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/valcs%20documentries.jpg"
   },
   {
-    quote: "Extremely talented and responsive. Would highly recommend for digital marketing.",
-    author: "Jacob Jhansen",
-    role: "CEO",
-    company: "ALA Engineering",
-    project: "Product Marketing Video",
-    link: "https://ala.engineering/eld",
+    quote: "Dieablo’s visual effects genuinely stunned me. The way he brought the marketing video together made the whole piece feel much more polished and impactful. The VFX he added for the two the videos we commisioned him for were spot on and was exactly what we wanted.",
+    author: "Nimit ",
+    role: "",
+    company: "Black Bunny",
+    project: "Promotional Video",
+    link: "https://www.hekayahaus.com/",
     avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/jacob.jpeg"
   },
 
