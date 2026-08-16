@@ -8,6 +8,24 @@ export interface Testimonial {
   avatar?: string;
 }
 
+/*
+===================================================================
+  HOW TO ADD / EDIT CLIENT FEEDBACK & TESTIMONIALS
+===================================================================
+  Copy & paste the template below into the `testimonials` array:
+
+  {
+    quote: "Your client testimonial quote goes here. Multi-line quotes are supported.",
+    author: "Client Name",
+    role: "Client Role / Title",               // e.g. "Content Creator", "CEO", "Singer/Songwriter"
+    company: "Company or Studio Name",         // Optional or ""
+    project: "Project - Marketing Video",      // Project or Collaboration Title
+    link: "https://instagram.com/client",      // Optional social/website link or ""
+    avatar: "https://your-r2-or-image-url.jpg" // Optional avatar URL
+  },
+===================================================================
+*/
+
 export const testimonials: Testimonial[] = [
   {
     quote: "Extremely talented and responsive. Would highly recommend for digital marketing.",
