@@ -2,7 +2,9 @@ export interface Testimonial {
   quote: string;
   author: string;
   role: string;
-  company: string;
+  company?: string;
+  agency?: string;
+  agencyLink?: string;
   project: string;
   link?: string;
   avatar?: string;
@@ -18,10 +20,12 @@ export interface Testimonial {
     quote: "Your client testimonial quote goes here. Multi-line quotes are supported.",
     author: "Client Name",
     role: "Client Role / Title",               // e.g. "Content Creator", "CEO", "Singer/Songwriter"
-    company: "Company or Studio Name",         // Optional or ""
+    company: "Company or Studio Name",         // Optional company/brand name
+    agency: "Agency Name",                     // Optional agency name
+    agencyLink: "https://agency-website.com",  // Optional agency website link
     project: "Project - Marketing Video",      // Project or Collaboration Title
-    link: "https://instagram.com/client",      // Optional social/website link or ""
-    avatar: "https://your-r2-or-image-url.jpg" // Optional avatar URL
+    link: "https://instagram.com/client",      // Optional social/portfolio link or ""
+    avatar: "https://your-r2-or-image-url.jpg" // Optional avatar image URL
   },
 ===================================================================
 */
@@ -67,10 +71,12 @@ export const testimonials: Testimonial[] = [
   {
     quote: "Dieablo’s visual effects genuinely stunned me. The way he brought the marketing video together made the whole piece feel much more polished and impactful. The VFX he added for the two the videos we commisioned him for were spot on and was exactly what we wanted.",
     author: "Nimit ",
-    role: "",
-    company: "Black Bunny",
-    project: "Promotional Video",
-    link: "https://www.hekayahaus.com/",
+    role: "Client Role / Title",               // e.g. "Content Creator", "CEO", "Singer/Songwriter"
+    company: "Company or Studio Name",         // Optional company/brand name
+    agency: "Agency Name",                     // Optional agency name
+    agencyLink: "https://agency-website.com",  // Optional agency website link
+    project: "Project - Marketing Video",      // Project or Collaboration Title
+    link: "https://instagram.com/client",
     avatar: "https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/hero%20cards/Feedback%20profiles/jacob.jpeg"
   },
 

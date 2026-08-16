@@ -171,7 +171,24 @@ function ReadMoreModal({
                     <VerifiedBadge hasLink={Boolean(testimonial.link)} />
                   </h4>
                   <p className="font-sans text-[11px] md:text-xs text-foreground/60 mt-1">
-                    {testimonial.role} {testimonial.company ? `• ${testimonial.company}` : ''}
+                    {testimonial.role}
+                    {(testimonial.agency || testimonial.company) && (
+                      <span>
+                        {testimonial.role ? ' • ' : ''}
+                        {testimonial.agencyLink ? (
+                          <a
+                            href={testimonial.agencyLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-accent underline decoration-foreground/20 hover:decoration-accent transition-colors"
+                          >
+                            {testimonial.agency || testimonial.company} ↗
+                          </a>
+                        ) : (
+                          testimonial.agency || testimonial.company
+                        )}
+                      </span>
+                    )}
                   </p>
                   {testimonial.project && (
                     <p className="font-mono text-[9px] md:text-[10px] text-accent tracking-widest uppercase mt-1.5 font-bold">
@@ -418,7 +435,25 @@ export function Feedback() {
                           </div>
                         </h4>
                         <p className="font-sans text-[9px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full">
-                          {testimonial.role} {testimonial.company ? `• ${testimonial.company}` : ''}
+                          {testimonial.role}
+                          {(testimonial.agency || testimonial.company) && (
+                            <span>
+                              {testimonial.role ? ' • ' : ''}
+                              {testimonial.agencyLink ? (
+                                <a
+                                  href={testimonial.agencyLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="hover:text-accent underline decoration-foreground/20 hover:decoration-accent transition-colors"
+                                >
+                                  {testimonial.agency || testimonial.company} ↗
+                                </a>
+                              ) : (
+                                testimonial.agency || testimonial.company
+                              )}
+                            </span>
+                          )}
                         </p>
                         {testimonial.project && (
                           <p className="font-mono text-[8px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-0.5 sm:mt-2 font-bold truncate w-full">
