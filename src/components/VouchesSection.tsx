@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useAnimationFrame, useMotionValue } from 'framer-motion';
 import { vouches, Vouch } from '../data/vouches';
 import { ShieldCheck, ChevronDown, ExternalLink, ArrowUpRight, Share2, Globe, Building2, Maximize2, X, Sparkles } from 'lucide-react';
+import { InitialAvatar } from './Feedback';
 
 interface VouchModalProps {
   vouch: Vouch | null;
@@ -64,13 +65,21 @@ function VouchModal({ vouch, onClose }: VouchModalProps) {
         {/* Profile Details */}
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 relative z-10 text-center sm:text-left">
           {/* Avatar */}
-          <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-accent/40 shrink-0 shadow-lg">
-            <img
-              src={vouch.avatar}
-              alt={vouch.name}
-              className="w-full h-full object-cover"
+          {vouch.avatar ? (
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-accent/40 shrink-0 shadow-lg">
+              <img
+                src={vouch.avatar}
+                alt={vouch.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <InitialAvatar
+              name={vouch.name}
+              className="w-20 h-20 sm:w-24 sm:h-24 shadow-lg"
+              textClassName="text-2xl sm:text-3xl"
             />
-          </div>
+          )}
 
           {/* Name & Roles */}
           <div className="flex flex-col gap-1 min-w-0">
@@ -242,15 +251,23 @@ export function VouchesSection() {
                         className="flex-shrink-0 flex items-center gap-3.5 px-4 py-3 rounded-full border border-foreground/10 bg-panels/80 dark:bg-panels/50 hover:bg-panels/90 hover:border-accent/50 transition-colors duration-300 cursor-pointer group shadow-sm hover:shadow-[0_0_15px_rgba(254,205,211,0.15)] min-w-[220px] sm:min-w-[260px] transform-gpu will-change-transform"
                       >
                         {/* Profile Avatar */}
-                        <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-foreground/20 shrink-0 group-hover:scale-105 transition-transform">
-                          <img
-                            src={item.avatar}
-                            alt={item.name}
-                            loading="lazy"
-                            decoding="async"
-                            className="w-full h-full object-cover"
+                        {item.avatar ? (
+                          <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-foreground/20 shrink-0 group-hover:scale-105 transition-transform">
+                            <img
+                              src={item.avatar}
+                              alt={item.name}
+                              loading="lazy"
+                              decoding="async"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <InitialAvatar
+                            name={item.name}
+                            className="w-9 h-9 sm:w-10 sm:h-10"
+                            textClassName="text-xs sm:text-sm"
                           />
-                        </div>
+                        )}
 
                         {/* Editor Name, Role & Optional Agency */}
                         <div className="flex flex-col min-w-0 pr-1">

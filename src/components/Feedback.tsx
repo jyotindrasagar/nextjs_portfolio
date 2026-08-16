@@ -44,6 +44,45 @@ function VerifiedBadge({ hasLink }: { hasLink?: boolean }) {
   );
 }
 
+const AVATAR_GRADIENTS = [
+  'from-[#FF416C] via-[#FF4B2B] to-[#FF8E53]', // Sunset Coral
+  'from-[#6a11cb] via-[#2575fc] to-[#00d2ff]', // Cyber Indigo Cyan
+  'from-[#11998e] via-[#38ef7d] to-[#00f2fe]', // Emerald Lagoon
+  'from-[#f857a6] via-[#ff5858] to-[#ffc371]', // Flamingo Amber
+  'from-[#8E2DE2] via-[#4A00E0] to-[#8A2387]', // Deep Violet
+  'from-[#f12711] via-[#f5af19] to-[#ffdd00]', // Fire Blaze
+  'from-[#00c6ff] via-[#0072ff] to-[#7f00ff]', // Royal Blue Purple
+  'from-[#d946ef] via-[#8b5cf6] to-[#06b6d4]', // Neon Fuchsia
+  'from-[#10b981] via-[#06b6d4] to-[#3b82f6]', // Turquoise Sky
+  'from-[#ec4899] via-[#f43f5e] to-[#fb923c]', // Rose Peach
+];
+
+function getAvatarGradient(name: string) {
+  let hash = 0;
+  for (let i = 0; i < (name || '').length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % AVATAR_GRADIENTS.length;
+  return AVATAR_GRADIENTS[index];
+}
+
+export function InitialAvatar({ name, className, textClassName }: { name: string; className: string; textClassName: string }) {
+  const initial = name?.trim() ? name.trim().charAt(0).toUpperCase() : '?';
+  const gradient = getAvatarGradient(name || '');
+
+  return (
+    <div
+      className={`rounded-full bg-gradient-to-tr ${gradient} p-[1.5px] flex items-center justify-center shrink-0 shadow-md shadow-black/20 group-hover:scale-105 transition-transform duration-300 ${className}`}
+    >
+      <div className="w-full h-full rounded-full bg-black/25 dark:bg-black/40 backdrop-blur-[1px] flex items-center justify-center border border-white/25">
+        <span className={`font-mono font-extrabold text-white select-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] ${textClassName}`}>
+          {initial}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 // Redesigned modal with scrollable text, fixed footer, and navigation
 function ReadMoreModal({
   currentIndex,
@@ -146,7 +185,7 @@ function ReadMoreModal({
               {/* Profile */}
               <div className="flex items-center gap-4">
                 {testimonial.avatar ? (
-                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border border-foreground/20 shrink-0">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border border-foreground/20 shrink-0 shadow-sm">
                     <img
                       src={testimonial.avatar}
                       alt={`${testimonial.author} Avatar`}
@@ -154,9 +193,11 @@ function ReadMoreModal({
                     />
                   </div>
                 ) : (
-                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center text-foreground/50 font-bold font-mono shrink-0 text-lg md:text-xl">
-                    {testimonial.author.charAt(0)}
-                  </div>
+                  <InitialAvatar
+                    name={testimonial.author}
+                    className="w-12 h-12 md:w-14 md:h-14"
+                    textClassName="text-lg md:text-xl"
+                  />
                 )}
 
                 <div>
@@ -434,9 +475,11 @@ export function Feedback() {
                           />
                         </div>
                       ) : (
-                        <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center text-foreground/50 font-bold font-mono shrink-0 text-[10px] sm:text-sm shadow-sm">
-                          {testimonial.author.charAt(0)}
-                        </div>
+                        <InitialAvatar
+                          name={testimonial.author}
+                          className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12"
+                          textClassName="text-[10px] sm:text-sm md:text-base"
+                        />
                       )}
 
                       <div className="flex flex-col min-w-0 w-full">
