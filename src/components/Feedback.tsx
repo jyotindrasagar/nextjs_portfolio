@@ -436,9 +436,6 @@ export function Feedback() {
             onDragEnd={() => setIsDragging(false)}
           >
             {displayTestimonials.map((testimonial, idx) => {
-              // Check if long quote that fills the card (left-aligned) or short quote (middle/center-aligned)
-              const isLongQuote = testimonial.quote.length > 200;
-
               return (
                 <div
                   key={idx}
@@ -452,11 +449,8 @@ export function Feedback() {
                     {/* Fixed Top-Left Quote Icon for all cards */}
                     <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
 
-                    <div className={`flex-grow flex flex-col ${isLongQuote ? 'justify-start pt-1' : 'justify-center items-center'}`}>
-                      <p className={`font-sans font-light text-[12px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0 ${isLongQuote ? 'text-left' : 'text-center'}`}>
-                        {isLongQuote && (
-                          <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif float-left mr-1 sm:mr-2 mt-[-4px] md:mt-[-10px] h-3 leading-none opacity-0">“</span>
-                        )}
+                    <div className="flex-grow flex flex-col justify-center items-center">
+                      <p className="font-sans font-light text-[12px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0 text-center">
                         {testimonial.quote}
                       </p>
                     </div>
