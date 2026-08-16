@@ -292,10 +292,10 @@ function ReadMoreModal({
 }
 
 export function Feedback() {
-  // Ensure enough items to seamlessly loop across any screen size
+  // Ensure enough items to seamlessly loop across any screen size in both directions
   const displayTestimonials = useMemo(() => {
-    const minItems = 12;
-    const repeatCount = Math.max(3, Math.ceil(minItems / Math.max(1, testimonials.length)));
+    const minItems = 16;
+    const repeatCount = Math.max(4, Math.ceil(minItems / Math.max(1, testimonials.length)));
     return Array.from({ length: repeatCount }).flatMap(() => testimonials);
   }, [testimonials]);
 
@@ -319,24 +319,26 @@ export function Feedback() {
       ([entry]) => {
         setIsInView(entry.isIntersecting);
       },
-      { rootMargin: '200px' }
+      { rootMargin: '100px' }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
+  const x = useMotionValue(0);
+
   useEffect(() => {
     let initialized = false;
     const measure = () => {
       if (firstCardRef.current && secondSetFirstCardRef.current) {
-        // The exact loop distance is the difference in position between the first card of set 1 and the first card of set 2.
+        // The exact loop distance is the difference in position between set 1 and set 2
         const width = secondSetFirstCardRef.current.offsetLeft - firstCardRef.current.offsetLeft;
-        setContentWidth(width);
-        
-        // Initialize x to the middle set to guarantee buffer on both sides
-        if (!initialized && width > 0) {
-          x.set(-width);
-          initialized = true;
+        if (width > 0) {
+          setContentWidth(width);
+          if (!initialized) {
+            x.set(-width);
+            initialized = true;
+          }
         }
       }
     };
@@ -351,33 +353,33 @@ export function Feedback() {
     };
   }, [displayTestimonials]);
 
-  const x = useMotionValue(0);
-
   useAnimationFrame((t, delta) => {
-    if (contentWidth === 0 || selectedTestimonialIndex !== null || !isInView) return; // Pause if modal is open or off-screen
+    // Only run if measured, modal is closed, and section is visible on screen
+    if (contentWidth <= 0 || selectedTestimonialIndex !== null || !isInView) return;
 
     if (!isHovered && !isDragging) {
-      // Clamp delta to prevent erratic jumps on high-refresh 120Hz/144Hz displays
+      // Smooth idle auto-scroll to the left
       const clampedDelta = Math.min(delta, 32);
-      const moveBy = 0.04 * clampedDelta;
+      const moveBy = 0.045 * clampedDelta;
       x.set(x.get() - moveBy);
     }
 
-    if (!isDragging) {
-      const currentX = x.get();
-      // Keep x safely within the middle sets to ensure infinite buffer on both ends.
-      if (currentX <= -2 * contentWidth || currentX > 0) {
-        const remainder = currentX % contentWidth;
-        let newX = remainder;
-        if (newX > 0) newX -= contentWidth; // Normalize to negative
-        newX -= contentWidth;
-        x.set(newX);
-      }
+    // Continuous bidirectional infinite wrapping
+    // Keeps x in the seamless range [-2 * contentWidth, -contentWidth]
+    let currentX = x.get();
+    if (currentX < -2 * contentWidth) {
+      const offset = -2 * contentWidth - currentX;
+      const shift = (Math.floor(offset / contentWidth) + 1) * contentWidth;
+      x.set(currentX + shift);
+    } else if (currentX > -contentWidth) {
+      const offset = currentX - (-contentWidth);
+      const shift = (Math.floor(offset / contentWidth) + 1) * contentWidth;
+      x.set(currentX - shift);
     }
   });
 
   // Handlers for arrow buttons to manually shift the carousel
-    const shiftLeft = () => {
+  const shiftLeft = () => {
     x.set(x.get() + 400);
   };
 

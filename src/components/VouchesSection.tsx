@@ -172,13 +172,20 @@ export function VouchesSection() {
       const firstPos = firstCardRef.current.offsetLeft;
       const secondSetPos = secondSetFirstCardRef.current.offsetLeft;
       const setWidth = secondSetPos - firstPos;
+      if (setWidth <= 0) return;
 
       const clampedDelta = Math.min(delta, 32);
       let currentX = x.get() - baseSpeed * (clampedDelta / 16);
 
-      // Loop back smoothly once first set has scrolled off
-      if (Math.abs(currentX) >= setWidth) {
-        currentX = currentX % setWidth;
+      // Continuous bidirectional infinite wrapping
+      if (currentX <= -2 * setWidth) {
+        const offset = -2 * setWidth - currentX;
+        const shift = (Math.floor(offset / setWidth) + 1) * setWidth;
+        currentX += shift;
+      } else if (currentX > -setWidth) {
+        const offset = currentX - (-setWidth);
+        const shift = (Math.floor(offset / setWidth) + 1) * setWidth;
+        currentX -= shift;
       }
 
       x.set(currentX);
