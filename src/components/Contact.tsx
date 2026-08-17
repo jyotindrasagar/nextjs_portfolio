@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { AnimatedSection } from './AnimatedSection';
 import { Calendar, Mail, Clock, ArrowUpRight, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import Script from 'next/script';
 import { Footer } from './Footer';
 
 declare global {
@@ -82,10 +81,25 @@ export function Contact() {
   };
 
   const openCalendly = () => {
+    if (!document.getElementById('calendly-css')) {
+      const link = document.createElement('link');
+      link.id = 'calendly-css';
+      link.rel = 'stylesheet';
+      link.href = 'https://assets.calendly.com/assets/external/widget.css';
+      document.head.appendChild(link);
+    }
     if (window.Calendly) {
       window.Calendly.initPopupWidget({ url: 'https://calendly.com/dieablofx' });
     } else {
-      window.open('https://calendly.com/dieablofx', '_blank');
+      const script = document.createElement('script');
+      script.src = 'https://assets.calendly.com/assets/external/widget.js';
+      script.async = true;
+      script.onload = () => {
+        if (window.Calendly) {
+          window.Calendly.initPopupWidget({ url: 'https://calendly.com/dieablofx' });
+        }
+      };
+      document.body.appendChild(script);
     }
   };
 
@@ -388,11 +402,6 @@ export function Contact() {
 
       {/* Floating Seamless Toast Notification Banner */}
       <Footer />
-      <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
-      <Script 
-        src="https://assets.calendly.com/assets/external/widget.js" 
-        strategy="lazyOnload" 
-      />
     </>
   );
 }

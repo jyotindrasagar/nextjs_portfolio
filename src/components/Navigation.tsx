@@ -1,6 +1,6 @@
 "use client";
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, Menu, X, Music } from 'lucide-react';
 const logoUrl = '/dieablofx.svg';
 
@@ -20,14 +20,6 @@ const navLinks = [
 ];
 
 export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
-  const { scrollY } = useScroll();
-  const navHeight = useTransform(scrollY, [0, 100], [80, 60]);
-  const navBorder = useTransform(
-    scrollY,
-    [0, 100],
-    ['rgba(0,0,0,0)', theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)']
-  );
-
   const [activeSection, setActiveSection] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isScrollingRef = useRef(false);
@@ -37,16 +29,6 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
   const [volume, setVolume] = useState(0.2);
 
   useEffect(() => {
-    const audio = new Audio('https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/sun.mp3');
-    audioRef.current = audio;
-    audio.volume = volume;
-    audio.loop = false;
-
-    // Start muted - music will only play when user explicitly toggles it via the music button.
-
-    const handleEnded = () => setIsPlaying(false);
-    audio.addEventListener('ended', handleEnded);
-
     // Listen for global audio play events to pause background music if another video is unmuted
     const handleGlobalAudio = (e: Event) => {
       const customEvent = e as CustomEvent;
@@ -60,24 +42,31 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
     window.addEventListener('global-audio-play', handleGlobalAudio);
 
     return () => {
-      audio.removeEventListener('ended', handleEnded);
       window.removeEventListener('global-audio-play', handleGlobalAudio);
-      audio.pause();
-      audioRef.current = null;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
   }, []);
 
   const toggleMusic = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        audioRef.current.play().then(() => {
-          setIsPlaying(true);
-          window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: 'bg-music' } }));
-        }).catch(() => { });
-      }
+    if (!audioRef.current) {
+      const audio = new Audio('https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev/sun.mp3');
+      audio.volume = volume;
+      audio.loop = false;
+      audio.addEventListener('ended', () => setIsPlaying(false));
+      audioRef.current = audio;
+    }
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+        window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: 'bg-music' } }));
+      }).catch(() => { });
     }
   };
 
@@ -159,12 +148,11 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
 
   return (
     <>
-      <motion.nav
+      <nav
         aria-label="Main Navigation"
-        style={compact ? {} : { height: navHeight, borderBottomColor: navBorder, borderBottomWidth: '1px' }}
         className={`${compact
           ? 'relative w-full flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 bg-transparent select-none z-[60]'
-          : 'fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 bg-background/95 transition-colors duration-500 border-b select-none'
+          : 'fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 h-16 md:h-20 bg-background/95 border-b border-foreground/[0.06] transition-colors duration-500 select-none'
           }`}
       >
         {/* Brand logo */}
@@ -354,7 +342,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
             {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
           </button>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>

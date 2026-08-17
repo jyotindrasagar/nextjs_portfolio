@@ -87,11 +87,11 @@ export const SocialSidebar = memo(function SocialSidebar() {
       {/* Continuous background line */}
       <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-foreground/10 -z-10" />
 
-      {/* Animated moving dot */}
+      {/* Animated moving dot with GPU-accelerated transform */}
       <motion.div 
-        className="absolute left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_8px_rgba(234,135,156,0.8)] -z-10"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_8px_rgba(234,135,156,0.8)] -z-10 transform-gpu"
         animate={{ 
-          top: ["0%", "100%", "0%"]
+          y: ["0%", "1000%", "0%"]
         }}
         transition={{
           duration: 15,

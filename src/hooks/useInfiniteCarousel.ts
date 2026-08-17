@@ -94,11 +94,7 @@ export function useInfiniteCarousel({
 
   // Continuous animation frame loop
   useAnimationFrame((_, delta) => {
-    let w = setWidthRef.current;
-    if (w <= 0) {
-      measure();
-      w = setWidthRef.current;
-    }
+    const w = setWidthRef.current;
     if (w <= 0 || !isInView || isPaused) return;
 
     if (isDraggingRef.current) {

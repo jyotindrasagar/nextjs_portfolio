@@ -1,5 +1,5 @@
 "use client";
-import { motion, useScroll, useTransform, useInView, AnimatePresence, useMotionValue, useAnimationFrame } from 'framer-motion';
+import { motion, useInView, AnimatePresence, useMotionValue, useAnimationFrame } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 
 const roles = [
@@ -66,9 +66,6 @@ function HeroRoleRotator() {
 }
 
 export function Hero({ loading = false }: { loading?: boolean }) {
-  const { scrollY } = useScroll();
-  const yImages = useTransform(scrollY, [0, 500], [0, -30]);
-
   const [windowWidth, setWindowWidth] = useState(1200);
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -248,7 +245,6 @@ export function Hero({ loading = false }: { loading?: boolean }) {
 
         {/* Right Structured Grid Column (Responsive Masonry) */}
         <motion.div
-          style={{ y: yImages, willChange: "transform" }}
           variants={containerVariants}
           initial="hidden"
           animate={!loading ? "visible" : "hidden"}
