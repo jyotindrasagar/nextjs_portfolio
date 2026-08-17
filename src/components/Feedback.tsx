@@ -372,59 +372,66 @@ const FeedbackCard = memo(function FeedbackCard({
           onSelect(cardIdx);
         }
       }}
-      className="flex-shrink-0 w-[82vw] min-[380px]:w-[340px] sm:w-[400px] md:w-[460px] lg:w-[500px] h-[175px] sm:h-[190px] md:h-[200px] p-4 sm:p-5 md:p-6 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform select-none text-left cursor-pointer"
-      style={{ contentVisibility: 'auto', containIntrinsicSize: '400px 190px' }}
+      className="flex-shrink-0 w-[82vw] min-[380px]:w-[340px] sm:w-[400px] md:w-[460px] lg:w-[500px] h-[200px] sm:h-[210px] md:h-[220px] p-4 sm:p-5 md:p-6 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] overflow-hidden transform-gpu will-change-transform select-none text-left cursor-pointer"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '400px 210px' }}
     >
-      <div className="relative z-20 flex-grow flex flex-col justify-center group/text">
+      {/* Top Quote Area: Flexible middle box so quotes of varying length never shift footer alignment */}
+      <div className="relative z-20 flex-1 min-h-0 flex flex-col justify-center mb-2 sm:mb-3 group/text">
         {/* Top-Left Quote Icon */}
         <span className="text-accent text-lg sm:text-xl md:text-2xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
 
-        <div className="flex-grow flex flex-col justify-center items-center px-2 sm:px-3">
-          <p className="font-sans font-light text-[11px] min-[360px]:text-[12px] sm:text-[13px] md:text-sm leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-3 sm:line-clamp-3 md:line-clamp-4 group-hover/text:text-foreground transition-colors text-center select-none">
+        <div className="w-full flex items-center justify-center px-2 sm:px-3">
+          <p className="font-sans font-light text-[11px] min-[360px]:text-[12px] sm:text-[13px] md:text-sm leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-3 group-hover/text:text-foreground transition-colors text-center select-none">
             {testimonial.quote}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-2.5 pt-2.5 sm:mt-3 sm:pt-3 border-t border-foreground/10 relative z-20 w-full min-w-0">
-        <div className="flex items-center gap-2.5 sm:gap-3 w-full min-w-0">
+      {/* Pinned Bottom Footer: Fixed height, fixed divider line, perfectly aligned across every single card */}
+      <div className="shrink-0 h-[60px] sm:h-[64px] border-t border-foreground/10 pt-2.5 sm:pt-3 flex items-center justify-between relative z-20 w-full min-w-0 mt-auto">
+        <div className="flex items-center gap-3 sm:gap-3.5 w-full min-w-0">
           <CardAvatar
             src={testimonial.avatar}
             name={testimonial.author}
-            className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 shrink-0"
-            textClassName="text-[10px] sm:text-xs"
+            className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 shrink-0"
+            textClassName="text-[11px] sm:text-xs md:text-sm"
             lazyLoad={true}
             inView={hasBeenInView}
           />
 
-          <div className="flex flex-col min-w-0 w-full text-left">
-            <h4 className="font-mono font-bold text-[11px] sm:text-xs md:text-sm tracking-wider text-foreground flex items-center gap-1 sm:gap-1.5 truncate w-full text-left">
-              {authorLink ? (
-                <a
-                  href={authorLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                  className="hover:text-accent transition-colors flex items-center gap-1 truncate min-w-0"
-                  title={hasAgency ? `Visit Agency: ${testimonial.agency || 'Agency'}` : `Visit ${testimonial.author}`}
-                >
+          <div className="flex flex-col justify-center min-w-0 w-full text-left">
+            {/* Line 1: Author Name + Verified Badge */}
+            <div className="flex items-center gap-1.5 sm:gap-2 truncate w-full">
+              <h4 className="font-mono font-bold text-xs sm:text-[13px] md:text-sm tracking-wider text-foreground truncate text-left">
+                {authorLink ? (
+                  <a
+                    href={authorLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="hover:text-accent transition-colors inline-flex items-center gap-1 truncate"
+                    title={hasAgency ? `Visit Agency: ${testimonial.agency || 'Agency'}` : `Visit ${testimonial.author}`}
+                  >
+                    <span className="truncate">{testimonial.author}</span>
+                    <span className="opacity-70 text-[8px] sm:text-[9px] shrink-0">↗</span>
+                  </a>
+                ) : (
                   <span className="truncate">{testimonial.author}</span>
-                  <span className="opacity-70 text-[8px] sm:text-[9px] shrink-0">↗</span>
-                </a>
-              ) : (
-                <span className="truncate">{testimonial.author}</span>
-              )}
+                )}
+              </h4>
               <div className="shrink-0">
                 <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
               </div>
-            </h4>
-            <p className="font-sans text-[9.5px] sm:text-[10.5px] md:text-[11.5px] text-foreground/60 truncate w-full text-left mt-0.5">
-              {testimonial.role}
-              {orgName && (
+            </div>
+
+            {/* Line 2: Role & Company */}
+            <p className="font-sans text-[10px] sm:text-[11px] md:text-xs text-foreground/60 truncate w-full text-left leading-tight mt-0.5">
+              {testimonial.role || 'Collaborator'}
+              {orgName ? (
                 <span>
-                  {testimonial.role ? ' • ' : ''}
+                  {' • '}
                   {subtitleLink ? (
                     <a
                       href={subtitleLink}
@@ -442,13 +449,13 @@ const FeedbackCard = memo(function FeedbackCard({
                     orgName
                   )}
                 </span>
-              )}
+              ) : null}
             </p>
-            {testimonial.project && (
-              <p className="font-mono text-[8px] sm:text-[8.5px] md:text-[9.5px] text-accent/90 tracking-widest uppercase font-bold truncate w-full text-left mt-0.5">
-                {testimonial.project}
-              </p>
-            )}
+
+            {/* Line 3: Project Title */}
+            <p className="font-mono text-[8px] sm:text-[8.5px] md:text-[9.5px] text-accent/90 tracking-widest uppercase font-bold truncate w-full text-left leading-tight mt-0.5">
+              {testimonial.project || 'PROJECT COLLABORATION'}
+            </p>
           </div>
         </div>
       </div>
