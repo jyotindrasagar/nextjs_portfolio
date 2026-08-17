@@ -20,7 +20,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 700); // 0.7-second loading screen
+    }, 300); // 0.3-second snappy loading screen
     return () => clearTimeout(timer);
   }, []);
 
@@ -56,21 +56,21 @@ export default function Home() {
 
   return (
     <>
-      {/* 0.7-Second Loading Screen with SVG Ring Draw & Center Logo */}
+      {/* 0.3-Second Snappy Loading Screen */}
       <AnimatePresence>
         {loading && (
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
             className="fixed inset-0 z-[10000] bg-background flex flex-col items-center justify-center select-none"
           >
             <div className="relative w-14 h-14 flex items-center justify-center">
-              {/* Single Snappy Border Draw (0% to 100% starting from top) */}
+              {/* Single Snappy Border Draw */}
               <svg className="absolute inset-0 w-full h-full -rotate-90 overflow-visible" viewBox="0 0 100 100">
                 {/* Track line */}
                 <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="2" className="text-foreground/10" fill="none" />
-                {/* Active draw line synced to 0.7 second */}
+                {/* Snappy active draw line synced to 0.3s */}
                 <motion.circle
                   cx="50"
                   cy="50"
@@ -81,7 +81,7 @@ export default function Home() {
                   fill="none"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.65, ease: "easeInOut" }}
+                  transition={{ duration: 0.28, ease: "easeOut" }}
                   className="drop-shadow-[0_0_10px_rgba(234,135,156,0.85)]"
                 />
               </svg>
@@ -106,7 +106,7 @@ export default function Home() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: loading ? 0 : 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
         className="fixed inset-0 z-50 pointer-events-none"
       >
         <div className="pointer-events-auto">
@@ -118,7 +118,8 @@ export default function Home() {
         <main className="relative w-full">
           <Hero loading={loading} />
           
-          <div className="relative w-full bg-background/40 dark:bg-[#0F0F10]/50 backdrop-blur-[3px] border-t border-foreground/5 shadow-[0_-10px_40px_rgba(0,0,0,0.3)] -mt-24 pt-24">
+          {/* Main sections container: high performance background without GPU-choking full-page blur */}
+          <div className="relative w-full bg-background/90 dark:bg-[#0F0F10]/90 border-t border-foreground/5 shadow-[0_-10px_40px_rgba(0,0,0,0.3)] -mt-24 pt-24 transform-gpu">
             <Work />
             <Projects />
             <About />
