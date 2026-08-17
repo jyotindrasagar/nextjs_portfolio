@@ -194,13 +194,13 @@ export function Work() {
 
           {/* Row: Title on Left, Button on Right */}
           <div className="flex items-center justify-between w-full gap-2 sm:gap-4">
-            <h2 className="font-display font-bold text-[22px] min-[360px]:text-2xl min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase leading-none text-left transition-all duration-300 origin-left group-hover:scale-[1.015] group-hover:drop-shadow-[0_0_20px_rgba(234,135,156,0.35)]">
-              My <span className="text-accent group-hover:drop-shadow-[0_0_25px_rgba(234,135,156,0.55)]">Works</span>
+            <h2 className="font-display font-bold text-[22px] min-[360px]:text-2xl min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase leading-none text-left transition-all duration-300 origin-left group-hover:scale-[1.01]">
+              My <span className="text-accent group-hover:drop-shadow-[0_0_8px_rgba(234,135,156,0.25)] transition-all duration-300">Works</span>
             </h2>
 
             <button 
               onClick={(e) => { e.stopPropagation(); setIsSectionOpen(!isSectionOpen); }}
-              className="relative w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 group-hover:scale-110 group-hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] group-hover:shadow-[0_0_20px_rgba(234,135,156,0.6)] cursor-pointer"
+              className="relative w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 group-hover:scale-105 group-hover:bg-accent/90 shadow-[0_2px_8px_rgba(234,135,156,0.2)] group-hover:shadow-[0_0_10px_rgba(234,135,156,0.28)] cursor-pointer"
               title={isSectionOpen ? "Collapse Section" : "Expand Section"}
             >
               <motion.div 
