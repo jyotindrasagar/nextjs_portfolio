@@ -1,10 +1,83 @@
 import { notFound } from 'next/navigation';
 import { Calendar, Clock, Tag, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { BreakdownInteraction } from '@/components/BreakdownInteraction';
 import { ProfileHeaderButton } from '@/components/ProfileHeaderButton';
 import { createClient } from '@/utils/supabase/server';
+import { createPublicClient } from '@/utils/supabase/public';
 import { cookies } from 'next/headers';
+
+export async function generateStaticParams() {
+  try {
+    const supabase = createPublicClient();
+    const { data: blogs } = await supabase.from('blogs').select('id, slug');
+    if (!blogs) return [];
+    
+    const paramsList: { id: string }[] = [];
+    blogs.forEach((b) => {
+      if (b.slug) paramsList.push({ id: b.slug });
+      if (b.id) paramsList.push({ id: b.id });
+    });
+    return paramsList;
+  } catch {
+    return [];
+  }
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const supabase = createPublicClient();
+  const { data: breakdown } = await supabase
+    .from('blogs')
+    .select('*')
+    .or(`id.eq.${resolvedParams.id},slug.eq.${resolvedParams.id}`)
+    .single();
+
+  if (!breakdown) {
+    return {
+      title: 'Breakdown Not Found | DieabloFX',
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const title = `${breakdown.title} | Case Study & Breakdown | DieabloFX`;
+  const description = breakdown.excerpt || `Read the in-depth visual effects and motion design breakdown for ${breakdown.title} by Dieablo (DieabloFX).`;
+  const canonicalUrl = `https://dieablo.com/breakdowns/${breakdown.slug || resolvedParams.id}`;
+  const ogImage = breakdown.thumbnail_url || 'https://dieablo.com/opengraph-image.jpg';
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: 'article',
+      publishedTime: breakdown.created_at,
+      modifiedTime: breakdown.updated_at || breakdown.created_at,
+      authors: ['https://dieablo.com'],
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: breakdown.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
+      creator: '@dieablofx',
+    },
+  };
+}
 
 export default async function BreakdownPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -30,8 +103,39 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
     sections = [];
   }
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": breakdown.title,
+    "description": breakdown.excerpt || breakdown.title,
+    "image": breakdown.thumbnail_url || "https://dieablo.com/opengraph-image.jpg",
+    "datePublished": breakdown.created_at,
+    "dateModified": breakdown.updated_at || breakdown.created_at,
+    "author": {
+      "@type": "Person",
+      "name": "Jyotindra Narayan Kalyani",
+      "url": "https://dieablo.com"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "DieabloFX",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://dieablo.com/dieablofx.svg"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://dieablo.com/breakdowns/${breakdown.slug || resolvedParams.id}`
+    }
+  };
+
   return (
     <main className="min-h-screen bg-background pt-24 pb-32 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <div className="max-w-5xl mx-auto">
         {/* Top Bar Navigation */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-foreground/10">
