@@ -372,8 +372,8 @@ const FeedbackCard = memo(function FeedbackCard({
           onSelect(cardIdx);
         }
       }}
-      className="flex-shrink-0 w-[80vw] min-[380px]:w-[340px] sm:w-[380px] md:w-[440px] lg:w-[480px] h-[150px] sm:h-[165px] md:h-[180px] p-3.5 sm:p-4 md:p-5 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform select-none text-left cursor-pointer"
-      style={{ contentVisibility: 'auto', containIntrinsicSize: '380px 165px' }}
+      className="flex-shrink-0 w-[82vw] min-[380px]:w-[340px] sm:w-[400px] md:w-[460px] lg:w-[500px] h-[175px] sm:h-[190px] md:h-[200px] p-4 sm:p-5 md:p-6 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform select-none text-left cursor-pointer"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '400px 190px' }}
     >
       <div className="relative z-20 flex-grow flex flex-col justify-center group/text">
         {/* Top-Left Quote Icon */}
@@ -386,8 +386,8 @@ const FeedbackCard = memo(function FeedbackCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-2 pt-2 sm:mt-2.5 sm:pt-2.5 border-t border-foreground/10 relative z-20 w-full min-w-0">
-        <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
+      <div className="flex items-center justify-between mt-2.5 pt-2.5 sm:mt-3 sm:pt-3 border-t border-foreground/10 relative z-20 w-full min-w-0">
+        <div className="flex items-center gap-2.5 sm:gap-3 w-full min-w-0">
           <CardAvatar
             src={testimonial.avatar}
             name={testimonial.author}
@@ -420,7 +420,7 @@ const FeedbackCard = memo(function FeedbackCard({
                 <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
               </div>
             </h4>
-            <p className="font-sans text-[9px] sm:text-[10px] md:text-[11px] text-foreground/60 truncate w-full text-left">
+            <p className="font-sans text-[9.5px] sm:text-[10.5px] md:text-[11.5px] text-foreground/60 truncate w-full text-left mt-0.5">
               {testimonial.role}
               {orgName && (
                 <span>
@@ -445,7 +445,7 @@ const FeedbackCard = memo(function FeedbackCard({
               )}
             </p>
             {testimonial.project && (
-              <p className="font-mono text-[7.5px] sm:text-[8px] md:text-[9px] text-accent/90 tracking-widest uppercase font-bold truncate w-full text-left">
+              <p className="font-mono text-[8px] sm:text-[8.5px] md:text-[9.5px] text-accent/90 tracking-widest uppercase font-bold truncate w-full text-left mt-0.5">
                 {testimonial.project}
               </p>
             )}
