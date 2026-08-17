@@ -58,20 +58,20 @@ export function About() {
 
         <AnimatedSection className="flex flex-col items-start text-left">
           {/* CAD reference label */}
-          <div className="flex items-center gap-2.5 text-[11px] sm:text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-accent mb-4 md:mb-6 uppercase text-left">
+          <div className="flex items-center gap-2 text-[9px] min-[360px]:text-[11px] sm:text-[12px] md:text-[14px] tracking-[0.2em] sm:tracking-[0.25em] font-mono font-extrabold text-accent mb-3 sm:mb-4 md:mb-6 uppercase text-left truncate max-w-full">
             <span>❖</span>
-            <span>SYS.ABOUT // PHILOSOPHY</span>
+            <span className="truncate">SYS.ABOUT // PHILOSOPHY</span>
           </div>
 
           {/* Row: Title on Left, Button on Right */}
-          <div className="flex items-center justify-between w-full">
-            <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase leading-none text-left">
+          <div className="flex items-center justify-between w-full gap-2 sm:gap-4">
+            <h2 className="font-display font-bold text-[22px] min-[360px]:text-2xl min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase leading-none text-left">
               About <span className="text-accent">Me</span>
             </h2>
 
             <button
               onClick={(e) => { e.stopPropagation(); setIsSectionOpen(!isSectionOpen); }}
-              className="relative w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.5)] hover:-translate-y-0.5 cursor-pointer"
+              className="relative w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.5)] hover:-translate-y-0.5 cursor-pointer"
               title={isSectionOpen ? "Collapse Section" : "Expand Section"}
             >
               <motion.div
@@ -79,7 +79,7 @@ export function About() {
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="flex items-center justify-center"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={isSectionOpen ? "" : "mt-1"}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${isSectionOpen ? "" : "mt-0.5"}`}>
                   <path d="M6 9l6 6 6-6" />
                 </svg>
               </motion.div>
