@@ -372,33 +372,33 @@ const FeedbackCard = memo(function FeedbackCard({
           onSelect(cardIdx);
         }
       }}
-      className="flex-shrink-0 w-[82vw] min-[400px]:w-[320px] sm:w-[360px] md:w-[420px] lg:w-[540px] min-h-[250px] sm:h-[370px] md:h-[420px] p-5 sm:p-6 md:p-8 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform select-none text-left cursor-pointer"
-      style={{ contentVisibility: 'auto', containIntrinsicSize: '340px 370px' }}
+      className="flex-shrink-0 w-[80vw] min-[380px]:w-[340px] sm:w-[380px] md:w-[440px] lg:w-[480px] h-[150px] sm:h-[165px] md:h-[180px] p-3.5 sm:p-4 md:p-5 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform select-none text-left cursor-pointer"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '380px 165px' }}
     >
       <div className="relative z-20 flex-grow flex flex-col justify-center group/text">
         {/* Top-Left Quote Icon */}
-        <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
+        <span className="text-accent text-lg sm:text-xl md:text-2xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
 
-        <div className="flex-grow flex flex-col justify-center items-center px-1 sm:px-0">
-          <p className="font-sans font-light text-[13px] sm:text-sm md:text-base leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-2 sm:pt-0 text-center select-none">
+        <div className="flex-grow flex flex-col justify-center items-center px-2 sm:px-3">
+          <p className="font-sans font-light text-[11px] min-[360px]:text-[12px] sm:text-[13px] md:text-sm leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-3 sm:line-clamp-3 md:line-clamp-4 group-hover/text:text-foreground transition-colors text-center select-none">
             {testimonial.quote}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-3 sm:mt-6 pt-3 sm:pt-5 border-t border-foreground/10 relative z-20 w-full min-w-0">
-        <div className="flex items-center gap-3 sm:gap-4 w-full min-w-0">
+      <div className="flex items-center justify-between mt-2 pt-2 sm:mt-2.5 sm:pt-2.5 border-t border-foreground/10 relative z-20 w-full min-w-0">
+        <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
           <CardAvatar
             src={testimonial.avatar}
             name={testimonial.author}
-            className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 shrink-0"
-            textClassName="text-xs sm:text-sm md:text-base"
+            className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 shrink-0"
+            textClassName="text-[10px] sm:text-xs"
             lazyLoad={true}
             inView={hasBeenInView}
           />
 
           <div className="flex flex-col min-w-0 w-full text-left">
-            <h4 className="font-mono font-bold text-xs sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1.5 sm:gap-2 truncate w-full text-left">
+            <h4 className="font-mono font-bold text-[11px] sm:text-xs md:text-sm tracking-wider text-foreground flex items-center gap-1 sm:gap-1.5 truncate w-full text-left">
               {authorLink ? (
                 <a
                   href={authorLink}
@@ -411,7 +411,7 @@ const FeedbackCard = memo(function FeedbackCard({
                   title={hasAgency ? `Visit Agency: ${testimonial.agency || 'Agency'}` : `Visit ${testimonial.author}`}
                 >
                   <span className="truncate">{testimonial.author}</span>
-                  <span className="opacity-70 text-[8px] sm:text-[10px] shrink-0">↗</span>
+                  <span className="opacity-70 text-[8px] sm:text-[9px] shrink-0">↗</span>
                 </a>
               ) : (
                 <span className="truncate">{testimonial.author}</span>
@@ -420,7 +420,7 @@ const FeedbackCard = memo(function FeedbackCard({
                 <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
               </div>
             </h4>
-            <p className="font-sans text-[10px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full text-left">
+            <p className="font-sans text-[9px] sm:text-[10px] md:text-[11px] text-foreground/60 truncate w-full text-left">
               {testimonial.role}
               {orgName && (
                 <span>
@@ -445,7 +445,7 @@ const FeedbackCard = memo(function FeedbackCard({
               )}
             </p>
             {testimonial.project && (
-              <p className="font-mono text-[8.5px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-1 sm:mt-2 font-bold truncate w-full text-left">
+              <p className="font-mono text-[7.5px] sm:text-[8px] md:text-[9px] text-accent/90 tracking-widest uppercase font-bold truncate w-full text-left">
                 {testimonial.project}
               </p>
             )}
