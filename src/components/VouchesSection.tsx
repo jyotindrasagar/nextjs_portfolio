@@ -223,7 +223,7 @@ export function VouchesSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.15 }}
                 ref={containerRef}
-                className={`overflow-hidden w-full py-2 sm:py-3 md:py-4 -my-2 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                className={`overflow-hidden w-full py-2 sm:py-3 md:py-4 -my-2 select-none [mask-image:linear-gradient(to_right,transparent_0%,black_28px,black_calc(100%-28px),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_28px,black_calc(100%-28px),transparent_100%)] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                 style={{ 
                   touchAction: 'pan-y',
                 }}

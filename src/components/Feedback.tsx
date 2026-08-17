@@ -492,7 +492,7 @@ export function Feedback() {
     <section 
       id="feedback" 
       ref={sectionRef} 
-      className={`relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 border-t border-foreground/10 overflow-hidden transition-all duration-300 ${
+      className={`relative border-t border-foreground/10 overflow-hidden transition-all duration-300 ${
         isSectionOpen ? 'pt-16 md:pt-24 pb-8 md:pb-12 min-h-[100px]' : 'py-4 sm:py-5 md:py-6 min-h-0'
       }`}
     >
@@ -511,7 +511,7 @@ export function Feedback() {
       {/* Clickable Header Area: Compact when collapsed, full normal size when uncollapsed */}
       <div 
         onClick={() => setIsSectionOpen(!isSectionOpen)}
-        className={`relative cursor-pointer group select-none py-1 transition-all duration-300 ${
+        className={`relative cursor-pointer group select-none py-1 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 transition-all duration-300 ${
           isSectionOpen ? 'mb-8' : 'mb-0'
         }`}
       >
@@ -565,28 +565,28 @@ export function Feedback() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden"
+            className="overflow-hidden w-full"
           >
             {/* Description Subtitle */}
-            <div className="flex flex-col items-start text-left pt-2 pb-6">
+            <div className="flex flex-col items-start text-left pt-2 pb-6 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
               <p className="font-mono text-[11px] sm:text-xs md:text-sm text-foreground/50 tracking-widest uppercase max-w-xl leading-relaxed text-left">
                 Kind words from incredible people and brands I've had the privilege to work with.
               </p>
             </div>
 
-            <div className="pt-2 pb-2 -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-12 xl:-mx-16">
-              {/* Full width edge-to-edge carousel without cutoffs or masks */}
+            <div className="pt-2 pb-2 w-full">
+              {/* Full width edge-to-edge carousel without cutoffs, with soft 28px infinite edge feathering */}
               <div className="relative w-full overflow-hidden">
                 <div
                   ref={containerRef}
-                  className={`overflow-hidden w-full py-3 md:py-5 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                  className={`overflow-hidden w-full py-3 md:py-5 select-none [mask-image:linear-gradient(to_right,transparent_0%,black_28px,black_calc(100%-28px),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_28px,black_calc(100%-28px),transparent_100%)] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                   style={{ 
                     touchAction: 'pan-y',
                   }}
                   {...handlers}
                 >
                   <motion.div
-                    className="flex gap-2.5 sm:gap-4 md:gap-6 w-max px-2 sm:px-4 transform-gpu will-change-transform"
+                    className="flex gap-2.5 sm:gap-4 md:gap-6 w-max px-4 sm:px-8 transform-gpu will-change-transform"
                     style={{ x, willChange: 'transform' }}
                   >
                     {/* 3 Sets ensure seamless infinite continuous drag in both directions with low mobile DOM weight */}
