@@ -242,8 +242,8 @@ export function About() {
                 </div>
               </AnimatedSection>
 
-              {/* Right Portrait/Conceptual Image Block */}
-              <div className="flex-1 relative w-full max-w-md lg:max-w-lg aspect-[4/5] bg-panels border border-foreground/10 p-4 select-none z-30">
+              {/* Right Portrait/Conceptual Image Block (Hidden on mobile screens smaller than tablet) */}
+              <div className="hidden md:flex flex-1 relative w-full max-w-md lg:max-w-lg aspect-[4/5] bg-panels border border-foreground/10 p-4 select-none z-30">
                 {/* Internal CAD frame */}
                 <div className="absolute inset-0 pointer-events-none border border-foreground/10 opacity-30 m-6 flex flex-col justify-between p-2">
                   <div className="flex justify-between font-mono text-[7px] text-foreground">
