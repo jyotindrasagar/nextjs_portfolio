@@ -44,39 +44,41 @@ export function Projects() {
     <>
       <section 
         className={`relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 border-t border-foreground/10 transition-all duration-300 ${
-          isSectionOpen ? 'pt-16 md:pt-24 pb-16 md:pb-24 min-h-[100px]' : 'pt-8 pb-8 min-h-0'
+          isSectionOpen ? 'pt-8 sm:pt-10 md:pt-14 pb-12 sm:pb-16 md:pb-20 min-h-[100px]' : 'py-4 sm:py-5 md:py-6 min-h-0'
         }`} 
         id="breakdowns"
       >
-        {/* Clickable Header Area: Only CAD Tag & Title on Left, Button on Right */}
+        {/* Clickable Header Area: Compact sub-page drawer */}
         <div 
           onClick={() => setIsSectionOpen(!isSectionOpen)}
-          className="relative cursor-pointer group select-none py-3 mb-4"
+          className={`relative cursor-pointer group select-none py-1 transition-all duration-300 ${
+            isSectionOpen ? 'mb-6 md:mb-8' : 'mb-0'
+          }`}
         >
           <AnimatedSection className="flex flex-col items-start text-left">
             {/* CAD reference label */}
-            <div className="flex items-center gap-2 text-[9px] min-[360px]:text-[11px] sm:text-[12px] md:text-[14px] tracking-[0.2em] sm:tracking-[0.25em] font-mono font-extrabold text-accent mb-3 sm:mb-4 md:mb-6 uppercase text-left truncate max-w-full group-hover:text-accent/90 transition-colors duration-300">
+            <div className="flex items-center gap-1.5 text-[8px] sm:text-[9px] md:text-[10px] tracking-[0.2em] font-mono font-bold text-accent mb-1 sm:mb-1.5 uppercase text-left truncate max-w-full group-hover:text-accent/90 transition-colors duration-300">
               <span>❖</span>
               <span className="truncate">SYS.PROCESS // BLUEPRINTS_BREAKDOWN</span>
             </div>
 
             {/* Row: Title on Left, Button on Right */}
             <div className="flex items-center justify-between w-full gap-2 sm:gap-4">
-              <h2 className="font-display font-bold text-[22px] min-[360px]:text-2xl min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase leading-none text-left transition-all duration-300 origin-left group-hover:scale-[1.01]">
+              <h2 className="font-display font-bold text-base min-[360px]:text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight text-foreground uppercase leading-none text-left transition-all duration-300 origin-left group-hover:scale-[1.01]">
                 Project <span className="text-accent group-hover:drop-shadow-[0_0_8px_rgba(234,135,156,0.25)] transition-all duration-300">Breakdowns</span>
               </h2>
 
               <button 
                 onClick={(e) => { e.stopPropagation(); setIsSectionOpen(!isSectionOpen); }}
-                className="relative w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 group-hover:scale-105 group-hover:bg-accent/90 shadow-[0_2px_8px_rgba(234,135,156,0.2)] group-hover:shadow-[0_0_10px_rgba(234,135,156,0.28)] cursor-pointer"
+                className="relative w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 group-hover:scale-105 group-hover:bg-accent/90 shadow-[0_2px_6px_rgba(234,135,156,0.2)] group-hover:shadow-[0_0_8px_rgba(234,135,156,0.28)] cursor-pointer"
                 title={isSectionOpen ? "Collapse Section" : "Expand Section"}
               >
                 <motion.div 
                   animate={{ rotate: isSectionOpen ? 180 : 0 }} 
-                  transition={{ duration: 0.4, ease: "easeInOut" }} 
+                  transition={{ duration: 0.35, ease: "easeInOut" }} 
                   className="flex items-center justify-center"
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${isSectionOpen ? "" : "mt-0.5"}`}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isSectionOpen ? "" : "mt-0.5"}`}>
                     <path d="M6 9l6 6 6-6"/>
                   </svg>
                 </motion.div>
