@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, useAnimationFrame, useMotionValue, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedSection } from './AnimatedSection';
 import { testimonials, Testimonial } from '../data/feedback';
 import { VouchesSection } from './VouchesSection';
+import { useInfiniteCarousel } from '../hooks/useInfiniteCarousel';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 
 function VerifiedBadge({ hasLink }: { hasLink?: boolean }) {
@@ -83,7 +84,38 @@ export function InitialAvatar({ name, className, textClassName }: { name: string
   );
 }
 
-// Redesigned modal with scrollable text, fixed footer, and navigation
+export function CardAvatar({
+  src,
+  name,
+  className,
+  textClassName,
+}: {
+  src?: string;
+  name: string;
+  className: string;
+  textClassName: string;
+}) {
+  const [hasError, setHasError] = useState(false);
+
+  if (!src || hasError) {
+    return <InitialAvatar name={name} className={className} textClassName={textClassName} />;
+  }
+
+  return (
+    <div className={`rounded-full overflow-hidden border border-foreground/20 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity shadow-sm ${className}`}>
+      <img
+        src={src}
+        alt={`${name} Avatar`}
+        loading="lazy"
+        decoding="async"
+        onError={() => setHasError(true)}
+        className="w-full h-full object-cover"
+      />
+    </div>
+  );
+}
+
+// Modal with keyboard nav, scrollable text, and lazy loading
 function ReadMoreModal({
   currentIndex,
   totalTestimonials,
@@ -100,7 +132,6 @@ function ReadMoreModal({
   const testimonial = testimonials[currentIndex];
   const [mounted, setMounted] = useState(false);
 
-  // Add keyboard navigation and body scroll lock
   useEffect(() => {
     setMounted(true);
     document.body.style.overflow = 'hidden';
@@ -117,17 +148,13 @@ function ReadMoreModal({
     };
   }, [onNext, onPrev, onClose]);
 
-  // Add wheel/trackpad horizontal scroll navigation with cooldown to prevent rapid firing
   const wheelCooldown = useRef(false);
   const handleWheel = (e: React.WheelEvent) => {
     if (wheelCooldown.current) return;
-    
-    // Only trigger on mostly horizontal scrolling
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 30) {
       wheelCooldown.current = true;
       if (e.deltaX > 0) onNext();
       else onPrev();
-      
       setTimeout(() => { wheelCooldown.current = false; }, 400);
     }
   };
@@ -170,7 +197,6 @@ function ReadMoreModal({
 
           {/* Content Area */}
           <div className="flex flex-col flex-1 overflow-hidden relative pt-8 md:pt-0">
-            {/* Mobile Quote Icon */}
             <span className="md:hidden text-accent text-5xl font-serif absolute top-0 left-0 leading-none">”</span>
 
             {/* Scrollable Text */}
@@ -182,23 +208,13 @@ function ReadMoreModal({
 
             {/* Fixed Footer */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-t border-foreground/10 pt-6 mt-auto">
-              {/* Profile */}
               <div className="flex items-center gap-4">
-                {testimonial.avatar ? (
-                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border border-foreground/20 shrink-0 shadow-sm">
-                    <img
-                      src={testimonial.avatar}
-                      alt={`${testimonial.author} Avatar`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <InitialAvatar
-                    name={testimonial.author}
-                    className="w-12 h-12 md:w-14 md:h-14"
-                    textClassName="text-lg md:text-xl"
-                  />
-                )}
+                <CardAvatar
+                  src={testimonial.avatar}
+                  name={testimonial.author}
+                  className="w-12 h-12 md:w-14 md:h-14"
+                  textClassName="text-lg md:text-xl"
+                />
 
                 <div>
                   {(() => {
@@ -292,26 +308,11 @@ function ReadMoreModal({
 }
 
 export function Feedback() {
-  // Ensure enough items to seamlessly loop across any screen size in both directions
-  const displayTestimonials = useMemo(() => {
-    const minItems = 16;
-    const repeatCount = Math.max(4, Math.ceil(minItems / Math.max(1, testimonials.length)));
-    return Array.from({ length: repeatCount }).flatMap(() => testimonials);
-  }, [testimonials]);
-
-  const [contentWidth, setContentWidth] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const [selectedTestimonialIndex, setSelectedTestimonialIndex] = useState<number | null>(null);
   const [isInView, setIsInView] = useState(false);
-
   const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
 
-  const firstCardRef = useRef<HTMLDivElement>(null);
-  const secondSetFirstCardRef = useRef<HTMLDivElement>(null);
-
-  // Intersection observer to only run animation loop when in view
+  // Intersection observer to only run loop when in view
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
@@ -319,73 +320,26 @@ export function Feedback() {
       ([entry]) => {
         setIsInView(entry.isIntersecting);
       },
-      { rootMargin: '100px' }
+      { rootMargin: '150px' }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  const x = useMotionValue(0);
-
-  useEffect(() => {
-    let initialized = false;
-    const measure = () => {
-      if (firstCardRef.current && secondSetFirstCardRef.current) {
-        // The exact loop distance is the difference in position between set 1 and set 2
-        const width = secondSetFirstCardRef.current.offsetLeft - firstCardRef.current.offsetLeft;
-        if (width > 0) {
-          setContentWidth(width);
-          if (!initialized) {
-            x.set(-width);
-            initialized = true;
-          }
-        }
-      }
-    };
-
-    measure();
-    window.addEventListener('resize', measure);
-    const timer = setTimeout(measure, 500);
-
-    return () => {
-      window.removeEventListener('resize', measure);
-      clearTimeout(timer);
-    };
-  }, [displayTestimonials]);
-
-  useAnimationFrame((t, delta) => {
-    // Only run if measured, modal is closed, and section is visible on screen
-    if (contentWidth <= 0 || selectedTestimonialIndex !== null || !isInView) return;
-
-    if (!isHovered && !isDragging) {
-      // Smooth idle auto-scroll to the left
-      const clampedDelta = Math.min(delta, 32);
-      const moveBy = 0.045 * clampedDelta;
-      x.set(x.get() - moveBy);
-    }
-
-    // Continuous bidirectional infinite wrapping
-    // Keeps x in the seamless range [-2 * contentWidth, -contentWidth]
-    let currentX = x.get();
-    if (currentX < -2 * contentWidth) {
-      const offset = -2 * contentWidth - currentX;
-      const shift = (Math.floor(offset / contentWidth) + 1) * contentWidth;
-      x.set(currentX + shift);
-    } else if (currentX > -contentWidth) {
-      const offset = currentX - (-contentWidth);
-      const shift = (Math.floor(offset / contentWidth) + 1) * contentWidth;
-      x.set(currentX - shift);
-    }
+  const {
+    x,
+    isDragging,
+    hasMovedRef,
+    containerRef,
+    set0Ref,
+    set1Ref,
+    handlers,
+  } = useInfiniteCarousel({
+    speed: 0.65,
+    direction: -1,
+    isPaused: selectedTestimonialIndex !== null,
+    isInView,
   });
-
-  // Handlers for arrow buttons to manually shift the carousel
-  const shiftLeft = () => {
-    x.set(x.get() + 400);
-  };
-
-  const shiftRight = () => {
-    x.set(x.get() - 400);
-  };
 
   return (
     <section id="feedback" ref={sectionRef} className="relative pt-10 md:pt-20 pb-6 md:pb-12 px-0 border-t border-foreground/10 overflow-hidden">
@@ -416,139 +370,143 @@ export function Feedback() {
         </p>
       </AnimatedSection>
 
-      <div className="relative w-full">
-        {/* Left and Right Fade Overlays to replace mask and preserve blur */}
+      <AnimatedSection delay={0.15} className="relative w-full">
+        {/* Left and Right Fade Overlays */}
         <div className="absolute top-0 bottom-0 left-0 w-[24px] sm:w-[64px] z-30 bg-gradient-to-r from-background to-transparent pointer-events-none"></div>
         <div className="absolute top-0 bottom-0 right-0 w-[24px] sm:w-[64px] z-30 bg-gradient-to-l from-background to-transparent pointer-events-none"></div>
         
         <div
-          className="overflow-hidden w-full cursor-grab active:cursor-grabbing py-6 md:py-10"
-          onPointerEnter={(e) => { if (e.pointerType === 'mouse') setIsHovered(true) }}
-          onPointerLeave={(e) => { if (e.pointerType === 'mouse') setIsHovered(false) }}
+          ref={containerRef}
+          className={`overflow-hidden w-full py-6 md:py-10 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+          style={{ touchAction: 'pan-y' }}
+          {...handlers}
         >
           <motion.div
-            ref={contentRef}
             className="flex gap-2.5 sm:gap-4 md:gap-6 w-max pl-3 sm:pl-8 transform-gpu will-change-transform"
             style={{ x, willChange: 'transform' }}
-            drag="x"
-            dragConstraints={{ left: -10000, right: 10000 }}
-            dragElastic={0}
-            dragMomentum={false}
-            onDragStart={() => setIsDragging(true)}
-            onDragEnd={() => setIsDragging(false)}
           >
-            {displayTestimonials.map((testimonial, idx) => {
-              return (
-                <div
-                  key={idx}
-                  ref={idx === 0 ? firstCardRef : idx === testimonials.length ? secondSetFirstCardRef : null}
-                  className="flex-shrink-0 w-[65vw] sm:w-[340px] md:w-[400px] lg:w-[540px] h-[230px] sm:h-[370px] md:h-[420px] p-4 sm:p-6 md:p-8 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform"
-                >
+            {/* 3 Sets ensure seamless infinite continuous drag in both directions with low mobile DOM weight */}
+            {Array.from({ length: 3 }).map((_, setIdx) => (
+              <div
+                key={setIdx}
+                ref={setIdx === 0 ? set0Ref : setIdx === 1 ? set1Ref : null}
+                className="flex gap-2.5 sm:gap-4 md:gap-6 shrink-0"
+              >
+                {testimonials.map((testimonial, cardIdx) => (
                   <div
-                    className="relative z-20 flex-grow flex flex-col justify-center cursor-pointer group/text"
-                    onClick={() => setSelectedTestimonialIndex(idx % testimonials.length)}
+                    key={`${setIdx}-${cardIdx}`}
+                    className="flex-shrink-0 w-[65vw] sm:w-[340px] md:w-[400px] lg:w-[540px] h-[230px] sm:h-[370px] md:h-[420px] p-4 sm:p-6 md:p-8 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform"
+                    style={{ contentVisibility: 'auto', containIntrinsicSize: '340px 370px' }}
                   >
-                    {/* Fixed Top-Left Quote Icon for all cards */}
-                    <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
+                    <div
+                      className="relative z-20 flex-grow flex flex-col justify-center cursor-pointer group/text"
+                      onClick={() => {
+                        if (!hasMovedRef.current) {
+                          setSelectedTestimonialIndex(cardIdx);
+                        }
+                      }}
+                    >
+                      {/* Top-Left Quote Icon */}
+                      <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
 
-                    <div className="flex-grow flex flex-col justify-center items-center">
-                      <p className="font-sans font-light text-[12px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0 text-center">
-                        {testimonial.quote}
-                      </p>
+                      <div className="flex-grow flex flex-col justify-center items-center">
+                        <p className="font-sans font-light text-[12px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0 text-center select-none">
+                          {testimonial.quote}
+                        </p>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center justify-between mt-2 sm:mt-6 pt-2 sm:pt-5 border-t border-foreground/10 relative z-20 w-full min-w-0">
-                    <div className="flex items-center gap-2 sm:gap-4 w-full min-w-0">
-                      {testimonial.avatar ? (
-                        <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-foreground/20 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity shadow-sm">
-                          <img
-                            src={testimonial.avatar}
-                            alt={`${testimonial.author} Avatar`}
-                            loading="lazy"
-                            decoding="async"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <InitialAvatar
+                    <div className="flex items-center justify-between mt-2 sm:mt-6 pt-2 sm:pt-5 border-t border-foreground/10 relative z-20 w-full min-w-0">
+                      <div className="flex items-center gap-2 sm:gap-4 w-full min-w-0">
+                        <CardAvatar
+                          src={testimonial.avatar}
                           name={testimonial.author}
                           className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12"
                           textClassName="text-[10px] sm:text-sm md:text-base"
                         />
-                      )}
 
-                      <div className="flex flex-col min-w-0 w-full">
-                        {(() => {
-                          const hasAgency = Boolean(testimonial.agency || testimonial.agencyLink);
-                          const authorLink = hasAgency ? (testimonial.agencyLink || testimonial.link) : testimonial.link;
-                          const subtitleLink = hasAgency ? testimonial.link : testimonial.agencyLink;
-                          const orgName = testimonial.agency || testimonial.company;
+                        <div className="flex flex-col min-w-0 w-full">
+                          {(() => {
+                            const hasAgency = Boolean(testimonial.agency || testimonial.agencyLink);
+                            const authorLink = hasAgency ? (testimonial.agencyLink || testimonial.link) : testimonial.link;
+                            const subtitleLink = hasAgency ? testimonial.link : testimonial.agencyLink;
+                            const orgName = testimonial.agency || testimonial.company;
 
-                          return (
-                            <>
-                              <h4 className="font-mono font-bold text-[11px] sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1 sm:gap-2 truncate w-full">
-                                {authorLink ? (
-                                  <a
-                                    href={authorLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="hover:text-accent transition-colors flex items-center gap-1 truncate min-w-0"
-                                    title={hasAgency ? `Visit Agency: ${testimonial.agency || 'Agency'}` : `Visit ${testimonial.author}`}
-                                  >
+                            return (
+                              <>
+                                <h4 className="font-mono font-bold text-[11px] sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1 sm:gap-2 truncate w-full">
+                                  {authorLink ? (
+                                    <a
+                                      href={authorLink}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (hasMovedRef.current) {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                      className="hover:text-accent transition-colors flex items-center gap-1 truncate min-w-0"
+                                      title={hasAgency ? `Visit Agency: ${testimonial.agency || 'Agency'}` : `Visit ${testimonial.author}`}
+                                    >
+                                      <span className="truncate">{testimonial.author}</span>
+                                      <span className="opacity-70 text-[8px] sm:text-[10px] shrink-0">↗</span>
+                                    </a>
+                                  ) : (
                                     <span className="truncate">{testimonial.author}</span>
-                                    <span className="opacity-70 text-[8px] sm:text-[10px] shrink-0">↗</span>
-                                  </a>
-                                ) : (
-                                  <span className="truncate">{testimonial.author}</span>
-                                )}
-                                <div className="shrink-0">
-                                  <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
-                                </div>
-                              </h4>
-                              <p className="font-sans text-[9px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full">
-                                {testimonial.role}
-                                {orgName && (
-                                  <span>
-                                    {testimonial.role ? ' • ' : ''}
-                                    {subtitleLink ? (
-                                      <a
-                                        href={subtitleLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="hover:text-accent underline decoration-foreground/20 hover:decoration-accent transition-colors"
-                                        title="Visit Client Profile"
-                                      >
-                                        {orgName} ↗
-                                      </a>
-                                    ) : (
-                                      orgName
-                                    )}
-                                  </span>
-                                )}
-                              </p>
-                            </>
-                          );
-                        })()}
-                        {testimonial.project && (
-                          <p className="font-mono text-[8px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-0.5 sm:mt-2 font-bold truncate w-full">
-                            {testimonial.project}
-                          </p>
-                        )}
+                                  )}
+                                  <div className="shrink-0">
+                                    <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
+                                  </div>
+                                </h4>
+                                <p className="font-sans text-[9px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full">
+                                  {testimonial.role}
+                                  {orgName && (
+                                    <span>
+                                      {testimonial.role ? ' • ' : ''}
+                                      {subtitleLink ? (
+                                        <a
+                                          href={subtitleLink}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (hasMovedRef.current) {
+                                              e.preventDefault();
+                                            }
+                                          }}
+                                          className="hover:text-accent underline decoration-foreground/20 hover:decoration-accent transition-colors"
+                                          title="Visit Client Profile"
+                                        >
+                                          {orgName} ↗
+                                        </a>
+                                      ) : (
+                                        orgName
+                                      )}
+                                    </span>
+                                  )}
+                                </p>
+                              </>
+                            );
+                          })()}
+                          {testimonial.project && (
+                            <p className="font-mono text-[8px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-0.5 sm:mt-2 font-bold truncate w-full">
+                              {testimonial.project}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                ))}
+              </div>
+            ))}
           </motion.div>
         </div>
 
-        {/* Industry Vouches / Creative Circle Section (Hidden) */}
-        {/* <VouchesSection /> */}
-      </div>
+        {/* Industry Vouches / Creative Circle Section */}
+        <VouchesSection />
+      </AnimatedSection>
     </section>
   );
 }
