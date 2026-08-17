@@ -219,12 +219,12 @@ export function VouchesSection() {
             {/* Drag & Continuous Infinite Scroll Row with Edge Fades */}
             <div className="relative w-full overflow-hidden">
               <div 
-                className="absolute top-0 bottom-0 left-0 w-14 sm:w-24 md:w-56 z-30 pointer-events-none bg-gradient-to-r from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
-                aria-hidden="true"
+                className="hidden sm:block absolute top-0 bottom-0 left-0 w-14 sm:w-24 md:w-56 z-30 pointer-events-none bg-gradient-to-r from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
+                aria-hidden="true" 
               />
               <div 
-                className="absolute top-0 bottom-0 right-0 w-14 sm:w-24 md:w-56 z-30 pointer-events-none bg-gradient-to-l from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
-                aria-hidden="true"
+                className="hidden sm:block absolute top-0 bottom-0 right-0 w-14 sm:w-24 md:w-56 z-30 pointer-events-none bg-gradient-to-l from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
+                aria-hidden="true" 
               />
 
               <motion.div
@@ -232,11 +232,9 @@ export function VouchesSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.15 }}
                 ref={containerRef}
-                className={`overflow-hidden w-full py-2 sm:py-3 md:py-4 -my-2 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                className={`overflow-hidden w-full py-2 sm:py-3 md:py-4 -my-2 select-none [mask-image:linear-gradient(to_right,transparent_0%,black_16px,black_calc(100%-16px),transparent_100%)] sm:[mask-image:linear-gradient(to_right,transparent_0%,black_60px,black_calc(100%-60px),transparent_100%)] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                 style={{ 
                   touchAction: 'pan-y',
-                  maskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px), rgba(0,0,0,0) 100%)',
-                  WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px), rgba(0,0,0,0) 100%)'
                 }}
                 {...handlers}
               >

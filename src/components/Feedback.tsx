@@ -372,33 +372,33 @@ const FeedbackCard = memo(function FeedbackCard({
           onSelect(cardIdx);
         }
       }}
-      className="flex-shrink-0 w-[65vw] sm:w-[340px] md:w-[400px] lg:w-[540px] h-[230px] sm:h-[370px] md:h-[420px] p-4 sm:p-6 md:p-8 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform select-none text-left cursor-pointer"
+      className="flex-shrink-0 w-[82vw] min-[400px]:w-[320px] sm:w-[360px] md:w-[420px] lg:w-[540px] min-h-[250px] sm:h-[370px] md:h-[420px] p-5 sm:p-6 md:p-8 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform select-none text-left cursor-pointer"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '340px 370px' }}
     >
       <div className="relative z-20 flex-grow flex flex-col justify-center group/text">
         {/* Top-Left Quote Icon */}
         <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
 
-        <div className="flex-grow flex flex-col justify-center items-center">
-          <p className="font-sans font-light text-[12px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0 text-center select-none">
+        <div className="flex-grow flex flex-col justify-center items-center px-1 sm:px-0">
+          <p className="font-sans font-light text-[13px] sm:text-sm md:text-base leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-2 sm:pt-0 text-center select-none">
             {testimonial.quote}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-2 sm:mt-6 pt-2 sm:pt-5 border-t border-foreground/10 relative z-20 w-full min-w-0">
-        <div className="flex items-center gap-2 sm:gap-4 w-full min-w-0">
+      <div className="flex items-center justify-between mt-3 sm:mt-6 pt-3 sm:pt-5 border-t border-foreground/10 relative z-20 w-full min-w-0">
+        <div className="flex items-center gap-3 sm:gap-4 w-full min-w-0">
           <CardAvatar
             src={testimonial.avatar}
             name={testimonial.author}
-            className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12"
-            textClassName="text-[10px] sm:text-sm md:text-base"
+            className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 shrink-0"
+            textClassName="text-xs sm:text-sm md:text-base"
             lazyLoad={true}
             inView={hasBeenInView}
           />
 
           <div className="flex flex-col min-w-0 w-full text-left">
-            <h4 className="font-mono font-bold text-[11px] sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1 sm:gap-2 truncate w-full text-left">
+            <h4 className="font-mono font-bold text-xs sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1.5 sm:gap-2 truncate w-full text-left">
               {authorLink ? (
                 <a
                   href={authorLink}
@@ -420,7 +420,7 @@ const FeedbackCard = memo(function FeedbackCard({
                 <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
               </div>
             </h4>
-            <p className="font-sans text-[9px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full text-left">
+            <p className="font-sans text-[10px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full text-left">
               {testimonial.role}
               {orgName && (
                 <span>
@@ -445,7 +445,7 @@ const FeedbackCard = memo(function FeedbackCard({
               )}
             </p>
             {testimonial.project && (
-              <p className="font-mono text-[8px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-0.5 sm:mt-2 font-bold truncate w-full text-left">
+              <p className="font-mono text-[8.5px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-1 sm:mt-2 font-bold truncate w-full text-left">
                 {testimonial.project}
               </p>
             )}
@@ -577,25 +577,23 @@ export function Feedback() {
             <div className="pt-2 pb-2 -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-12 xl:-mx-16">
               {/* Carousel container with both CSS mask-image transparency and multi-stop gradient blur overlays */}
               <div className="relative w-full overflow-hidden">
-                {/* Left side deep fade overlay */}
+                {/* Left side deep fade overlay (subtle, desktop only) */}
                 <div 
-                  className="absolute top-0 bottom-0 left-0 w-24 sm:w-44 md:w-64 lg:w-80 z-30 pointer-events-none bg-gradient-to-r from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
-                  aria-hidden="true"
+                  className="hidden sm:block absolute top-0 bottom-0 left-0 w-16 sm:w-28 md:w-48 lg:w-64 z-30 pointer-events-none bg-gradient-to-r from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
+                  aria-hidden="true" 
                 />
                 
-                {/* Right side deep fade overlay */}
+                {/* Right side deep fade overlay (subtle, desktop only) */}
                 <div 
-                  className="absolute top-0 bottom-0 right-0 w-24 sm:w-44 md:w-64 lg:w-80 z-30 pointer-events-none bg-gradient-to-l from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
-                  aria-hidden="true"
+                  className="hidden sm:block absolute top-0 bottom-0 right-0 w-16 sm:w-28 md:w-48 lg:w-64 z-30 pointer-events-none bg-gradient-to-l from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
+                  aria-hidden="true" 
                 />
                 
                 <div
                   ref={containerRef}
-                  className={`overflow-hidden w-full py-3 md:py-5 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                  className={`overflow-hidden w-full py-3 md:py-5 select-none [mask-image:linear-gradient(to_right,transparent_0%,black_16px,black_calc(100%-16px),transparent_100%)] sm:[mask-image:linear-gradient(to_right,transparent_0%,black_60px,black_calc(100%-60px),transparent_100%)] md:[mask-image:linear-gradient(to_right,transparent_0%,black_120px,black_calc(100%-120px),transparent_100%)] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                   style={{ 
                     touchAction: 'pan-y',
-                    maskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 120px, rgba(0,0,0,1) calc(100% - 120px), rgba(0,0,0,0) 100%)',
-                    WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 120px, rgba(0,0,0,1) calc(100% - 120px), rgba(0,0,0,0) 100%)'
                   }}
                   {...handlers}
                 >
