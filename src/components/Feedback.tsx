@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedSection } from './AnimatedSection';
 import { testimonials, Testimonial } from '../data/feedback';
 import { VouchesSection } from './VouchesSection';
 import { useInfiniteCarousel } from '../hooks/useInfiniteCarousel';
+import { useLazyVisibility } from '../hooks/useLazyVisibility';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 
 function VerifiedBadge({ hasLink }: { hasLink?: boolean }) {
@@ -84,38 +85,67 @@ export function InitialAvatar({ name, className, textClassName }: { name: string
   );
 }
 
+// Global in-memory cache of successfully loaded avatars
+const loadedAvatarsCache = new Set<string>();
+
 export function CardAvatar({
   src,
   name,
   className,
   textClassName,
+  lazyLoad = true,
+  inView = true,
 }: {
   src?: string;
   name: string;
   className: string;
   textClassName: string;
+  lazyLoad?: boolean;
+  inView?: boolean;
 }) {
   const [hasError, setHasError] = useState(false);
+  const isCached = src ? loadedAvatarsCache.has(src) : false;
+  const [isLoaded, setIsLoaded] = useState(isCached);
 
+  // If no image url or loading errored, show gradient initial
   if (!src || hasError) {
     return <InitialAvatar name={name} className={className} textClassName={textClassName} />;
   }
 
+  // If lazyLoad enabled and card not in view & not yet cached, show lightweight InitialAvatar with 0 network cost
+  const shouldMountImage = !lazyLoad || inView || isCached;
+
+  if (!shouldMountImage) {
+    return <InitialAvatar name={name} className={className} textClassName={textClassName} />;
+  }
+
   return (
-    <div className={`rounded-full overflow-hidden border border-foreground/20 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity shadow-sm ${className}`}>
+    <div className={`relative rounded-full overflow-hidden border border-foreground/20 shrink-0 shadow-sm ${className}`}>
+      {/* Background initial while downloading */}
+      {!isLoaded && (
+        <div className="absolute inset-0 z-0">
+          <InitialAvatar name={name} className="w-full h-full" textClassName={textClassName} />
+        </div>
+      )}
       <img
         src={src}
         alt={`${name} Avatar`}
         loading="lazy"
         decoding="async"
+        onLoad={() => {
+          if (src) loadedAvatarsCache.add(src);
+          setIsLoaded(true);
+        }}
         onError={() => setHasError(true)}
-        className="w-full h-full object-cover"
+        className={`w-full h-full object-cover relative z-10 transition-opacity duration-300 ${
+          isLoaded ? 'opacity-90 group-hover:opacity-100' : 'opacity-0'
+        }`}
       />
     </div>
   );
 }
 
-// Modal with keyboard nav, scrollable text, and lazy loading
+// Modal with keyboard nav, scrollable text, and high priority image loading
 function ReadMoreModal({
   currentIndex,
   totalTestimonials,
@@ -166,7 +196,7 @@ function ReadMoreModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8 bg-black/60 dark:bg-black/80 backdrop-blur-md"
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-4 md:p-8 bg-black/60 dark:bg-black/80 backdrop-blur-md"
       onClick={onClose}
       onWheel={handleWheel}
     >
@@ -214,9 +244,11 @@ function ReadMoreModal({
                   name={testimonial.author}
                   className="w-12 h-12 md:w-14 md:h-14"
                   textClassName="text-lg md:text-xl"
+                  lazyLoad={false}
+                  inView={true}
                 />
 
-                <div>
+                <div className="text-left">
                   {(() => {
                     const hasAgency = Boolean(testimonial.agency || testimonial.agencyLink);
                     const authorLink = hasAgency ? (testimonial.agencyLink || testimonial.link) : testimonial.link;
@@ -225,7 +257,7 @@ function ReadMoreModal({
 
                     return (
                       <>
-                        <h4 className="font-mono font-bold text-sm md:text-base tracking-wider text-foreground flex items-center gap-2">
+                        <h4 className="font-mono font-bold text-sm md:text-base tracking-wider text-foreground flex items-center gap-2 text-left">
                           {authorLink ? (
                             <a
                               href={authorLink}
@@ -241,7 +273,7 @@ function ReadMoreModal({
                           )}
                           <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
                         </h4>
-                        <p className="font-sans text-[11px] md:text-xs text-foreground/60 mt-1">
+                        <p className="font-sans text-[11px] md:text-xs text-foreground/60 mt-1 text-left">
                           {testimonial.role}
                           {orgName && (
                             <span>
@@ -266,7 +298,7 @@ function ReadMoreModal({
                     );
                   })()}
                   {testimonial.project && (
-                    <p className="font-mono text-[9px] md:text-[10px] text-accent tracking-widest uppercase mt-1.5 font-bold">
+                    <p className="font-mono text-[9px] md:text-[10px] text-accent tracking-widest uppercase mt-1.5 font-bold text-left">
                       {testimonial.project}
                     </p>
                   )}
@@ -307,23 +339,138 @@ function ReadMoreModal({
   );
 }
 
+// Individual Memoized Feedback Card with independent lazy loading
+const FeedbackCard = memo(function FeedbackCard({
+  testimonial,
+  cardIdx,
+  setIdx,
+  hasMovedRef,
+  onSelect,
+}: {
+  testimonial: Testimonial;
+  cardIdx: number;
+  setIdx: number;
+  hasMovedRef: React.MutableRefObject<boolean>;
+  onSelect: (index: number) => void;
+}) {
+  const { ref, hasBeenInView } = useLazyVisibility<HTMLDivElement>({
+    rootMargin: '150px 350px 150px 350px',
+    once: true,
+  });
+
+  const hasAgency = Boolean(testimonial.agency || testimonial.agencyLink);
+  const authorLink = hasAgency ? (testimonial.agencyLink || testimonial.link) : testimonial.link;
+  const subtitleLink = hasAgency ? testimonial.link : testimonial.agencyLink;
+  const orgName = testimonial.agency || testimonial.company;
+
+  return (
+    <div
+      ref={ref}
+      key={`${setIdx}-${cardIdx}`}
+      onClick={() => {
+        if (!hasMovedRef.current) {
+          onSelect(cardIdx);
+        }
+      }}
+      className="flex-shrink-0 w-[65vw] sm:w-[340px] md:w-[400px] lg:w-[540px] h-[230px] sm:h-[370px] md:h-[420px] p-4 sm:p-6 md:p-8 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform select-none text-left cursor-pointer"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '340px 370px' }}
+    >
+      <div className="relative z-20 flex-grow flex flex-col justify-center group/text">
+        {/* Top-Left Quote Icon */}
+        <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
+
+        <div className="flex-grow flex flex-col justify-center items-center">
+          <p className="font-sans font-light text-[12px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0 text-center select-none">
+            {testimonial.quote}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between mt-2 sm:mt-6 pt-2 sm:pt-5 border-t border-foreground/10 relative z-20 w-full min-w-0">
+        <div className="flex items-center gap-2 sm:gap-4 w-full min-w-0">
+          <CardAvatar
+            src={testimonial.avatar}
+            name={testimonial.author}
+            className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12"
+            textClassName="text-[10px] sm:text-sm md:text-base"
+            lazyLoad={true}
+            inView={hasBeenInView}
+          />
+
+          <div className="flex flex-col min-w-0 w-full text-left">
+            <h4 className="font-mono font-bold text-[11px] sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1 sm:gap-2 truncate w-full text-left">
+              {authorLink ? (
+                <a
+                  href={authorLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  className="hover:text-accent transition-colors flex items-center gap-1 truncate min-w-0"
+                  title={hasAgency ? `Visit Agency: ${testimonial.agency || 'Agency'}` : `Visit ${testimonial.author}`}
+                >
+                  <span className="truncate">{testimonial.author}</span>
+                  <span className="opacity-70 text-[8px] sm:text-[10px] shrink-0">↗</span>
+                </a>
+              ) : (
+                <span className="truncate">{testimonial.author}</span>
+              )}
+              <div className="shrink-0">
+                <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
+              </div>
+            </h4>
+            <p className="font-sans text-[9px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full text-left">
+              {testimonial.role}
+              {orgName && (
+                <span>
+                  {testimonial.role ? ' • ' : ''}
+                  {subtitleLink ? (
+                    <a
+                      href={subtitleLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="hover:text-accent underline decoration-foreground/20 hover:decoration-accent transition-colors"
+                      title="Visit Client Profile"
+                    >
+                      {orgName} ↗
+                    </a>
+                  ) : (
+                    orgName
+                  )}
+                </span>
+              )}
+            </p>
+            {testimonial.project && (
+              <p className="font-mono text-[8px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-0.5 sm:mt-2 font-bold truncate w-full text-left">
+                {testimonial.project}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
 export function Feedback() {
+  const [isSectionOpen, setIsSectionOpen] = useState(false);
   const [selectedTestimonialIndex, setSelectedTestimonialIndex] = useState<number | null>(null);
-  const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Intersection observer to only run loop when in view
+  // Listen for navigation expand event
   useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { rootMargin: '150px' }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    const handleExpandSection = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail?.id === 'feedback') {
+        setIsSectionOpen(true);
+      }
+    };
+    window.addEventListener('expand-section', handleExpandSection);
+    return () => window.removeEventListener('expand-section', handleExpandSection);
   }, []);
 
   const {
@@ -338,12 +485,17 @@ export function Feedback() {
     speed: 0.65,
     direction: -1,
     isPaused: selectedTestimonialIndex !== null,
-    isInView,
+    isInView: isSectionOpen,
   });
 
   return (
-    <section id="feedback" ref={sectionRef} className="relative pt-10 md:pt-20 pb-6 md:pb-12 px-0 border-t border-foreground/10 overflow-hidden">
-
+    <section 
+      id="feedback" 
+      ref={sectionRef} 
+      className={`relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 border-t border-foreground/10 overflow-hidden transition-all duration-300 ${
+        isSectionOpen ? 'pt-16 md:pt-24 pb-8 md:pb-12 min-h-[100px]' : 'pt-8 pb-8 min-h-0'
+      }`}
+    >
       <AnimatePresence>
         {selectedTestimonialIndex !== null && (
           <ReadMoreModal
@@ -356,157 +508,124 @@ export function Feedback() {
         )}
       </AnimatePresence>
 
-      <AnimatedSection className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mb-4 md:mb-8 flex flex-col items-start text-left">
-        <div className="flex items-center gap-2 text-[11px] sm:text-[13px] md:text-[15px] tracking-[0.25em] font-mono font-extrabold text-accent mb-2 md:mb-4 uppercase">
-          <span>❖</span>
-          <span>SYS.FEEDBACK // TESTIMONIALS</span>
-        </div>
+      {/* Clickable Header Area: Only CAD Tag & Title on Left, Button on Right */}
+      <div 
+        onClick={() => setIsSectionOpen(!isSectionOpen)}
+        className="relative cursor-pointer group select-none py-3 mb-4"
+      >
+        {/* Soft-edge feathered ambient glow: subtle sakura pink in light mode, subtle white in dark mode */}
+        <div 
+          className="absolute -inset-x-6 -inset-y-3 sm:-inset-x-8 sm:-inset-y-4 rounded-[40px] bg-gradient-to-r from-accent/[0.035] via-accent/[0.012] to-transparent dark:from-white/[0.03] dark:via-white/[0.01] dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none blur-2xl -z-10" 
+          aria-hidden="true" 
+        />
 
-        <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase mb-3 md:mb-4">
-          Collaborator <span className="text-accent">Feedback</span>
-        </h2>
-        <p className="font-mono text-[10px] sm:text-xs md:text-sm text-foreground/40 tracking-widest uppercase max-w-xl leading-relaxed">
-          Kind words from incredible people and brands I've had the privilege to work with.
-        </p>
-      </AnimatedSection>
+        <AnimatedSection className="flex flex-col items-start text-left">
+          {/* CAD reference label */}
+          <div className="flex items-center gap-2.5 text-[11px] sm:text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-accent mb-4 md:mb-6 uppercase text-left">
+            <span>❖</span>
+            <span>SYS.FEEDBACK // TESTIMONIALS</span>
+          </div>
 
-      <AnimatedSection delay={0.15} className="relative w-full">
-        {/* Left and Right Fade Overlays */}
-        <div className="absolute top-0 bottom-0 left-0 w-[24px] sm:w-[64px] z-30 bg-gradient-to-r from-background to-transparent pointer-events-none"></div>
-        <div className="absolute top-0 bottom-0 right-0 w-[24px] sm:w-[64px] z-30 bg-gradient-to-l from-background to-transparent pointer-events-none"></div>
-        
-        <div
-          ref={containerRef}
-          className={`overflow-hidden w-full py-6 md:py-10 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-          style={{ touchAction: 'pan-y' }}
-          {...handlers}
-        >
-          <motion.div
-            className="flex gap-2.5 sm:gap-4 md:gap-6 w-max pl-3 sm:pl-8 transform-gpu will-change-transform"
-            style={{ x, willChange: 'transform' }}
-          >
-            {/* 3 Sets ensure seamless infinite continuous drag in both directions with low mobile DOM weight */}
-            {Array.from({ length: 3 }).map((_, setIdx) => (
-              <div
-                key={setIdx}
-                ref={setIdx === 0 ? set0Ref : setIdx === 1 ? set1Ref : null}
-                className="flex gap-2.5 sm:gap-4 md:gap-6 shrink-0"
+          {/* Row: Title on Left, Button on Right */}
+          <div className="flex items-center justify-between w-full">
+            <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase leading-none text-left">
+              Collaborator <span className="text-accent">Feedback</span>
+            </h2>
+
+            <button 
+              onClick={(e) => { e.stopPropagation(); setIsSectionOpen(!isSectionOpen); }}
+              className="relative w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.5)] hover:-translate-y-0.5 cursor-pointer"
+              title={isSectionOpen ? "Collapse Section" : "Expand Section"}
+            >
+              <motion.div 
+                animate={{ rotate: isSectionOpen ? 180 : 0 }} 
+                transition={{ duration: 0.4, ease: "easeInOut" }} 
+                className="flex items-center justify-center"
               >
-                {testimonials.map((testimonial, cardIdx) => (
-                  <div
-                    key={`${setIdx}-${cardIdx}`}
-                    className="flex-shrink-0 w-[65vw] sm:w-[340px] md:w-[400px] lg:w-[540px] h-[230px] sm:h-[370px] md:h-[420px] p-4 sm:p-6 md:p-8 border border-foreground/10 bg-panels/70 dark:bg-panels/40 relative group hover:bg-panels/90 hover:border-foreground/20 transition-colors duration-300 flex flex-col rounded-xl shadow-sm hover:shadow-[0_0_25px_rgba(255,184,198,0.12)] justify-between overflow-hidden transform-gpu will-change-transform"
-                    style={{ contentVisibility: 'auto', containIntrinsicSize: '340px 370px' }}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={isSectionOpen ? "" : "mt-1"}>
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </motion.div>
+            </button>
+          </div>
+        </AnimatedSection>
+      </div>
+
+      {/* Main Feedback & Vouches (Collapsible Body) */}
+      <AnimatePresence>
+        {isSectionOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            {/* Description Subtitle */}
+            <div className="flex flex-col items-start text-left pt-2 pb-6">
+              <p className="font-mono text-[11px] sm:text-xs md:text-sm text-foreground/50 tracking-widest uppercase max-w-xl leading-relaxed text-left">
+                Kind words from incredible people and brands I've had the privilege to work with.
+              </p>
+            </div>
+
+            <div className="pt-2 pb-2 -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-12 xl:-mx-16">
+              {/* Carousel container with both CSS mask-image transparency and multi-stop gradient blur overlays */}
+              <div className="relative w-full overflow-hidden">
+                {/* Left side deep fade overlay */}
+                <div 
+                  className="absolute top-0 bottom-0 left-0 w-24 sm:w-44 md:w-64 lg:w-80 z-30 pointer-events-none bg-gradient-to-r from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
+                  aria-hidden="true"
+                />
+                
+                {/* Right side deep fade overlay */}
+                <div 
+                  className="absolute top-0 bottom-0 right-0 w-24 sm:w-44 md:w-64 lg:w-80 z-30 pointer-events-none bg-gradient-to-l from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
+                  aria-hidden="true"
+                />
+                
+                <div
+                  ref={containerRef}
+                  className={`overflow-hidden w-full py-3 md:py-5 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                  style={{ 
+                    touchAction: 'pan-y',
+                    maskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 120px, rgba(0,0,0,1) calc(100% - 120px), rgba(0,0,0,0) 100%)',
+                    WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 120px, rgba(0,0,0,1) calc(100% - 120px), rgba(0,0,0,0) 100%)'
+                  }}
+                  {...handlers}
+                >
+                  <motion.div
+                    className="flex gap-2.5 sm:gap-4 md:gap-6 w-max pl-3 sm:pl-8 transform-gpu will-change-transform"
+                    style={{ x, willChange: 'transform' }}
                   >
-                    <div
-                      className="relative z-20 flex-grow flex flex-col justify-center cursor-pointer group/text"
-                      onClick={() => {
-                        if (!hasMovedRef.current) {
-                          setSelectedTestimonialIndex(cardIdx);
-                        }
-                      }}
-                    >
-                      {/* Top-Left Quote Icon */}
-                      <span className="text-accent text-2xl sm:text-4xl md:text-5xl font-serif absolute top-0 left-0 leading-none opacity-90 group-hover/text:opacity-100 transition-opacity pointer-events-none">“</span>
-
-                      <div className="flex-grow flex flex-col justify-center items-center">
-                        <p className="font-sans font-light text-[12px] sm:text-sm md:text-base leading-snug sm:leading-relaxed text-foreground/90 whitespace-pre-line line-clamp-6 sm:line-clamp-[7] md:line-clamp-[8] group-hover/text:text-foreground transition-colors pt-1 sm:pt-0 text-center select-none">
-                          {testimonial.quote}
-                        </p>
+                    {/* 3 Sets ensure seamless infinite continuous drag in both directions with low mobile DOM weight */}
+                    {Array.from({ length: 3 }).map((_, setIdx) => (
+                      <div
+                        key={setIdx}
+                        ref={setIdx === 0 ? set0Ref : setIdx === 1 ? set1Ref : null}
+                        className="flex gap-2.5 sm:gap-4 md:gap-6 shrink-0"
+                      >
+                        {testimonials.map((testimonial, cardIdx) => (
+                          <FeedbackCard
+                            key={`${setIdx}-${cardIdx}`}
+                            testimonial={testimonial}
+                            cardIdx={cardIdx}
+                            setIdx={setIdx}
+                            hasMovedRef={hasMovedRef}
+                            onSelect={setSelectedTestimonialIndex}
+                          />
+                        ))}
                       </div>
-                    </div>
-
-                    <div className="flex items-center justify-between mt-2 sm:mt-6 pt-2 sm:pt-5 border-t border-foreground/10 relative z-20 w-full min-w-0">
-                      <div className="flex items-center gap-2 sm:gap-4 w-full min-w-0">
-                        <CardAvatar
-                          src={testimonial.avatar}
-                          name={testimonial.author}
-                          className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12"
-                          textClassName="text-[10px] sm:text-sm md:text-base"
-                        />
-
-                        <div className="flex flex-col min-w-0 w-full">
-                          {(() => {
-                            const hasAgency = Boolean(testimonial.agency || testimonial.agencyLink);
-                            const authorLink = hasAgency ? (testimonial.agencyLink || testimonial.link) : testimonial.link;
-                            const subtitleLink = hasAgency ? testimonial.link : testimonial.agencyLink;
-                            const orgName = testimonial.agency || testimonial.company;
-
-                            return (
-                              <>
-                                <h4 className="font-mono font-bold text-[11px] sm:text-xs md:text-[15px] tracking-wider text-foreground flex items-center gap-1 sm:gap-2 truncate w-full">
-                                  {authorLink ? (
-                                    <a
-                                      href={authorLink}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (hasMovedRef.current) {
-                                          e.preventDefault();
-                                        }
-                                      }}
-                                      className="hover:text-accent transition-colors flex items-center gap-1 truncate min-w-0"
-                                      title={hasAgency ? `Visit Agency: ${testimonial.agency || 'Agency'}` : `Visit ${testimonial.author}`}
-                                    >
-                                      <span className="truncate">{testimonial.author}</span>
-                                      <span className="opacity-70 text-[8px] sm:text-[10px] shrink-0">↗</span>
-                                    </a>
-                                  ) : (
-                                    <span className="truncate">{testimonial.author}</span>
-                                  )}
-                                  <div className="shrink-0">
-                                    <VerifiedBadge hasLink={Boolean(authorLink || subtitleLink)} />
-                                  </div>
-                                </h4>
-                                <p className="font-sans text-[9px] sm:text-[11px] md:text-[13px] text-foreground/60 mt-0.5 truncate w-full">
-                                  {testimonial.role}
-                                  {orgName && (
-                                    <span>
-                                      {testimonial.role ? ' • ' : ''}
-                                      {subtitleLink ? (
-                                        <a
-                                          href={subtitleLink}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (hasMovedRef.current) {
-                                              e.preventDefault();
-                                            }
-                                          }}
-                                          className="hover:text-accent underline decoration-foreground/20 hover:decoration-accent transition-colors"
-                                          title="Visit Client Profile"
-                                        >
-                                          {orgName} ↗
-                                        </a>
-                                      ) : (
-                                        orgName
-                                      )}
-                                    </span>
-                                  )}
-                                </p>
-                              </>
-                            );
-                          })()}
-                          {testimonial.project && (
-                            <p className="font-mono text-[8px] sm:text-[9px] md:text-[10px] text-accent/90 tracking-widest uppercase mt-0.5 sm:mt-2 font-bold truncate w-full">
-                              {testimonial.project}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                    ))}
+                  </motion.div>
+                </div>
               </div>
-            ))}
-          </motion.div>
-        </div>
 
-        {/* Industry Vouches / Creative Circle Section */}
-        <VouchesSection />
-      </AnimatedSection>
+              {/* Industry Vouches / Creative Circle Section */}
+              <VouchesSection />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

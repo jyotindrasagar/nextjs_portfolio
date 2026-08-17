@@ -25,7 +25,7 @@ interface PaginationControlsProps {
   onPageChange: (page: number) => void;
 }
 
-// Pagination controls component (reused top and bottom)
+// Pagination controls component (placed above in uncollapsed area)
 const PaginationControls = memo(function PaginationControls({
   currentPage,
   totalPages,
@@ -33,43 +33,51 @@ const PaginationControls = memo(function PaginationControls({
 }: PaginationControlsProps) {
   if (totalPages <= 1) return null;
   return (
-    <div className="flex items-center justify-center gap-4 font-mono text-xs">
+    <div className="flex items-center gap-3 font-mono text-[11px] select-none">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 0}
-        className="flex items-center gap-1 px-4 py-1.5 bg-foreground/[0.02] backdrop-blur-xl border border-foreground/20 text-foreground/80 hover:bg-foreground/[0.04] hover:border-foreground/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] border border-foreground/15 bg-panels/60 hover:bg-panels/90 hover:border-accent hover:text-accent text-foreground/80 transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none cursor-pointer"
+        title="Previous Page"
       >
-        <ChevronLeft size={14} />
-        <span className="tracking-widest">PREV</span>
+        <ChevronLeft size={13} />
+        <span className="tracking-widest font-bold">PREV</span>
       </button>
-      <div className="flex items-center gap-2">
+
+      <div className="flex items-center gap-1.5 px-1">
         {Array.from({ length: totalPages }, (_, i) => (
           <button
             key={i}
             onClick={() => onPageChange(i)}
-            className={`w-2 h-2 rounded-full transition-all cursor-pointer ${i === currentPage
-                ? 'bg-accent scale-125'
-                : 'bg-foreground/30 hover:bg-foreground/50'
-              }`}
+            className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
+              i === currentPage
+                ? 'bg-accent scale-125 shadow-[0_0_8px_rgba(234,135,156,0.8)]'
+                : 'bg-foreground/25 hover:bg-foreground/50'
+            }`}
+            title={`Page ${i + 1}`}
           />
         ))}
       </div>
-      <span className="text-foreground/40 tracking-widest">
+
+      <span className="text-foreground/40 font-mono text-[10px] tracking-widest px-1">
         {currentPage + 1} / {totalPages}
       </span>
+
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages - 1}
-        className="flex items-center gap-1 px-4 py-1.5 bg-foreground/[0.02] backdrop-blur-xl border border-foreground/20 text-foreground/80 hover:bg-foreground/[0.04] hover:border-foreground/30 transition-all disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer rounded-sm"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] border border-foreground/15 bg-panels/60 hover:bg-panels/90 hover:border-accent hover:text-accent text-foreground/80 transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none cursor-pointer"
+        title="Next Page"
       >
-        <span className="tracking-widest">NEXT</span>
-        <ChevronRight size={14} />
+        <span className="tracking-widest font-bold">NEXT</span>
+        <ChevronRight size={13} />
       </button>
     </div>
   );
 });
 
 export function Work() {
+  const [isSectionOpen, setIsSectionOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
   const [activeSubCategory, setActiveSubCategory] = useState<string>('ALL');
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
@@ -104,11 +112,25 @@ export function Work() {
     setActiveSubCategory('ALL');
   }, [activeCategory]);
 
-  // Listen for navigation button click
+  // Listen for navigation button or section expand click
   useEffect(() => {
-    const handleOpenShowreel = () => setActiveCategory('SHOWREEL');
+    const handleOpenShowreel = () => {
+      setIsSectionOpen(true);
+      setActiveCategory('SHOWREEL');
+    };
+    const handleExpandSection = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail?.id === 'work') {
+        setIsSectionOpen(true);
+      }
+    };
+
     window.addEventListener('openShowreel', handleOpenShowreel);
-    return () => window.removeEventListener('openShowreel', handleOpenShowreel);
+    window.addEventListener('expand-section', handleExpandSection);
+    return () => {
+      window.removeEventListener('openShowreel', handleOpenShowreel);
+      window.removeEventListener('expand-section', handleExpandSection);
+    };
   }, []);
 
   // Pagination
@@ -126,42 +148,24 @@ export function Work() {
   };
 
   const getEmbedUrl = (project: any) => {
-    const url = project?.videoUrl?.trim();
-    if (!url) return '';
+    if (!project.videoUrl) return '';
 
-    let embedUrl = '';
-    let videoId = '';
-
-    if (url.includes('youtube.com/watch?v=')) {
-      videoId = url.split('v=')[1].split('&')[0];
-      embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-    } else if (url.includes('youtu.be/')) {
-      videoId = url.split('youtu.be/')[1].split('?')[0];
-      embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-    } else {
-      return url;
+    if (project.videoUrl.includes('youtu')) {
+      const match = project.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+      const id = match ? match[1] : '';
+      return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
     }
 
-    if (project.loop && videoId) {
-      embedUrl += `&loop=1&playlist=${videoId}`;
-    }
-
-    return embedUrl;
+    return project.videoUrl;
   };
 
   const getThumbnailUrl = (project: any) => {
-    const url = project?.videoUrl?.trim();
-    if (url) {
-      if (url.includes('youtube.com/watch?v=')) {
-        const id = url.split('v=')[1].split('&')[0];
-        return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
-      }
-      if (url.includes('youtu.be/')) {
-        const id = url.split('youtu.be/')[1].split('?')[0];
-        return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
-      }
-      if (url.includes('youtube.com/embed/')) {
-        const id = url.split('embed/')[1].split('?')[0];
+    if (project.thumbnailUrl) return project.thumbnailUrl;
+
+    if (project.videoUrl && project.videoUrl.includes('youtu')) {
+      const match = project.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+      const id = match ? match[1] : '';
+      if (id) {
         return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
       }
     }
@@ -170,256 +174,307 @@ export function Work() {
   };
 
   return (
-    <section id="work" className="relative pt-0 pb-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 overflow-hidden">
-      {/* CAD reference label */}
-      <div className="flex items-center gap-2.5 text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-foreground/90 mb-4 md:mb-6 uppercase relative z-10">
-        <span className="text-accent">❖</span>
-        <span>INDEX // MY_WORKS</span>
+    <section 
+      id="work" 
+      className={`relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 overflow-hidden transition-all duration-300 ${
+        isSectionOpen ? 'pt-16 md:pt-24 pb-16 md:pb-24 min-h-[100px]' : 'pt-8 pb-8 min-h-0'
+      }`}
+    >
+      {/* Clickable Header Area: Only CAD Tag & Title on Left, Button on Right */}
+      <div 
+        onClick={() => setIsSectionOpen(!isSectionOpen)}
+        className="relative cursor-pointer group select-none py-3 mb-4"
+      >
+        {/* Soft-edge feathered ambient glow: subtle sakura pink in light mode, subtle white in dark mode */}
+        <div 
+          className="absolute -inset-x-6 -inset-y-3 sm:-inset-x-8 sm:-inset-y-4 rounded-[40px] bg-gradient-to-r from-accent/[0.035] via-accent/[0.012] to-transparent dark:from-white/[0.03] dark:via-white/[0.01] dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none blur-2xl -z-10" 
+          aria-hidden="true" 
+        />
+
+        <AnimatedSection className="flex flex-col items-start text-left">
+          {/* CAD reference label */}
+          <div className="flex items-center gap-2.5 text-[11px] sm:text-[12px] md:text-[14px] tracking-[0.25em] font-mono font-extrabold text-accent mb-4 md:mb-6 uppercase text-left">
+            <span>❖</span>
+            <span>INDEX // MY_WORKS</span>
+          </div>
+
+          {/* Row: Title on Left, Button on Right */}
+          <div className="flex items-center justify-between w-full">
+            <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase leading-none text-left">
+              My <span className="text-accent">Works</span>
+            </h2>
+
+            <button 
+              onClick={(e) => { e.stopPropagation(); setIsSectionOpen(!isSectionOpen); }}
+              className="relative w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.5)] hover:-translate-y-0.5 cursor-pointer"
+              title={isSectionOpen ? "Collapse Section" : "Expand Section"}
+            >
+              <motion.div 
+                animate={{ rotate: isSectionOpen ? 180 : 0 }} 
+                transition={{ duration: 0.4, ease: "easeInOut" }} 
+                className="flex items-center justify-center"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={isSectionOpen ? "" : "mt-1"}>
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </motion.div>
+            </button>
+          </div>
+        </AnimatedSection>
       </div>
 
-      <AnimatedSection>
-        <div className="flex flex-col border-b border-foreground/10 pb-8 mb-16 gap-6 relative min-h-[80px]">
-          <div>
-            <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase">
-              My Works
-            </h2>
-            <p className="sr-only">
-              Motion Designer and Video Editor specializing in high-end product advertisements, 3D animation, motion graphics, CGI, VFX compositing, documentaries, commercial videos, UI animation, camera tracking, and cinematic visual storytelling using Blender, After Effects, DaVinci Resolve, Premiere Pro, Unreal Engine, Substance 3D, SynthEyes, and Boris FX.
-            </p>
-            <p className="text-foreground/50 text-[13px] md:text-[14px] font-mono uppercase tracking-widest mt-2">
-              Selected projects & visual stories
-            </p>
-          </div>
+      {/* Collapsible Content */}
+      <AnimatePresence>
+        {isSectionOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            {/* Subtitle, Category Filters & Top Pagination Header */}
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between border-b border-foreground/10 pb-6 mb-8 pt-2 gap-6">
+              <div className="flex flex-col items-start text-left flex-1 min-w-0">
+                <p className="sr-only">
+                  Motion Designer and Video Editor specializing in high-end product advertisements, 3D animation, motion graphics, CGI, VFX compositing, documentaries, commercial videos, UI animation, camera tracking, and cinematic visual storytelling using Blender, After Effects, DaVinci Resolve, Premiere Pro, Unreal Engine, Substance 3D, SynthEyes, and Boris FX.
+                </p>
+                <p className="text-foreground/60 text-[12px] md:text-[14px] font-mono uppercase tracking-widest mb-4 text-left">
+                  Selected projects &amp; visual stories
+                </p>
 
-          {/* Filter categories */}
-          <div className="flex flex-wrap gap-3 md:gap-4 font-mono text-[11px] md:text-[12px] tracking-[0.2em] mt-4">
-            {categories.map((cat) => {
-              if (cat === 'SHOWREEL') {
-                return (
-                  <button
-                    key={cat}
-                    aria-label={`Filter by ${cat} category`}
-                    onClick={() => setActiveCategory(cat)}
-                    className={`px-6 py-2.5 md:px-8 md:py-3 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] ${
-                      activeCategory === cat
-                        ? 'border border-transparent text-white bg-accent scale-105 shadow-[0_0_20px_rgba(255,184,198,0.6)]'
-                        : 'border border-accent/60 text-accent bg-transparent animate-showreel-glow hover:border-accent hover:text-white hover:bg-accent hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                );
-              }
+                {/* Filter Categories with safe padding so glow never clips */}
+                <div className="flex flex-wrap gap-2 md:gap-3 font-mono text-[10px] md:text-[11px] tracking-[0.15em] justify-start p-1.5 -m-1.5">
+                  {categories.map((cat) => {
+                    if (cat === 'SHOWREEL') {
+                      return (
+                        <button
+                          key={cat}
+                          aria-label={`Filter by ${cat} category`}
+                          onClick={() => setActiveCategory(cat)}
+                          className={`px-4 py-2 md:px-5 md:py-2.5 transition-all duration-300 cursor-pointer text-[9px] md:text-[10px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] ${
+                            activeCategory === cat
+                              ? 'border border-transparent text-white bg-accent scale-105 shadow-[0_0_15px_rgba(234,135,156,0.5)]'
+                              : 'border border-accent/60 text-accent bg-transparent animate-showreel-glow hover:border-accent hover:text-white hover:bg-accent hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      );
+                    }
 
-              return (
-                <button
-                  key={cat}
-                  aria-label={`Filter by ${cat} category`}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2.5 md:px-6 md:py-3 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] ${
-                    activeCategory === cat
-                      ? 'border border-transparent text-white bg-accent shadow-[0_4px_14px_rgba(234,135,156,0.3)] scale-105'
-                      : 'border border-foreground/20 text-foreground/80 bg-transparent hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </AnimatedSection>
+                    return (
+                      <button
+                        key={cat}
+                        aria-label={`Filter by ${cat} category`}
+                        onClick={() => setActiveCategory(cat)}
+                        className={`px-3.5 py-2 md:px-4 md:py-2.5 transition-all duration-300 cursor-pointer text-[9px] md:text-[10px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] ${
+                          activeCategory === cat
+                            ? 'border border-transparent text-white bg-accent shadow-[0_4px_14px_rgba(234,135,156,0.3)] scale-105'
+                            : 'border border-foreground/20 text-foreground/80 bg-transparent hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5 hover:shadow-[0_4px_14px_rgba(234,135,156,0.2)]'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
-      {/* Main 2-column layout */}
-      <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
-        {/* Left Sidebar */}
-        <div className="lg:w-64 lg:shrink-0 lg:sticky lg:top-32 h-fit flex flex-col gap-8 z-40">
-          <AnimatedSection>
-            <div className="flex flex-col gap-2">
-              <h3 className="text-accent font-mono uppercase tracking-[0.2em] text-sm font-extrabold">{activeCategory}</h3>
-              <h2 className="text-foreground font-display text-3xl md:text-4xl font-bold uppercase tracking-tight">{categoryInfo[activeCategory]?.title || activeCategory}</h2>
+              {/* Prev / Next Pagination Menu Placed Cleanly Above in the Uncollapsed Area */}
+              {totalPages > 1 && activeCategory !== 'SHOWREEL' && (
+                <div className="shrink-0 flex items-center self-start lg:self-end pb-1">
+                  <PaginationControls
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={goToPage}
+                  />
+                </div>
+              )}
             </div>
 
-            <div className="w-[1px] h-12 bg-foreground/30 my-3 hidden lg:block"></div>
+            {/* Main 2-column layout */}
+            <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
+              {/* Left Sidebar */}
+              <div className="lg:w-64 lg:shrink-0 lg:sticky lg:top-32 h-fit flex flex-col gap-8 z-40 items-start text-left">
+                <AnimatedSection className="flex flex-col items-start text-left w-full">
+                  <div className="flex flex-col gap-2 items-start text-left">
+                    <h3 className="text-accent font-mono uppercase tracking-[0.2em] text-sm font-extrabold text-left">{activeCategory}</h3>
+                    <h2 className="text-foreground font-display text-3xl md:text-4xl font-bold uppercase tracking-tight text-left">{categoryInfo[activeCategory]?.title || activeCategory}</h2>
+                  </div>
 
-            <p className="text-foreground/90 font-mono text-[11px] md:text-[12px] font-semibold uppercase tracking-widest leading-relaxed max-w-[260px]">
-              {categoryInfo[activeCategory]?.desc || 'SELECTED PROJECTS & VISUAL STORIES.'}
-            </p>
+                  <div className="w-[1px] h-12 bg-foreground/30 my-3 hidden lg:block"></div>
 
-            {activeCategory === 'COMMERCIAL' && (
-              <div className="flex flex-col gap-2.5 mt-4">
-                {['ALL', 'ADS', 'LOGO ANIMATIONS'].map((subCat) => (
-                  <button
-                    key={subCat}
-                    onClick={() => setActiveSubCategory(subCat)}
-                    className={`text-left px-4 py-2.5 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] w-full ${
-                      activeSubCategory === subCat
-                        ? 'border border-transparent text-white bg-accent shadow-[0_4px_14px_rgba(234,135,156,0.3)]'
-                        : 'border border-foreground/20 text-foreground/80 bg-transparent hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5'
-                    }`}
-                  >
-                    {subCat}
-                  </button>
-                ))}
-              </div>
-            )}
+                  <p className="text-foreground/90 font-mono text-[11px] md:text-[12px] font-semibold uppercase tracking-widest leading-relaxed max-w-[260px] text-left">
+                    {categoryInfo[activeCategory]?.desc || 'SELECTED PROJECTS & VISUAL STORIES.'}
+                  </p>
 
-
-          </AnimatedSection>
-        </div>
-
-        {/* Projects Grid / Showreel */}
-        <div className="flex-1 w-full relative z-30">
-          {activeCategory === 'SHOWREEL' ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden shadow-[0_0_40px_rgba(255,255,255,0.15)] border-2 border-foreground mx-auto mt-4"
-            >
-              <iframe
-                src="https://www.youtube.com/embed/xeoAIGh7EK8?si=YZQL2AmeEVfunRfa&autoplay=0&controls=1&modestbranding=1&rel=0&cc_load_policy=0&iv_load_policy=3"
-                title="YouTube video player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                referrerPolicy="strict-origin-when-cross-origin"
-                className="w-full h-full border-0 bg-black"
-              />
-            </motion.div>
-          ) : (
-            <div className="relative w-full">
-              {/* Top pagination - responsive positioning to avoid mobile overlap */}
-              <div className="flex justify-center lg:justify-end lg:absolute lg:-top-14 lg:right-0 z-50 mb-6 lg:mb-0 w-full">
-                <PaginationControls
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={goToPage}
-                />
-              </div>
-
-              {/* Grid — 1 col mobile, 2 cols iPad/tablet, 3 cols large desktop */}
-              <div className={`grid items-center gap-3 md:gap-4 w-full ${activeCategory === 'SOCIAL'
-                  ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
-                  : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'
-                }`}>
-                <AnimatePresence mode="popLayout">
-                  {paginatedProjects.map((project) => {
-                    const isHOF = project.title.toUpperCase().includes('HOF');
-                    const aspectClass = activeCategory === 'SOCIAL' 
-                      ? 'aspect-[9/16]' 
-                      : (isHOF ? 'aspect-[2/1]' : 'aspect-video');
-                    
-                    return (
-                    <motion.div
-                      initial={{ opacity: 0, y: 30, scale: 0.97 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.4, ease: "easeOut" }}
-                      key={project.id}
-                      aria-label={`View project: ${project.title}`}
-                      className={`group relative flex flex-col border border-foreground/10 overflow-hidden w-full bg-background ${aspectClass}`}
-                    >
-                      {playingVideoId === project.id ? (
-                        <div className="w-full h-full relative z-50 bg-black">
-                          {project.videoUrl?.includes('youtu') ? (
-                            <iframe
-                              src={getEmbedUrl(project)}
-                              allow="autoplay; fullscreen; encrypted-media"
-                              allowFullScreen
-                              className="w-full h-full border-0 absolute inset-0"
-                            />
-                          ) : (
-                            <video
-                              src={project.videoUrl}
-                              controls
-                              autoPlay
-                              loop={project.loop}
-                              className="w-full h-full object-contain absolute inset-0"
-                            />
-                          )}
-                        </div>
-                      ) : (
-                        <div 
-                          className="w-full h-full cursor-pointer"
-                          onClick={() => setPlayingVideoId(project.id)}
-                          role="button"
+                  {activeCategory === 'COMMERCIAL' && (
+                    <div className="flex flex-col gap-2.5 mt-4 w-full">
+                      {['ALL', 'ADS', 'LOGO ANIMATIONS'].map((subCat) => (
+                        <button
+                          key={subCat}
+                          onClick={() => setActiveSubCategory(subCat)}
+                          className={`text-left px-4 py-2.5 transition-all duration-300 cursor-pointer text-[10px] md:text-[11px] font-display font-bold uppercase tracking-[0.15em] rounded-[3px] w-full ${
+                            activeSubCategory === subCat
+                              ? 'border border-transparent text-white bg-accent shadow-[0_4px_14px_rgba(234,135,156,0.3)]'
+                              : 'border border-foreground/20 text-foreground/80 bg-transparent hover:border-accent hover:text-accent hover:bg-accent/10 hover:-translate-y-0.5'
+                          }`}
                         >
-                          <HoverVideoPlayer
-                            imageUrl={getThumbnailUrl(project)}
-                            videoUrl={project.videoUrl}
-                            altText={project.title}
-                            baseOpacity="opacity-100"
-                            baseGrayscale="grayscale"
-                          >
-                            {/* Gradient Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none"></div>
+                          {subCat}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </AnimatedSection>
+              </div>
 
-                            {/* Card Content */}
-                            <div className="relative h-full flex flex-col justify-between p-2.5 sm:p-3 md:p-3.5 xl:p-4 z-10 pointer-events-none">
-                              {/* Top Row: Icon & Optional Track/Artist Link */}
-                              <div className="flex items-center justify-between text-white/90 drop-shadow-md">
-                                <Clapperboard size={14} strokeWidth={2} />
-                                {(project.trackUrl || project.externalUrl || project.postUrl) && (
-                                  <a
-                                    href={project.trackUrl || project.externalUrl || project.postUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="flex items-center gap-1 text-[8px] sm:text-[9px] font-mono font-bold uppercase tracking-wider bg-black/75 hover:bg-accent text-white px-2 py-0.5 rounded-sm border border-white/20 transition-all duration-300 pointer-events-auto"
-                                    title="Listen to track / artist"
-                                  >
-                                    <Music size={10} />
-                                    <span>Listen / Track</span>
-                                    <ExternalLink size={9} />
-                                  </a>
+              {/* Projects Grid / Showreel */}
+              <div className="flex-1 w-full relative z-30">
+                {activeCategory === 'SHOWREEL' ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden shadow-[0_0_40px_rgba(255,255,255,0.15)] border-2 border-foreground mx-auto mt-4"
+                  >
+                    <iframe
+                      src="https://www.youtube.com/embed/xeoAIGh7EK8?si=YZQL2AmeEVfunRfa&autoplay=0&controls=1&modestbranding=1&rel=0&cc_load_policy=0&iv_load_policy=3"
+                      title="YouTube video player"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-picture; web-share"
+                      allowFullScreen
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      className="w-full h-full border-0 bg-black"
+                    />
+                  </motion.div>
+                ) : (
+                  <div className="relative w-full">
+                    {/* Grid with smooth progressive lazy staggered card entrance */}
+                    <div className={`grid items-center gap-3 md:gap-4 w-full ${activeCategory === 'SOCIAL'
+                        ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
+                        : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'
+                      }`}>
+                      <AnimatePresence mode="popLayout">
+                        {paginatedProjects.map((project, idx) => {
+                          const isHOF = project.title.toUpperCase().includes('HOF');
+                          const aspectClass = activeCategory === 'SOCIAL' 
+                            ? 'aspect-[9/16]' 
+                            : (isHOF ? 'aspect-[2/1]' : 'aspect-video');
+                          
+                          return (
+                          <motion.div
+                            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.96 }}
+                            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1], delay: idx * 0.04 }}
+                            key={project.id}
+                            aria-label={`View project: ${project.title}`}
+                            className={`group relative flex flex-col border border-foreground/10 overflow-hidden w-full bg-background ${aspectClass}`}
+                          >
+                            {playingVideoId === project.id ? (
+                              <div className="w-full h-full relative z-50 bg-black">
+                                {project.videoUrl?.includes('youtu') ? (
+                                  <iframe
+                                    src={getEmbedUrl(project)}
+                                    allow="autoplay; fullscreen; encrypted-media"
+                                    allowFullScreen
+                                    className="w-full h-full border-0 absolute inset-0"
+                                  />
+                                ) : (
+                                  <video
+                                    src={project.videoUrl}
+                                    controls
+                                    autoPlay
+                                    loop={project.loop}
+                                    className="w-full h-full object-contain absolute inset-0"
+                                  />
                                 )}
                               </div>
+                            ) : (
+                              <div 
+                                onClick={() => setPlayingVideoId(project.id)}
+                                className="w-full h-full relative cursor-pointer"
+                              >
+                                <HoverVideoPlayer
+                                  imageUrl={getThumbnailUrl(project)}
+                                  videoUrl={project.videoUrl}
+                                  altText={project.title}
+                                >
+                                  {/* Custom Overlay Inside Video Player */}
+                                  <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-between z-20 pointer-events-none">
+                                    {/* Top Row: SubCategory and Track Links */}
+                                    <div className="flex justify-between items-start gap-2">
+                                      {project.subCategory ? (
+                                        <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-0.5 border border-white/10 rounded-[2px]">
+                                          <Clapperboard size={9} className="text-accent" />
+                                          <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-wider text-white">
+                                            {project.subCategory}
+                                          </span>
+                                        </div>
+                                      ) : <div />}
 
-                              {/* Bottom Row: Title and Subtitle */}
-                              <div className="flex flex-col items-start justify-end gap-0.5 sm:gap-1">
-                                <h3 className="font-display font-bold text-xs sm:text-sm md:text-[13px] lg:text-sm xl:text-base tracking-tight text-white group-hover:text-accent transition-colors uppercase drop-shadow-md line-clamp-2 leading-tight">
-                                  {project.title}
-                                </h3>
-                                <p className="font-mono text-[7px] sm:text-[8px] uppercase tracking-widest text-accent drop-shadow-md">
-                                  {project.category}
-                                </p>
+                                      {project.trackUrl && (
+                                        <a
+                                          href={project.trackUrl}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          onClick={(e) => e.stopPropagation()}
+                                          className="pointer-events-auto flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-0.5 border border-white/10 rounded-[2px] font-mono text-[8px] sm:text-[9px] text-foreground/80 hover:text-accent hover:border-accent transition-colors"
+                                          title="Listen on Spotify / Apple Music"
+                                        >
+                                          <Music size={9} className="text-accent" />
+                                          <span>Listen / Track</span>
+                                          <ExternalLink size={9} />
+                                        </a>
+                                      )}
+                                    </div>
+
+                                    {/* Bottom Row: Title and Subtitle */}
+                                    <div className="flex flex-col items-start justify-end gap-0.5 sm:gap-1 text-left">
+                                      <h3 className="font-display font-bold text-xs sm:text-sm md:text-[13px] lg:text-sm xl:text-base tracking-tight text-white group-hover:text-accent transition-colors uppercase drop-shadow-md line-clamp-2 leading-tight text-left">
+                                        {project.title}
+                                      </h3>
+                                      <p className="font-mono text-[7px] sm:text-[8px] uppercase tracking-widest text-accent drop-shadow-md text-left">
+                                        {project.category}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </HoverVideoPlayer>
                               </div>
-                            </div>
-                          </HoverVideoPlayer>
-                        </div>
-                      )}
-                    </motion.div>
-                  );
-                })}
+                            )}
+                          </motion.div>
+                        );
+                      })}
 
-                  {/* Translucent Placeholder Card if count < 4 */}
-                  {sortedProjects.length < 4 && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className={`group relative flex flex-col items-center justify-center border border-dashed border-foreground/20 bg-foreground/[0.03] backdrop-blur-md rounded-lg p-6 text-center w-full ${activeCategory === 'SOCIAL' ? 'aspect-[9/16]' : 'aspect-video'} pointer-events-none select-none overflow-hidden`}
-                    >
-                      <div className="flex flex-col items-center justify-center gap-3 p-4">
-                        <div className="w-10 h-10 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-accent animate-pulse">
-                          <Wrench size={18} />
-                        </div>
-                        <h4 className="font-display font-bold text-xs md:text-sm uppercase tracking-wider text-foreground/80 leading-snug max-w-[240px]">
-                          HOLD ON TRYNNA LOAD MORE STUFF UP IN HERE
-                        </h4>
-                        <span className="font-mono text-[10px] text-accent tracking-widest uppercase font-bold">
-                          GIVE ME THE WRENCH 🔧
-                        </span>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                        {/* Translucent Placeholder Card if count < 4 */}
+                        {sortedProjects.length < 4 && (
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className={`group relative flex flex-col items-center justify-center border border-dashed border-foreground/20 bg-foreground/[0.03] backdrop-blur-md rounded-lg p-6 text-center w-full ${activeCategory === 'SOCIAL' ? 'aspect-[9/16]' : 'aspect-video'} pointer-events-none select-none overflow-hidden`}
+                          >
+                            <div className="flex flex-col items-center justify-center gap-3 p-4">
+                              <div className="w-10 h-10 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-accent animate-pulse">
+                                <Wrench size={18} />
+                              </div>
+                              <h4 className="font-display font-bold text-xs md:text-sm uppercase tracking-wider text-foreground/80 leading-snug max-w-[240px]">
+                                HOLD ON TRYNNA LOAD MORE STUFF UP IN HERE
+                              </h4>
+                              <span className="font-mono text-[10px] text-accent tracking-widest uppercase font-bold">
+                                GIVE ME THE WRENCH 🔧
+                              </span>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          )}
-        </div>
-      </div>
-
-
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

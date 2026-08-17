@@ -164,10 +164,13 @@ export function Hero({ loading = false }: { loading?: boolean }) {
 
   // Handle smooth scroll to section
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    window.dispatchEvent(new CustomEvent('expand-section', { detail: { id } }));
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 50);
   };
 
   // The images array has been moved to src/data/heroVideos.ts
@@ -293,7 +296,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     baseOpacity="opacity-[0.99]"
                     baseGrayscale="grayscale-[40%]"
                     alwaysPlay={isDesktop}
-                    loadDelay={1000}
+                    loadDelay={50}
                     volume={0.88}
                   >
                     <div className="absolute bottom-4 left-4 z-20 flex flex-col">
@@ -317,7 +320,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                     baseOpacity="opacity-[0.99]"
                     baseGrayscale="grayscale-[40%]"
                     alwaysPlay={isDesktop}
-                    loadDelay={2000}
+                    loadDelay={100}
                   >
                     <div className="absolute bottom-4 left-4 z-20 flex flex-col">
                       <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[3].title}</span>
@@ -346,7 +349,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                   baseOpacity="opacity-[0.99]"
                   baseGrayscale="grayscale-[40%]"
                   alwaysPlay={isDesktop}
-                  loadDelay={2000}
+                  loadDelay={150}
                 >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
                     <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[1].title}</span>
@@ -369,7 +372,7 @@ export function Hero({ loading = false }: { loading?: boolean }) {
                   baseOpacity="opacity-[0.99]"
                   baseGrayscale="grayscale-[40%]"
                   alwaysPlay={isDesktop}
-                  loadDelay={2000}
+                  loadDelay={200}
                 >
                   <div className="absolute bottom-4 left-4 z-20 flex flex-col">
                     <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase mix-blend-difference">{heroVideosData[4].title}</span>

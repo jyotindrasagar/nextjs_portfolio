@@ -18,6 +18,13 @@ export default function Home() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 700); // 0.7-second loading screen
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
     if (storedTheme === 'dark' || storedTheme === 'light') {
       setTheme(storedTheme);
@@ -43,26 +50,19 @@ export default function Home() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 450);
-    return () => clearTimeout(timer);
-  }, []);
-
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
   return (
     <>
-      {/* Snappy Initial Loading Screen */}
+      {/* 0.7-Second Loading Screen with SVG Ring Draw & Center Logo */}
       <AnimatePresence>
         {loading && (
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
             className="fixed inset-0 z-[10000] bg-background flex flex-col items-center justify-center select-none"
           >
             <div className="relative w-14 h-14 flex items-center justify-center">
@@ -70,7 +70,7 @@ export default function Home() {
               <svg className="absolute inset-0 w-full h-full -rotate-90 overflow-visible" viewBox="0 0 100 100">
                 {/* Track line */}
                 <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="2" className="text-foreground/10" fill="none" />
-                {/* Snappy active draw line */}
+                {/* Active draw line synced to 0.7 second */}
                 <motion.circle
                   cx="50"
                   cy="50"
@@ -81,7 +81,7 @@ export default function Home() {
                   fill="none"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.45, ease: "easeInOut" }}
+                  transition={{ duration: 0.65, ease: "easeInOut" }}
                   className="drop-shadow-[0_0_10px_rgba(234,135,156,0.85)]"
                 />
               </svg>
@@ -96,6 +96,7 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+
       <div className="fixed inset-0 z-0 pointer-events-none">
         <CADOverlay loading={loading} targetRef={fadeRef} />
         <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/0 to-background/0 dark:from-background/90 dark:via-background/0 dark:to-background/0" />
@@ -105,7 +106,7 @@ export default function Home() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: loading ? 0 : 1 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
         className="fixed inset-0 z-50 pointer-events-none"
       >
         <div className="pointer-events-auto">

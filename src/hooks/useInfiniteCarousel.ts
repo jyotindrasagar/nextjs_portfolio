@@ -18,7 +18,7 @@ function wrap(val: number, min: number, max: number): number {
 }
 
 export function useInfiniteCarousel({
-  speed = 0.6,
+  speed = 0.65,
   direction = -1,
   isPaused = false,
   isInView = true,
@@ -65,17 +65,19 @@ export function useInfiniteCarousel({
     }
   }, [x]);
 
+  // Measure on mount, resize, and when isInView changes
   useEffect(() => {
     measure();
-    const timer = setTimeout(measure, 60);
-    const timer2 = setTimeout(measure, 300);
+    const t1 = setTimeout(measure, 50);
+    const t2 = setTimeout(measure, 200);
+    const t3 = setTimeout(measure, 600);
 
     let resizeObserver: ResizeObserver | null = null;
-    if (typeof ResizeObserver !== 'undefined' && containerRef.current) {
+    if (typeof ResizeObserver !== 'undefined') {
       resizeObserver = new ResizeObserver(() => {
         measure();
       });
-      resizeObserver.observe(containerRef.current);
+      if (containerRef.current) resizeObserver.observe(containerRef.current);
       if (set0Ref.current) resizeObserver.observe(set0Ref.current);
       if (set1Ref.current) resizeObserver.observe(set1Ref.current);
     }
@@ -83,19 +85,23 @@ export function useInfiniteCarousel({
     window.addEventListener('resize', measure);
     return () => {
       window.removeEventListener('resize', measure);
-      clearTimeout(timer);
-      clearTimeout(timer2);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
       if (resizeObserver) resizeObserver.disconnect();
     };
-  }, [measure]);
+  }, [measure, isInView]);
 
   // Continuous animation frame loop
   useAnimationFrame((_, delta) => {
-    const w = setWidthRef.current;
+    let w = setWidthRef.current;
+    if (w <= 0) {
+      measure();
+      w = setWidthRef.current;
+    }
     if (w <= 0 || !isInView || isPaused) return;
 
     if (isDraggingRef.current) {
-      // Actively dragged by touch/pointer, physics handled in pointermove
       return;
     }
 
@@ -118,14 +124,9 @@ export function useInfiniteCarousel({
     x.set(wrapped);
   });
 
-  // Pointer event handlers
+  // Pointer event handlers without aggressive pointer capture that breaks child clicks
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (e.button !== 0) return; // Primary button only
-
-    const target = e.currentTarget as HTMLElement;
-    try {
-      target.setPointerCapture(e.pointerId);
-    } catch {}
 
     isDraggingRef.current = true;
     setIsDragging(true);
@@ -142,7 +143,7 @@ export function useInfiniteCarousel({
     const currentX = e.clientX;
     const deltaX = currentX - lastXRef.current;
 
-    if (Math.abs(currentX - startXRef.current) > 4) {
+    if (Math.abs(currentX - startXRef.current) > 5) {
       hasMovedRef.current = true;
     }
 
@@ -163,28 +164,16 @@ export function useInfiniteCarousel({
     }
   }, [x]);
 
-  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+  const handlePointerUp = useCallback(() => {
     if (!isDraggingRef.current) return;
-
     isDraggingRef.current = false;
     setIsDragging(false);
-
-    const target = e.currentTarget as HTMLElement;
-    try {
-      target.releasePointerCapture(e.pointerId);
-    } catch {}
   }, []);
 
-  const handlePointerCancel = useCallback((e: React.PointerEvent) => {
+  const handlePointerCancel = useCallback(() => {
     if (!isDraggingRef.current) return;
-
     isDraggingRef.current = false;
     setIsDragging(false);
-
-    const target = e.currentTarget as HTMLElement;
-    try {
-      target.releasePointerCapture(e.pointerId);
-    } catch {}
   }, []);
 
   const handleMouseEnter = useCallback(() => {
@@ -193,6 +182,10 @@ export function useInfiniteCarousel({
 
   const handleMouseLeave = useCallback(() => {
     setIsHovered(false);
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false;
+      setIsDragging(false);
+    }
   }, []);
 
   const shift = useCallback((deltaPx: number) => {

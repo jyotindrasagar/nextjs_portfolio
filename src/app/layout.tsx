@@ -205,6 +205,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="scrollbar-hide" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pub-5581a6a5aba4445fb20fc89eb69162c2.r2.dev" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

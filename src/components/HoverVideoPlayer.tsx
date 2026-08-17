@@ -27,16 +27,16 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
 }: HoverVideoPlayerProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [hasBeenInView, setHasBeenInView] = useState(false);
-  const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isUserPaused, setIsUserPaused] = useState(false);
   const [isInView, setIsInView] = useState(false);
-  const [isDelayPassed, setIsDelayPassed] = useState(false);
+  const [isDelayPassed, setIsDelayPassed] = useState(loadDelay === 0);
   const [isMuted, setIsMuted] = useState(true);
-  // Only mount the <video> DOM when we actually need it
   const [shouldMountVideo, setShouldMountVideo] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Global audio listener to mute this video if something else plays audio
   useEffect(() => {
@@ -65,31 +65,17 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
     return () => window.removeEventListener('global-video-play', handleGlobalVideo);
   }, [videoUrl, alwaysPlay]);
 
-
+  // Instant hydration timer (replaces slow window.load gate)
   useEffect(() => {
-    if (document.readyState === 'complete') {
-      setIsPageLoaded(true);
+    if (loadDelay > 0) {
+      const timer = setTimeout(() => setIsDelayPassed(true), loadDelay);
+      return () => clearTimeout(timer);
     } else {
-      const handleLoad = () => setIsPageLoaded(true);
-      window.addEventListener('load', handleLoad);
-      return () => window.removeEventListener('load', handleLoad);
+      setIsDelayPassed(true);
     }
-  }, []);
+  }, [loadDelay]);
 
-  useEffect(() => {
-    if (isPageLoaded) {
-      if (loadDelay > 0) {
-        const timer = setTimeout(() => setIsDelayPassed(true), loadDelay);
-        return () => clearTimeout(timer);
-      } else {
-        setIsDelayPassed(true);
-      }
-    }
-  }, [isPageLoaded, loadDelay]);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Lazy load intersection observer
+  // Lazy load intersection observer with generous viewport margin
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -100,7 +86,7 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
           setIsHovered(false);
         }
       },
-      { rootMargin: '200px' } // Increased from 50px for smoother thumbnail loading
+      { rootMargin: '300px' }
     );
 
     if (containerRef.current) {
@@ -121,10 +107,8 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
     if (!videoUrl || videoUrl.includes('youtu')) return;
     
     if (alwaysPlay && hasBeenInView && isDelayPassed) {
-      // For alwaysPlay cards, mount video after delay + in view
       setShouldMountVideo(true);
     } else if (!alwaysPlay && isHovered && hasBeenInView) {
-      // For hover-only cards, mount video ONLY on first hover
       setShouldMountVideo(true);
     }
   }, [alwaysPlay, hasBeenInView, isDelayPassed, isHovered, videoUrl]);
@@ -146,14 +130,13 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
   useEffect(() => {
     if (!videoRef.current || !shouldMountVideo) return;
 
-    // Force pause if user manually paused OR if the component scrolled out of view
     if (isUserPaused || !isInView) {
       videoRef.current.pause();
       return;
     }
 
     if (alwaysPlay) {
-      if (isPageLoaded) {
+      if (isDelayPassed) {
         videoRef.current.play().catch(e => console.log('Autoplay prevented by browser:', e));
       }
     } else {
@@ -164,8 +147,7 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
         videoRef.current.currentTime = 0;
       }
     }
-  }, [alwaysPlay, shouldMountVideo, isPageLoaded, isHovered, isUserPaused, isInView, isDelayPassed]);
-
+  }, [alwaysPlay, shouldMountVideo, isHovered, isUserPaused, isInView, isDelayPassed]);
 
   return (
     <div
@@ -183,7 +165,7 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
         }
       }}
     >
-      {/* Video Element — Only mounted when actually needed (hover or alwaysPlay) */}
+      {/* Video Element — Preload metadata for instant start when alwaysPlay is active */}
       {shouldMountVideo && videoUrl && !videoUrl.includes('youtu') && (
         <video
           ref={videoRef}
@@ -193,19 +175,20 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
           muted={isMuted}
           playsInline
           loop
-          preload="none"
+          preload={alwaysPlay ? "metadata" : "none"}
           onPlaying={() => setIsVideoPlaying(true)}
           onPause={() => setIsVideoPlaying(false)}
         />
       )}
 
-      {/* Thumbnail Image (Fades out if video is playing, otherwise scales/brightens) */}
+      {/* Thumbnail Image (High priority on hero cards for instant paint, lazy on other cards) */}
       {imageUrl && (
         <img
           src={imageUrl}
           alt={altText}
-          loading="lazy"
-          fetchPriority="low"
+          loading={alwaysPlay ? "eager" : "lazy"}
+          decoding="async"
+          fetchPriority={alwaysPlay ? "high" : "auto"}
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out z-10 ${(isVideoPlaying || isUserPaused)
             ? 'opacity-0'
             : alwaysPlay || isHovered
@@ -236,7 +219,6 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
       {/* Children Overlay */}
       {children && (
         <div className="relative z-20 w-full h-full pointer-events-none">
-          {/* pointer-events-none ensures it doesn't block hover, but we need to re-enable pointer events for buttons inside children */}
           <div className="w-full h-full pointer-events-auto">
             {children}
           </div>
@@ -245,4 +227,3 @@ export const HoverVideoPlayer = memo(function HoverVideoPlayer({
     </div>
   );
 });
-

@@ -142,11 +142,14 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
   const handleScroll = (e: React.MouseEvent<HTMLElement>, id: string) => {
     if (compact) return;
     e.preventDefault();
+    window.dispatchEvent(new CustomEvent('expand-section', { detail: { id } }));
     const element = document.getElementById(id);
     if (element) {
       setMobileMenuOpen(false);
       isScrollingRef.current = true;
-      element.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
 
       setTimeout(() => {
         isScrollingRef.current = false;
