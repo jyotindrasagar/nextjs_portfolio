@@ -513,28 +513,22 @@ export function Feedback() {
         onClick={() => setIsSectionOpen(!isSectionOpen)}
         className="relative cursor-pointer group select-none py-3 mb-4"
       >
-        {/* Soft-edge feathered ambient glow: subtle sakura pink in light mode, subtle white in dark mode */}
-        <div 
-          className="absolute -inset-x-6 -inset-y-3 sm:-inset-x-8 sm:-inset-y-4 rounded-[40px] bg-gradient-to-r from-accent/[0.035] via-accent/[0.012] to-transparent dark:from-white/[0.03] dark:via-white/[0.01] dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none blur-2xl -z-10" 
-          aria-hidden="true" 
-        />
-
         <AnimatedSection className="flex flex-col items-start text-left">
           {/* CAD reference label */}
-          <div className="flex items-center gap-2 text-[9px] min-[360px]:text-[11px] sm:text-[12px] md:text-[14px] tracking-[0.2em] sm:tracking-[0.25em] font-mono font-extrabold text-accent mb-3 sm:mb-4 md:mb-6 uppercase text-left truncate max-w-full">
+          <div className="flex items-center gap-2 text-[9px] min-[360px]:text-[11px] sm:text-[12px] md:text-[14px] tracking-[0.2em] sm:tracking-[0.25em] font-mono font-extrabold text-accent mb-3 sm:mb-4 md:mb-6 uppercase text-left truncate max-w-full group-hover:text-accent/90 transition-colors duration-300">
             <span>❖</span>
             <span className="truncate">SYS.FEEDBACK // TESTIMONIALS</span>
           </div>
 
           {/* Row: Title on Left, Button on Right */}
           <div className="flex items-center justify-between w-full gap-2 sm:gap-4">
-            <h2 className="font-display font-bold text-[20px] min-[360px]:text-2xl min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase leading-none text-left">
-              Collaborator <span className="text-accent">Feedback</span>
+            <h2 className="font-display font-bold text-[20px] min-[360px]:text-2xl min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground uppercase leading-none text-left transition-all duration-300 origin-left group-hover:scale-[1.015] group-hover:drop-shadow-[0_0_20px_rgba(234,135,156,0.35)]">
+              Collaborator <span className="text-accent group-hover:drop-shadow-[0_0_25px_rgba(234,135,156,0.55)]">Feedback</span>
             </h2>
 
             <button 
               onClick={(e) => { e.stopPropagation(); setIsSectionOpen(!isSectionOpen); }}
-              className="relative w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] hover:shadow-[0_6px_20px_rgba(234,135,156,0.5)] hover:-translate-y-0.5 cursor-pointer"
+              className="relative w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 group-hover:scale-110 group-hover:bg-accent/90 shadow-[0_4px_14px_rgba(234,135,156,0.3)] group-hover:shadow-[0_0_20px_rgba(234,135,156,0.6)] cursor-pointer"
               title={isSectionOpen ? "Collapse Section" : "Expand Section"}
             >
               <motion.div 
