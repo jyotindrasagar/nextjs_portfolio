@@ -575,30 +575,18 @@ export function Feedback() {
             </div>
 
             <div className="pt-2 pb-2 -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-12 xl:-mx-16">
-              {/* Carousel container with both CSS mask-image transparency and multi-stop gradient blur overlays */}
+              {/* Full width edge-to-edge carousel without cutoffs or masks */}
               <div className="relative w-full overflow-hidden">
-                {/* Left side deep fade overlay (subtle, desktop only) */}
-                <div 
-                  className="hidden sm:block absolute top-0 bottom-0 left-0 w-16 sm:w-28 md:w-48 lg:w-64 z-30 pointer-events-none bg-gradient-to-r from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
-                  aria-hidden="true" 
-                />
-                
-                {/* Right side deep fade overlay (subtle, desktop only) */}
-                <div 
-                  className="hidden sm:block absolute top-0 bottom-0 right-0 w-16 sm:w-28 md:w-48 lg:w-64 z-30 pointer-events-none bg-gradient-to-l from-[#F7F7FF] via-[#F7F7FF]/80 to-transparent dark:from-[#0F0F10] dark:via-[#0F0F10]/80 dark:to-transparent" 
-                  aria-hidden="true" 
-                />
-                
                 <div
                   ref={containerRef}
-                  className={`overflow-hidden w-full py-3 md:py-5 select-none [mask-image:linear-gradient(to_right,transparent_0%,black_16px,black_calc(100%-16px),transparent_100%)] sm:[mask-image:linear-gradient(to_right,transparent_0%,black_60px,black_calc(100%-60px),transparent_100%)] md:[mask-image:linear-gradient(to_right,transparent_0%,black_120px,black_calc(100%-120px),transparent_100%)] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                  className={`overflow-hidden w-full py-3 md:py-5 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                   style={{ 
                     touchAction: 'pan-y',
                   }}
                   {...handlers}
                 >
                   <motion.div
-                    className="flex gap-2.5 sm:gap-4 md:gap-6 w-max pl-3 sm:pl-8 transform-gpu will-change-transform"
+                    className="flex gap-2.5 sm:gap-4 md:gap-6 w-max px-2 sm:px-4 transform-gpu will-change-transform"
                     style={{ x, willChange: 'transform' }}
                   >
                     {/* 3 Sets ensure seamless infinite continuous drag in both directions with low mobile DOM weight */}
