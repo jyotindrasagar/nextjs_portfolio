@@ -5,6 +5,7 @@ import { AnimatedSection } from './AnimatedSection';
 
 export function About() {
   const [isSectionOpen, setIsSectionOpen] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isInView, setIsInView] = useState(false);
 
@@ -249,10 +250,22 @@ export function About() {
                 </div>
               </AnimatedSection>
 
-              {/* Right Portrait/Conceptual Image Block (Hidden on mobile screens smaller than tablet) */}
-              <div className="hidden md:flex flex-1 relative w-full max-w-md lg:max-w-lg aspect-[4/5] bg-panels border border-foreground/10 p-4 select-none z-30">
+              {/* Right Portrait/Conceptual Video Block with smooth entrance animation */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.96, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                className="hidden md:flex flex-1 relative w-full max-w-md lg:max-w-lg aspect-[4/5] bg-panels border border-foreground/10 p-4 select-none z-30 overflow-hidden"
+              >
+                {/* Subtle loading placeholder shimmer before video frames resolve */}
+                {!isVideoLoaded && (
+                  <div className="absolute inset-4 bg-foreground/[0.03] animate-pulse flex items-center justify-center pointer-events-none z-10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-accent/40 animate-ping" />
+                  </div>
+                )}
+
                 {/* Internal CAD frame */}
-                <div className="absolute inset-0 pointer-events-none border border-foreground/10 opacity-30 m-6 flex flex-col justify-between p-2">
+                <div className="absolute inset-0 pointer-events-none border border-foreground/10 opacity-30 m-6 flex flex-col justify-between p-2 z-20">
                   <div className="flex justify-between font-mono text-[7px] text-foreground">
                     <span>REG_08_PORTRAIT</span>
                     <span>A: 4:5</span>
@@ -270,10 +283,14 @@ export function About() {
                   loop
                   muted
                   playsInline
-                  preload="none"
-                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                  preload="auto"
+                  onLoadedData={() => setIsVideoLoaded(true)}
+                  onPlaying={() => setIsVideoLoaded(true)}
+                  className={`w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 ${
+                    isVideoLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.98]'
+                  }`}
                 />
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         )}
