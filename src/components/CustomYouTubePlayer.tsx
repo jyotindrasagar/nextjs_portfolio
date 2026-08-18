@@ -173,9 +173,10 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     isLoopingRef.current = isLooping;
   }, [isLooping]);
 
-  // Dynamic Resolution states
+  // Dynamic Resolution states & Resolution Lock
   const [availableQualities, setAvailableQualities] = useState<string[]>([]);
   const [currentQuality, setCurrentQuality] = useState<string>('auto');
+  const lockedQualityRef = useRef<string>('auto');
   const [isQualityMenuOpen, setIsQualityMenuOpen] = useState(false);
 
   // Scrubber drag state & hover preview
@@ -260,7 +261,19 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
           },
           onPlaybackQualityChange: (e: any) => {
             if (isCancelled) return;
-            setCurrentQuality(e.data || 'auto');
+            const newQ = e.data || 'auto';
+            if (lockedQualityRef.current !== 'auto' && newQ !== lockedQualityRef.current && playerRef.current) {
+              try {
+                if (typeof playerRef.current.setPlaybackQuality === 'function') {
+                  playerRef.current.setPlaybackQuality(lockedQualityRef.current);
+                }
+                if (typeof playerRef.current.setPlaybackQualityRange === 'function') {
+                  playerRef.current.setPlaybackQualityRange(lockedQualityRef.current, lockedQualityRef.current);
+                }
+              } catch {}
+            } else {
+              setCurrentQuality(newQ);
+            }
             syncQualityLevels(playerRef.current);
           },
           onStateChange: (e: any) => {
@@ -363,19 +376,29 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     playerRef.current.seekTo(clamped, true);
   }, [duration]);
 
-  // Change Resolution Quality
+  // Change Resolution Quality & Lock it
   const handleSetQuality = useCallback((quality: string) => {
-    if (!playerRef.current) return;
-    try {
-      if (typeof playerRef.current.setPlaybackQuality === 'function') {
-        playerRef.current.setPlaybackQuality(quality);
-      }
-      if (typeof playerRef.current.setOption === 'function') {
-        playerRef.current.setOption('playbackQuality', 'quality', quality);
-      }
-    } catch {}
+    lockedQualityRef.current = quality;
     setCurrentQuality(quality);
     setIsQualityMenuOpen(false);
+    if (!playerRef.current) return;
+    try {
+      if (quality !== 'auto') {
+        if (typeof playerRef.current.setPlaybackQuality === 'function') {
+          playerRef.current.setPlaybackQuality(quality);
+        }
+        if (typeof playerRef.current.setPlaybackQualityRange === 'function') {
+          playerRef.current.setPlaybackQualityRange(quality, quality);
+        }
+        if (typeof playerRef.current.setOption === 'function') {
+          playerRef.current.setOption('playbackQuality', 'quality', quality);
+        }
+      } else {
+        if (typeof playerRef.current.setPlaybackQuality === 'function') {
+          playerRef.current.setPlaybackQuality('default');
+        }
+      }
+    } catch {}
   }, []);
 
   // Volume & Mute control
@@ -419,24 +442,60 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     } catch {}
   }, [isCCActive]);
 
-  // Fullscreen Toggle
+  // App Windowed Fullscreen Toggle (No intrusive browser pop-ups, single back press/gesture to exit)
   const toggleFullscreen = useCallback(() => {
-    if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
-    }
+    setIsFullscreen((prev) => {
+      const nextState = !prev;
+      if (nextState) {
+        try {
+          window.history.pushState({ isFullscreenPlayer: true }, '');
+        } catch {}
+      } else {
+        try {
+          if (window.history.state?.isFullscreenPlayer) {
+            window.history.back();
+          }
+        } catch {}
+      }
+      return nextState;
+    });
   }, []);
 
-  // Fullscreen change listener
+  // Listen for mobile device back button / swipe back gesture
   useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
+    const handlePopState = () => {
+      if (isFullscreen) {
+        setIsFullscreen(false);
+      }
     };
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
-  }, []);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [isFullscreen]);
+
+  // Listen for Escape key on desktop & lock background scroll during fullscreen
+  useEffect(() => {
+    if (!isFullscreen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleGlobalEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsFullscreen(false);
+        try {
+          if (window.history.state?.isFullscreenPlayer) {
+            window.history.back();
+          }
+        } catch {}
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalEscape);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleGlobalEscape);
+    };
+  }, [isFullscreen]);
 
   // Keyboard navigation shortcuts
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -457,9 +516,12 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
       toggleFullscreen();
     } else if (e.key === 'Escape' && isFullscreen) {
       e.preventDefault();
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
-      }
+      setIsFullscreen(false);
+      try {
+        if (window.history.state?.isFullscreenPlayer) {
+          window.history.back();
+        }
+      } catch {}
     }
   };
 
