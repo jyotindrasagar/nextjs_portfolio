@@ -608,7 +608,7 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
           <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center bg-black">
             <div 
               id={iframeContainerId} 
-              className="w-full h-full pointer-events-none"
+              className="w-full h-full"
             />
           </div>
         )}
