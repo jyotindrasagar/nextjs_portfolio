@@ -184,7 +184,7 @@ export function VouchesSection() {
         className="group relative inline-flex items-center gap-2 sm:gap-2.5 md:gap-3 px-4 py-1.5 sm:px-5 sm:py-2 md:px-6 md:py-2.5 rounded-full border border-foreground/15 bg-panels/60 backdrop-blur-md text-foreground text-[10px] sm:text-xs md:text-sm font-mono font-bold tracking-[0.16em] sm:tracking-[0.2em] uppercase hover:border-accent hover:text-accent transition-all duration-300 shadow-sm hover:shadow-[0_0_15px_rgba(234,135,156,0.35)] cursor-pointer"
       >
         <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent group-hover:scale-110 transition-transform" />
-        <span>// CREATIVE CIRCLE ({vouches.length})</span>
+        <span>// CREATIVE CIRCLE 30+</span>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}

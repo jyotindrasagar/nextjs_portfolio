@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedSection } from './AnimatedSection';
 import { testimonials, Testimonial } from '../data/feedback';
-import { VouchesSection } from './VouchesSection';
+// import { VouchesSection } from './VouchesSection';
 import { useInfiniteCarousel } from '../hooks/useInfiniteCarousel';
 import { useLazyVisibility } from '../hooks/useLazyVisibility';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
@@ -619,8 +619,8 @@ export function Feedback() {
                 </div>
               </div>
 
-              {/* Industry Vouches / Creative Circle Section */}
-              <VouchesSection />
+              {/* Industry Vouches / Creative Circle Section (Hidden) */}
+              {/* <VouchesSection /> */}
             </div>
           </motion.div>
         )}
