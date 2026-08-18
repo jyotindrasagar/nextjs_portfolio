@@ -12,8 +12,6 @@ import {
   ChevronRight,
   RotateCcw,
   Subtitles, 
-  Sliders, 
-  Check, 
   Loader2, 
   Clapperboard 
 } from 'lucide-react';
@@ -60,23 +58,6 @@ function formatTime(seconds: number): string {
   }
   return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
-
-// Map YouTube quality keys to readable names
-const qualityDisplayMap: Record<string, { label: string; badge: string }> = {
-  highres: { label: '4K (Original)', badge: '4K' },
-  hd2160: { label: '4K (2160p)', badge: '4K' },
-  hd1440: { label: '1440p (2K)', badge: '2K' },
-  hd1080: { label: '1080p (FHD)', badge: '1080' },
-  hd720: { label: '720p (HD)', badge: '720' },
-  large: { label: '480p (SD)', badge: '480' },
-  medium: { label: '360p', badge: '360' },
-  small: { label: '240p', badge: '240' },
-  tiny: { label: '144p', badge: '144' },
-  auto: { label: 'Auto (Dynamic)', badge: 'Auto' },
-  default: { label: 'Auto (Default)', badge: 'Auto' },
-};
-
-const DEFAULT_QUALITIES = ['highres', 'hd1440', 'hd1080', 'hd720', 'large', 'auto'];
 
 // Load YouTube Iframe API once
 let isApiScriptLoading = false;
@@ -140,7 +121,6 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
   const playerRef = useRef<any>(null);
   const scrubberRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const qualityMenuRef = useRef<HTMLDivElement>(null);
 
   // Lazy activation state: false until user clicks to play
   const [hasActivated, setHasActivated] = useState(!lazyMount || autoPlay);
@@ -175,14 +155,6 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     isLoopingRef.current = isLooping;
   }, [isLooping]);
 
-  // Dynamic Resolution states & Reload Control
-  const [availableQualities, setAvailableQualities] = useState<string[]>([]);
-  const [currentQuality, setCurrentQuality] = useState<string>('auto');
-  const [targetQuality, setTargetQuality] = useState<string>('hd1080');
-  const [reloadKey, setReloadKey] = useState(0);
-  const savedTimeRef = useRef<number>(0);
-  const [isQualityMenuOpen, setIsQualityMenuOpen] = useState(false);
-
   // Scrubber drag state & hover preview
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [scrubTime, setScrubTime] = useState(0);
@@ -193,35 +165,7 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
   // Derive poster thumbnail image if none provided
   const effectiveThumbnail = thumbnailUrl || (videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '');
 
-  // Close quality menu on outside click
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (qualityMenuRef.current && !qualityMenuRef.current.contains(e.target as Node)) {
-        setIsQualityMenuOpen(false);
-      }
-    };
-    if (isQualityMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isQualityMenuOpen]);
-
-  // Sync available quality options from YouTube
-  const syncQualityLevels = useCallback((player: any) => {
-    if (!player) return;
-    try {
-      if (typeof player.getAvailableQualityLevels === 'function') {
-        const levels = player.getAvailableQualityLevels() || [];
-        if (levels.length > 0) {
-          setAvailableQualities(levels);
-        }
-      }
-    } catch {}
-  }, []);
-
-  // Initialize YouTube player only after user has clicked/activated or switched quality
+  // Initialize YouTube player only after user has clicked/activated
   useEffect(() => {
     if (!hasActivated || !videoId) return;
     let isCancelled = false;
@@ -236,9 +180,6 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
         } catch {}
       }
 
-      const startAt = savedTimeRef.current || 0;
-      const vqParam = targetQuality === 'auto' ? undefined : targetQuality;
-
       playerRef.current = new (window as any).YT.Player(iframeContainerId, {
         videoId: videoId,
         playerVars: {
@@ -251,8 +192,6 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
           enablejsapi: 1,
           fs: 0,
           disablekb: 1,
-          start: Math.floor(startAt),
-          vq: vqParam,
           origin: typeof window !== 'undefined' ? window.location.origin : undefined,
         },
         events: {
@@ -262,35 +201,13 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
             const totalDur = e.target.getDuration() || 0;
             setDuration(totalDur);
             e.target.setVolume(volume);
-            
-            if (startAt > 0) {
-              try {
-                e.target.seekTo(startAt, true);
-              } catch {}
-            }
-
-            if (vqParam) {
-              try {
-                e.target.setPlaybackQuality(vqParam);
-                if (typeof e.target.setPlaybackQualityRange === 'function') {
-                  e.target.setPlaybackQualityRange(vqParam, vqParam);
-                }
-              } catch {}
-            }
-
             e.target.playVideo();
-            syncQualityLevels(e.target);
-          },
-          onPlaybackQualityChange: (e: any) => {
-            if (isCancelled) return;
-            syncQualityLevels(playerRef.current);
           },
           onStateChange: (e: any) => {
             if (isCancelled) return;
             const state = e.data;
             if (state === 1) {
               setIsPlaying(true);
-              syncQualityLevels(playerRef.current);
               try {
                 window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: 'youtube' } }));
               } catch {}
@@ -317,7 +234,7 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
         } catch {}
       }
     };
-  }, [hasActivated, videoId, iframeContainerId, reloadKey, targetQuality, syncQualityLevels]);
+  }, [hasActivated, videoId, iframeContainerId]);
 
   // Sync current time and buffered progress while playing
   useEffect(() => {
@@ -384,21 +301,6 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     setCurrentTime(clamped);
     playerRef.current.seekTo(clamped, true);
   }, [duration]);
-
-  // Change Resolution Quality & Reload Stream at Exact Timestamp
-  const handleSetQuality = useCallback((quality: string) => {
-    let curTime = 0;
-    if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
-      try {
-        curTime = playerRef.current.getCurrentTime() || 0;
-      } catch {}
-    }
-    savedTimeRef.current = curTime || currentTime || 0;
-    setTargetQuality(quality);
-    setCurrentQuality(quality);
-    setIsQualityMenuOpen(false);
-    setReloadKey((prev) => prev + 1);
-  }, [currentTime]);
 
   // Volume & Mute control
   const handleVolumeChange = useCallback((val: number) => {
@@ -580,8 +482,6 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
   const aspectClass = aspectRatio === 'social' 
     ? 'aspect-[9/16]' 
     : (aspectRatio === 'hof' ? 'aspect-[2/1]' : 'aspect-video');
-
-  const currentBadge = qualityDisplayMap[currentQuality]?.badge || 'HD';
 
   return (
     <div
@@ -846,61 +746,8 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
                 </div>
               </div>
 
-              {/* Right Action Cluster: (Resolution & CC on landscapes, Fullscreen on all) */}
+              {/* Right Action Cluster: (CC on landscapes, Fullscreen on all) */}
               <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                {/* Dynamic Resolution Button (Only on regular videos, not on Shorts) */}
-                {!isSocial && (
-                  <div className="relative" ref={qualityMenuRef}>
-                    <button
-                      type="button"
-                      onClick={() => setIsQualityMenuOpen(!isQualityMenuOpen)}
-                      aria-label="Adjust Resolution"
-                      className={`flex items-center gap-0.5 px-1.5 sm:px-2 py-1 rounded-[3px] font-display text-[8.5px] sm:text-[9.5px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer border shrink-0 ${
-                        isQualityMenuOpen
-                          ? 'border-accent bg-accent text-white shadow-[0_0_8px_rgba(234,135,156,0.4)]'
-                          : 'border-foreground/15 bg-foreground/5 text-foreground/75 hover:border-accent hover:text-accent'
-                      }`}
-                      title="Adjust Resolution"
-                    >
-                      <Sliders className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                      <span>{currentBadge}</span>
-                    </button>
-
-                    {/* Resolution Selector Popover */}
-                    {isQualityMenuOpen && (
-                      <div 
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute bottom-full mb-2 right-0 min-w-[130px] sm:min-w-[150px] bg-panels/95 dark:bg-[#121216]/95 backdrop-blur-2xl border border-foreground/15 rounded-[3px] p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] z-50 flex flex-col gap-0.5 animate-in fade-in zoom-in-95 duration-150"
-                      >
-                        <div className="px-2 py-1 border-b border-foreground/10 font-mono text-[8px] uppercase tracking-widest text-accent font-extrabold text-left">
-                          Adjust Resolution
-                        </div>
-                        <div className="flex flex-col gap-0.5 mt-1 max-h-[160px] overflow-y-auto">
-                          {(availableQualities.length > 0 ? availableQualities : DEFAULT_QUALITIES).map((q) => {
-                            const info = qualityDisplayMap[q] || { label: q.toUpperCase(), badge: q.toUpperCase() };
-                            const isSelected = currentQuality === q || (q === 'hd2160' && currentQuality === 'highres');
-                            return (
-                              <button
-                                key={q}
-                                type="button"
-                                onClick={() => handleSetQuality(q)}
-                                className={`w-full flex items-center justify-between px-2 py-1.5 text-[9px] sm:text-[10px] font-mono tracking-wider uppercase rounded-[2px] transition-colors cursor-pointer text-left ${
-                                  isSelected 
-                                    ? 'bg-accent text-white font-bold shadow-[0_0_8px_rgba(234,135,156,0.3)]' 
-                                    : 'text-foreground/80 hover:bg-foreground/10 hover:text-accent'
-                                }`}
-                              >
-                                <span>{info.label}</span>
-                                {isSelected && <Check size={11} className="stroke-[2.5]" />}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
                 {/* CC Subtitles Button (Only on regular videos, not on Shorts) */}
                 {!isSocial && (
                   <button
