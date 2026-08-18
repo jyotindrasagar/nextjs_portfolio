@@ -175,10 +175,12 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     isLoopingRef.current = isLooping;
   }, [isLooping]);
 
-  // Dynamic Resolution states & Resolution Lock
+  // Dynamic Resolution states & Reload Control
   const [availableQualities, setAvailableQualities] = useState<string[]>([]);
   const [currentQuality, setCurrentQuality] = useState<string>('auto');
-  const lockedQualityRef = useRef<string>('auto');
+  const [targetQuality, setTargetQuality] = useState<string>('hd1080');
+  const [reloadKey, setReloadKey] = useState(0);
+  const savedTimeRef = useRef<number>(0);
   const [isQualityMenuOpen, setIsQualityMenuOpen] = useState(false);
 
   // Scrubber drag state & hover preview
@@ -219,7 +221,7 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     } catch {}
   }, []);
 
-  // Initialize YouTube player only after user has clicked/activated
+  // Initialize YouTube player only after user has clicked/activated or switched quality
   useEffect(() => {
     if (!hasActivated || !videoId) return;
     let isCancelled = false;
@@ -230,8 +232,12 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
       if (playerRef.current) {
         try {
           playerRef.current.destroy();
+          playerRef.current = null;
         } catch {}
       }
+
+      const startAt = savedTimeRef.current || 0;
+      const vqParam = targetQuality === 'auto' ? undefined : targetQuality;
 
       playerRef.current = new (window as any).YT.Player(iframeContainerId, {
         videoId: videoId,
@@ -245,6 +251,8 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
           enablejsapi: 1,
           fs: 0,
           disablekb: 1,
+          start: Math.floor(startAt),
+          vq: vqParam,
           origin: typeof window !== 'undefined' ? window.location.origin : undefined,
         },
         events: {
@@ -255,13 +263,20 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
             setDuration(totalDur);
             e.target.setVolume(volume);
             
-            // Request HD / High-Res initially
-            try {
-              e.target.setPlaybackQuality('hd1080');
-              if (typeof e.target.setPlaybackQualityRange === 'function') {
-                e.target.setPlaybackQualityRange('hd1080', 'highres');
-              }
-            } catch {}
+            if (startAt > 0) {
+              try {
+                e.target.seekTo(startAt, true);
+              } catch {}
+            }
+
+            if (vqParam) {
+              try {
+                e.target.setPlaybackQuality(vqParam);
+                if (typeof e.target.setPlaybackQualityRange === 'function') {
+                  e.target.setPlaybackQualityRange(vqParam, vqParam);
+                }
+              } catch {}
+            }
 
             e.target.playVideo();
             syncQualityLevels(e.target);
@@ -274,12 +289,6 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
             if (isCancelled) return;
             const state = e.data;
             if (state === 1) {
-              setIsPlaying(true);
-              syncQualityLevels(playerRef.current);
-              try {
-                window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: 'youtube' } }));
-              } catch {}
-            } else if (state === 2) {
               setIsPlaying(true);
               syncQualityLevels(playerRef.current);
               try {
@@ -308,7 +317,7 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
         } catch {}
       }
     };
-  }, [hasActivated, videoId, iframeContainerId, syncQualityLevels]);
+  }, [hasActivated, videoId, iframeContainerId, reloadKey, targetQuality, syncQualityLevels]);
 
   // Sync current time and buffered progress while playing
   useEffect(() => {
@@ -376,29 +385,20 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     playerRef.current.seekTo(clamped, true);
   }, [duration]);
 
-  // Change Resolution Quality
+  // Change Resolution Quality & Reload Stream at Exact Timestamp
   const handleSetQuality = useCallback((quality: string) => {
+    let curTime = 0;
+    if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
+      try {
+        curTime = playerRef.current.getCurrentTime() || 0;
+      } catch {}
+    }
+    savedTimeRef.current = curTime || currentTime || 0;
+    setTargetQuality(quality);
     setCurrentQuality(quality);
     setIsQualityMenuOpen(false);
-    if (!playerRef.current) return;
-    try {
-      if (quality !== 'auto') {
-        if (typeof playerRef.current.setPlaybackQuality === 'function') {
-          playerRef.current.setPlaybackQuality(quality);
-        }
-        if (typeof playerRef.current.setPlaybackQualityRange === 'function') {
-          playerRef.current.setPlaybackQualityRange(quality, 'highres');
-        }
-        if (typeof playerRef.current.setOption === 'function') {
-          playerRef.current.setOption('playbackQuality', 'quality', quality);
-        }
-      } else {
-        if (typeof playerRef.current.setPlaybackQuality === 'function') {
-          playerRef.current.setPlaybackQuality('default');
-        }
-      }
-    } catch {}
-  }, []);
+    setReloadKey((prev) => prev + 1);
+  }, [currentTime]);
 
   // Volume & Mute control
   const handleVolumeChange = useCallback((val: number) => {
