@@ -269,6 +269,9 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
             if (state === 1) {
               setIsPlaying(true);
               syncQualityLevels(playerRef.current);
+              try {
+                window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: 'youtube' } }));
+              } catch {}
             } else if (state === 2) {
               setIsPlaying(false);
             } else if (state === 0) {
