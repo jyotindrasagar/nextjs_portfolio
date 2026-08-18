@@ -63,18 +63,20 @@ function formatTime(seconds: number): string {
 
 // Map YouTube quality keys to readable names
 const qualityDisplayMap: Record<string, { label: string; badge: string }> = {
-  highres: { label: '4K / Original', badge: '4K' },
+  highres: { label: '4K (Original)', badge: '4K' },
   hd2160: { label: '4K (2160p)', badge: '4K' },
-  hd1440: { label: '1440p QHD', badge: '2K' },
-  hd1080: { label: '1080p HD', badge: '1080' },
-  hd720: { label: '720p HD', badge: '720' },
-  large: { label: '480p SD', badge: '480' },
+  hd1440: { label: '1440p (2K)', badge: '2K' },
+  hd1080: { label: '1080p (FHD)', badge: '1080' },
+  hd720: { label: '720p (HD)', badge: '720' },
+  large: { label: '480p (SD)', badge: '480' },
   medium: { label: '360p', badge: '360' },
   small: { label: '240p', badge: '240' },
   tiny: { label: '144p', badge: '144' },
   auto: { label: 'Auto (Dynamic)', badge: 'Auto' },
   default: { label: 'Auto (Default)', badge: 'Auto' },
 };
+
+const DEFAULT_QUALITIES = ['highres', 'hd1440', 'hd1080', 'hd720', 'large', 'auto'];
 
 // Load YouTube Iframe API once
 let isApiScriptLoading = false;
@@ -214,10 +216,6 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
           setAvailableQualities(levels);
         }
       }
-      if (typeof player.getPlaybackQuality === 'function') {
-        const cur = player.getPlaybackQuality() || 'auto';
-        setCurrentQuality(cur);
-      }
     } catch {}
   }, []);
 
@@ -257,17 +255,11 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
             setDuration(totalDur);
             e.target.setVolume(volume);
             
-            // Set initial quality target to HD1080/highest available
+            // Request HD / High-Res initially
             try {
-              const levels = typeof e.target.getAvailableQualityLevels === 'function' ? e.target.getAvailableQualityLevels() : [];
-              const bestHD = levels.find((l: string) => l === 'hd1440' || l === 'hd1080' || l === 'hd720') || 'hd1080';
-              e.target.setPlaybackQuality(bestHD);
+              e.target.setPlaybackQuality('hd1080');
               if (typeof e.target.setPlaybackQualityRange === 'function') {
-                e.target.setPlaybackQualityRange(bestHD, 'highres');
-              }
-              if (lockedQualityRef.current === 'auto') {
-                lockedQualityRef.current = bestHD;
-                setCurrentQuality(bestHD);
+                e.target.setPlaybackQualityRange('hd1080', 'highres');
               }
             } catch {}
 
@@ -276,25 +268,18 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
           },
           onPlaybackQualityChange: (e: any) => {
             if (isCancelled) return;
-            const newQ = e.data || 'auto';
-            if (lockedQualityRef.current !== 'auto' && newQ !== lockedQualityRef.current && playerRef.current) {
-              try {
-                if (typeof playerRef.current.setPlaybackQuality === 'function') {
-                  playerRef.current.setPlaybackQuality(lockedQualityRef.current);
-                }
-                if (typeof playerRef.current.setPlaybackQualityRange === 'function') {
-                  playerRef.current.setPlaybackQualityRange(lockedQualityRef.current, lockedQualityRef.current);
-                }
-              } catch {}
-            } else {
-              setCurrentQuality(newQ);
-            }
             syncQualityLevels(playerRef.current);
           },
           onStateChange: (e: any) => {
             if (isCancelled) return;
             const state = e.data;
             if (state === 1) {
+              setIsPlaying(true);
+              syncQualityLevels(playerRef.current);
+              try {
+                window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: 'youtube' } }));
+              } catch {}
+            } else if (state === 2) {
               setIsPlaying(true);
               syncQualityLevels(playerRef.current);
               try {
@@ -391,46 +376,29 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     playerRef.current.seekTo(clamped, true);
   }, [duration]);
 
-  // Change Resolution Quality & Flush Buffer Cache
+  // Change Resolution Quality
   const handleSetQuality = useCallback((quality: string) => {
-    lockedQualityRef.current = quality;
     setCurrentQuality(quality);
     setIsQualityMenuOpen(false);
     if (!playerRef.current) return;
     try {
-      const curTime = typeof playerRef.current.getCurrentTime === 'function' ? playerRef.current.getCurrentTime() : currentTime;
       if (quality !== 'auto') {
         if (typeof playerRef.current.setPlaybackQuality === 'function') {
           playerRef.current.setPlaybackQuality(quality);
         }
         if (typeof playerRef.current.setPlaybackQualityRange === 'function') {
-          playerRef.current.setPlaybackQualityRange(quality, quality);
+          playerRef.current.setPlaybackQualityRange(quality, 'highres');
         }
         if (typeof playerRef.current.setOption === 'function') {
           playerRef.current.setOption('playbackQuality', 'quality', quality);
-        }
-        // Purge old lower-res buffer and re-fetch stream at target quality
-        if (videoId && typeof playerRef.current.loadVideoById === 'function') {
-          playerRef.current.loadVideoById({
-            videoId: videoId,
-            startSeconds: curTime,
-            suggestedQuality: quality,
-          });
         }
       } else {
         if (typeof playerRef.current.setPlaybackQuality === 'function') {
           playerRef.current.setPlaybackQuality('default');
         }
-        if (videoId && typeof playerRef.current.loadVideoById === 'function') {
-          playerRef.current.loadVideoById({
-            videoId: videoId,
-            startSeconds: curTime,
-            suggestedQuality: 'default',
-          });
-        }
       }
     } catch {}
-  }, [videoId, currentTime]);
+  }, []);
 
   // Volume & Mute control
   const handleVolumeChange = useCallback((val: number) => {
@@ -691,49 +659,6 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
           </div>
         </div>
 
-        {/* Video Click Layer */}
-        <div className="absolute inset-0 z-15" />
-
-        {/* Resolution Selector Popover (Only for non-Shorts) */}
-        {!isSocial && isQualityMenuOpen && (
-          <div 
-            ref={qualityMenuRef}
-            onClick={(e) => e.stopPropagation()}
-            className="absolute bottom-3 right-3 min-w-[130px] sm:min-w-[150px] bg-panels/95 dark:bg-[#121216]/95 backdrop-blur-2xl border border-foreground/15 rounded-[3px] p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] z-50 flex flex-col gap-0.5 animate-in fade-in zoom-in-95 duration-150"
-          >
-            <div className="px-2 py-1 border-b border-foreground/10 font-mono text-[8px] uppercase tracking-widest text-accent font-extrabold text-left">
-              Adjust Resolution
-            </div>
-            <div className="flex flex-col gap-0.5 mt-1 max-h-[160px] overflow-y-auto">
-              {availableQualities.length > 0 ? (
-                availableQualities.map((q) => {
-                  const info = qualityDisplayMap[q] || { label: q.toUpperCase(), badge: q.toUpperCase() };
-                  const isSelected = currentQuality === q;
-                  return (
-                    <button
-                      key={q}
-                      type="button"
-                      onClick={() => handleSetQuality(q)}
-                      className={`w-full flex items-center justify-between px-2 py-1.5 text-[9px] sm:text-[10px] font-mono tracking-wider uppercase rounded-[2px] transition-colors cursor-pointer text-left ${
-                        isSelected 
-                          ? 'bg-accent text-white font-bold shadow-[0_0_8px_rgba(234,135,156,0.3)]' 
-                          : 'text-foreground/80 hover:bg-foreground/10 hover:text-accent'
-                      }`}
-                    >
-                      <span>{info.label}</span>
-                      {isSelected && <Check size={11} className="stroke-[2.5]" />}
-                    </button>
-                  );
-                })
-              ) : (
-                <div className="px-2 py-1.5 text-[9px] font-mono text-foreground/50 text-left">
-                  Auto (Standard)
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
         {/* Subtle Accent Spinner while buffering */}
         {isReady && !isPlaying && hasActivated && (
           <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
@@ -898,20 +823,55 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
               <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                 {/* Dynamic Resolution Button (Only on regular videos, not on Shorts) */}
                 {!isSocial && (
-                  <button
-                    type="button"
-                    onClick={() => setIsQualityMenuOpen(!isQualityMenuOpen)}
-                    aria-label="Adjust Resolution"
-                    className={`flex items-center gap-0.5 px-1.5 sm:px-2 py-1 rounded-[3px] font-display text-[8.5px] sm:text-[9.5px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer border shrink-0 ${
-                      isQualityMenuOpen
-                        ? 'border-accent bg-accent text-white shadow-[0_0_8px_rgba(234,135,156,0.4)]'
-                        : 'border-foreground/15 bg-foreground/5 text-foreground/75 hover:border-accent hover:text-accent'
-                    }`}
-                    title="Adjust Resolution"
-                  >
-                    <Sliders className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                    <span>{currentBadge}</span>
-                  </button>
+                  <div className="relative" ref={qualityMenuRef}>
+                    <button
+                      type="button"
+                      onClick={() => setIsQualityMenuOpen(!isQualityMenuOpen)}
+                      aria-label="Adjust Resolution"
+                      className={`flex items-center gap-0.5 px-1.5 sm:px-2 py-1 rounded-[3px] font-display text-[8.5px] sm:text-[9.5px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer border shrink-0 ${
+                        isQualityMenuOpen
+                          ? 'border-accent bg-accent text-white shadow-[0_0_8px_rgba(234,135,156,0.4)]'
+                          : 'border-foreground/15 bg-foreground/5 text-foreground/75 hover:border-accent hover:text-accent'
+                      }`}
+                      title="Adjust Resolution"
+                    >
+                      <Sliders className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                      <span>{currentBadge}</span>
+                    </button>
+
+                    {/* Resolution Selector Popover */}
+                    {isQualityMenuOpen && (
+                      <div 
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute bottom-full mb-2 right-0 min-w-[130px] sm:min-w-[150px] bg-panels/95 dark:bg-[#121216]/95 backdrop-blur-2xl border border-foreground/15 rounded-[3px] p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] z-50 flex flex-col gap-0.5 animate-in fade-in zoom-in-95 duration-150"
+                      >
+                        <div className="px-2 py-1 border-b border-foreground/10 font-mono text-[8px] uppercase tracking-widest text-accent font-extrabold text-left">
+                          Adjust Resolution
+                        </div>
+                        <div className="flex flex-col gap-0.5 mt-1 max-h-[160px] overflow-y-auto">
+                          {(availableQualities.length > 0 ? availableQualities : DEFAULT_QUALITIES).map((q) => {
+                            const info = qualityDisplayMap[q] || { label: q.toUpperCase(), badge: q.toUpperCase() };
+                            const isSelected = currentQuality === q || (q === 'hd2160' && currentQuality === 'highres');
+                            return (
+                              <button
+                                key={q}
+                                type="button"
+                                onClick={() => handleSetQuality(q)}
+                                className={`w-full flex items-center justify-between px-2 py-1.5 text-[9px] sm:text-[10px] font-mono tracking-wider uppercase rounded-[2px] transition-colors cursor-pointer text-left ${
+                                  isSelected 
+                                    ? 'bg-accent text-white font-bold shadow-[0_0_8px_rgba(234,135,156,0.3)]' 
+                                    : 'text-foreground/80 hover:bg-foreground/10 hover:text-accent'
+                                }`}
+                              >
+                                <span>{info.label}</span>
+                                {isSelected && <Check size={11} className="stroke-[2.5]" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 {/* CC Subtitles Button (Only on regular videos, not on Shorts) */}
