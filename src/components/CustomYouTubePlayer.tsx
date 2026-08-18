@@ -473,60 +473,58 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     } catch {}
   }, [isCCActive]);
 
-  // App Windowed Fullscreen Toggle (No intrusive browser pop-ups, single back press/gesture to exit)
+  // True Native Fullscreen Toggle with full cross-browser vendor prefix support
   const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => {
-      const nextState = !prev;
-      if (nextState) {
-        try {
-          window.history.pushState({ isFullscreenPlayer: true }, '');
-        } catch {}
+    if (!containerRef.current) return;
+    const el = containerRef.current as any;
+    const isDocFull = !!(document.fullscreenElement || (document as any).webkitFullscreenElement || (document as any).mozFullScreenElement || (document as any).msFullscreenElement);
+
+    if (!isDocFull) {
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => setIsFullscreen(true));
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      } else if (el.mozRequestFullScreen) {
+        el.mozRequestFullScreen();
+      } else if (el.msRequestFullscreen) {
+        el.msRequestFullscreen();
       } else {
-        try {
-          if (window.history.state?.isFullscreenPlayer) {
-            window.history.back();
-          }
-        } catch {}
+        setIsFullscreen(true);
       }
-      return nextState;
-    });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => setIsFullscreen(false));
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      } else if ((document as any).mozCancelFullScreen) {
+        (document as any).mozCancelFullScreen();
+      } else if ((document as any).msExitFullscreen) {
+        (document as any).msExitFullscreen();
+      } else {
+        setIsFullscreen(false);
+      }
+    }
   }, []);
 
-  // Listen for mobile device back button / swipe back gesture
+  // Listen for native Fullscreen state change events across all browsers
   useEffect(() => {
-    const handlePopState = () => {
-      if (isFullscreen) {
-        setIsFullscreen(false);
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [isFullscreen]);
-
-  // Listen for Escape key on desktop & lock background scroll during fullscreen
-  useEffect(() => {
-    if (!isFullscreen) return;
-
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const handleGlobalEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsFullscreen(false);
-        try {
-          if (window.history.state?.isFullscreenPlayer) {
-            window.history.back();
-          }
-        } catch {}
-      }
+    const handleFullscreenChange = () => {
+      const isFull = !!(document.fullscreenElement || (document as any).webkitFullscreenElement || (document as any).mozFullScreenElement || (document as any).msFullscreenElement);
+      setIsFullscreen(isFull);
     };
 
-    window.addEventListener('keydown', handleGlobalEscape);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
     return () => {
-      document.body.style.overflow = originalOverflow;
-      window.removeEventListener('keydown', handleGlobalEscape);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
     };
-  }, [isFullscreen]);
+  }, []);
 
   // Keyboard navigation shortcuts
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -547,12 +545,11 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
       toggleFullscreen();
     } else if (e.key === 'Escape' && isFullscreen) {
       e.preventDefault();
-      setIsFullscreen(false);
-      try {
-        if (window.history.state?.isFullscreenPlayer) {
-          window.history.back();
-        }
-      } catch {}
+      if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
+        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+      } else {
+        setIsFullscreen(false);
+      }
     }
   };
 
