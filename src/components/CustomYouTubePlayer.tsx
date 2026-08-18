@@ -256,6 +256,21 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
             const totalDur = e.target.getDuration() || 0;
             setDuration(totalDur);
             e.target.setVolume(volume);
+            
+            // Set initial quality target to HD1080/highest available
+            try {
+              const levels = typeof e.target.getAvailableQualityLevels === 'function' ? e.target.getAvailableQualityLevels() : [];
+              const bestHD = levels.find((l: string) => l === 'hd1440' || l === 'hd1080' || l === 'hd720') || 'hd1080';
+              e.target.setPlaybackQuality(bestHD);
+              if (typeof e.target.setPlaybackQualityRange === 'function') {
+                e.target.setPlaybackQualityRange(bestHD, 'highres');
+              }
+              if (lockedQualityRef.current === 'auto') {
+                lockedQualityRef.current = bestHD;
+                setCurrentQuality(bestHD);
+              }
+            } catch {}
+
             e.target.playVideo();
             syncQualityLevels(e.target);
           },
@@ -376,13 +391,14 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
     playerRef.current.seekTo(clamped, true);
   }, [duration]);
 
-  // Change Resolution Quality & Lock it
+  // Change Resolution Quality & Flush Buffer Cache
   const handleSetQuality = useCallback((quality: string) => {
     lockedQualityRef.current = quality;
     setCurrentQuality(quality);
     setIsQualityMenuOpen(false);
     if (!playerRef.current) return;
     try {
+      const curTime = typeof playerRef.current.getCurrentTime === 'function' ? playerRef.current.getCurrentTime() : currentTime;
       if (quality !== 'auto') {
         if (typeof playerRef.current.setPlaybackQuality === 'function') {
           playerRef.current.setPlaybackQuality(quality);
@@ -393,13 +409,28 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
         if (typeof playerRef.current.setOption === 'function') {
           playerRef.current.setOption('playbackQuality', 'quality', quality);
         }
+        // Purge old lower-res buffer and re-fetch stream at target quality
+        if (videoId && typeof playerRef.current.loadVideoById === 'function') {
+          playerRef.current.loadVideoById({
+            videoId: videoId,
+            startSeconds: curTime,
+            suggestedQuality: quality,
+          });
+        }
       } else {
         if (typeof playerRef.current.setPlaybackQuality === 'function') {
           playerRef.current.setPlaybackQuality('default');
         }
+        if (videoId && typeof playerRef.current.loadVideoById === 'function') {
+          playerRef.current.loadVideoById({
+            videoId: videoId,
+            startSeconds: curTime,
+            suggestedQuality: 'default',
+          });
+        }
       }
     } catch {}
-  }, []);
+  }, [videoId, currentTime]);
 
   // Volume & Mute control
   const handleVolumeChange = useCallback((val: number) => {
