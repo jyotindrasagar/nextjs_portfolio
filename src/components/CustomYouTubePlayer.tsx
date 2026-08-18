@@ -746,25 +746,23 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
                 </div>
               </div>
 
-              {/* Right Action Cluster: (CC on landscapes, Fullscreen on all) */}
+              {/* Right Action Cluster: (CC Subtitles & Fullscreen everywhere) */}
               <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                {/* CC Subtitles Button (Only on regular videos, not on Shorts) */}
-                {!isSocial && (
-                  <button
-                    type="button"
-                    onClick={toggleCC}
-                    aria-label="Toggle Closed Captions"
-                    className={`flex items-center gap-0.5 px-1 sm:px-1.5 py-1 rounded-[3px] font-display text-[8.5px] sm:text-[9.5px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer border shrink-0 ${
-                      isCCActive 
-                        ? 'border-accent bg-accent text-white shadow-[0_0_8px_rgba(234,135,156,0.4)]' 
-                        : 'border-foreground/15 bg-foreground/5 text-foreground/75 hover:border-accent hover:text-accent'
-                    }`}
-                    title="Closed Captions"
-                  >
-                    <Subtitles className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                    <span>{isCCActive ? 'ON' : 'OFF'}</span>
-                  </button>
-                )}
+                {/* CC Subtitles Button (Available everywhere on all formats) */}
+                <button
+                  type="button"
+                  onClick={toggleCC}
+                  aria-label="Toggle Closed Captions"
+                  className={`flex items-center gap-0.5 px-1 sm:px-1.5 py-1 rounded-[3px] font-display text-[8.5px] sm:text-[9.5px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer border shrink-0 ${
+                    isCCActive 
+                      ? 'border-accent bg-accent text-white shadow-[0_0_8px_rgba(234,135,156,0.4)]' 
+                      : 'border-foreground/15 bg-foreground/5 text-foreground/75 hover:border-accent hover:text-accent'
+                  }`}
+                  title="Closed Captions"
+                >
+                  <Subtitles className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                  <span>{isCCActive ? 'ON' : 'OFF'}</span>
+                </button>
 
                 {/* Fullscreen Button */}
                 <button
