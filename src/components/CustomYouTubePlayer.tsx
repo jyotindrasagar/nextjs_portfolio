@@ -788,9 +788,9 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
                   )}
                 </button>
 
-                {/* Volume Slider (Wider in Fullscreen) */}
-                <div className={`flex items-center h-5 group/volume shrink-0 ${
-                  isFullscreen ? 'w-24 sm:w-32' : 'w-12 sm:w-16 md:w-20'
+                {/* Volume Slider: Hidden on mobile/iPad (uses device volume), visible on desktop */}
+                <div className={`hidden lg:flex items-center h-5 group/volume shrink-0 ${
+                  isFullscreen ? 'w-24 sm:w-32' : 'w-16 md:w-20'
                 }`}>
                   <input
                     type="range"
