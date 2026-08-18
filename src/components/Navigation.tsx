@@ -317,17 +317,30 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
                 )}
               </button>
 
-              {/* The Volume Slider (appears on hover, vertical dropdown) */}
-              <div className="absolute top-full mt-2 opacity-0 h-0 group-hover/music:opacity-100 group-hover/music:h-24 transition-all duration-300 overflow-hidden flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm border border-foreground/10 rounded-full w-8">
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={volume}
-                  onChange={handleVolumeChange}
-                  className="w-16 h-1 bg-foreground/20 rounded-lg appearance-none cursor-pointer accent-accent -rotate-90 origin-center"
-                />
+              {/* The Volume Slider (appears on hover, vertical dropdown with sleek fill bar) */}
+              <div className="absolute top-full mt-2 opacity-0 h-0 group-hover/music:opacity-100 group-hover/music:h-24 transition-all duration-300 overflow-hidden flex flex-col items-center justify-center bg-background/90 backdrop-blur-md border border-foreground/10 rounded-full w-8 py-3 shadow-lg">
+                <div
+                  role="slider"
+                  aria-label="Background Music Volume"
+                  aria-valuenow={Math.round(volume * 100)}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  tabIndex={0}
+                  onClick={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const pos = Math.max(0, Math.min(rect.bottom - e.clientY, rect.height));
+                    const newVol = Number((pos / rect.height).toFixed(2));
+                    setVolume(newVol);
+                    if (audioRef.current) audioRef.current.volume = newVol;
+                  }}
+                  className="w-1.5 h-16 bg-foreground/15 rounded-full cursor-pointer relative overflow-hidden flex flex-col justify-end"
+                  title={`Volume: ${Math.round(volume * 100)}%`}
+                >
+                  <div
+                    className="w-full bg-gradient-to-t from-accent/90 to-accent rounded-full transition-all"
+                    style={{ height: `${volume * 100}%` }}
+                  />
+                </div>
               </div>
             </div>
           )}

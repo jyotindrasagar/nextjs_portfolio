@@ -803,19 +803,46 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
                   )}
                 </button>
 
-                {/* Volume Slider: Hidden on mobile/iPad (uses device volume), visible on desktop */}
-                <div className={`hidden lg:flex items-center h-5 group/volume shrink-0 ${
-                  isFullscreen ? 'w-24 sm:w-32' : 'w-16 md:w-20'
-                }`}>
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={isMuted ? 0 : volume}
-                    onChange={(e) => handleVolumeChange(Number(e.target.value))}
-                    aria-label="Volume Slider"
-                    className="w-full h-1.5 rounded-[2px] appearance-none bg-foreground/15 cursor-pointer accent-[#ea879c] focus:outline-none"
-                  />
+                {/* Sleek Custom Fill-Bar Volume Slider (No circle thumb) */}
+                <div
+                  role="slider"
+                  aria-label="Volume Slider"
+                  aria-valuenow={isMuted ? 0 : volume}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  tabIndex={0}
+                  onClick={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const pos = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+                    const newVol = Math.round((pos / rect.width) * 100);
+                    handleVolumeChange(newVol);
+                  }}
+                  onMouseDown={(e) => {
+                    const target = e.currentTarget;
+                    const updateVol = (moveEvent: MouseEvent) => {
+                      const rect = target.getBoundingClientRect();
+                      const pos = Math.max(0, Math.min(moveEvent.clientX - rect.left, rect.width));
+                      const newVol = Math.round((pos / rect.width) * 100);
+                      handleVolumeChange(newVol);
+                    };
+                    const onMouseUp = () => {
+                      window.removeEventListener('mousemove', updateVol);
+                      window.removeEventListener('mouseup', onMouseUp);
+                    };
+                    window.addEventListener('mousemove', updateVol);
+                    window.addEventListener('mouseup', onMouseUp);
+                  }}
+                  className={`hidden lg:flex items-center h-5 group/volume shrink-0 cursor-pointer select-none ${
+                    isFullscreen ? 'w-24 sm:w-32' : 'w-16 md:w-20'
+                  }`}
+                  title={`Volume: ${isMuted ? 0 : Math.round(volume)}%`}
+                >
+                  <div className="w-full h-1.5 group-hover/volume:h-2 rounded-[2px] bg-foreground/15 transition-all overflow-hidden relative">
+                    <div
+                      className="h-full bg-gradient-to-r from-accent/90 to-accent rounded-[2px] transition-all"
+                      style={{ width: `${isMuted ? 0 : volume}%` }}
+                    />
+                  </div>
                 </div>
               </div>
 
