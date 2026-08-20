@@ -141,6 +141,7 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
   // Playback states
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [buffered, setBuffered] = useState(0);
@@ -207,18 +208,29 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
             if (isCancelled) return;
             const state = e.data;
             if (state === 1) {
+              // Playing
               setIsPlaying(true);
+              setIsBuffering(false);
               try {
                 window.dispatchEvent(new CustomEvent('global-audio-play', { detail: { source: 'youtube' } }));
               } catch {}
             } else if (state === 2) {
+              // Paused
               setIsPlaying(false);
+              setIsBuffering(false);
+            } else if (state === 3) {
+              // Buffering / Stuttering
+              setIsBuffering(true);
             } else if (state === 0) {
+              // Ended
               setIsPlaying(false);
+              setIsBuffering(false);
               if (isLoopingRef.current) {
                 e.target.seekTo(0, true);
                 e.target.playVideo();
               }
+            } else {
+              setIsBuffering(false);
             }
           },
         },
@@ -289,6 +301,7 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
       } catch {}
     }
     setIsPlaying(false);
+    setIsBuffering(false);
     setHasActivated(false);
     if (onDeactivate) onDeactivate();
     if (onClose) onClose();
@@ -490,7 +503,7 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
       onKeyDown={handleKeyDown}
       className={`group/player relative flex flex-col w-full rounded-[3px] overflow-hidden border transition-colors duration-300 focus:outline-none ${
         isFullscreen
-          ? 'fixed inset-0 z-[9999] h-screen w-screen !transform-none !scale-100 bg-black rounded-none border-0'
+          ? 'fixed inset-0 z-[9999] h-screen w-screen !transform-none !scale-100 bg-background dark:bg-[#0F0F10] text-foreground rounded-none border-0'
           : hasActivated
           ? 'border-accent/50 shadow-[0_8px_30px_rgba(234,135,156,0.2)] bg-panels/60 dark:bg-[#0F0F10]/60 backdrop-blur-xl z-30'
           : 'border-foreground/10 hover:border-accent/40 hover:shadow-[0_8px_24px_rgba(234,135,156,0.12)] bg-panels/40 dark:bg-[#0F0F10]/40 backdrop-blur-md hover:-translate-y-0.5'
@@ -559,8 +572,8 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
           </div>
         </div>
 
-        {/* Subtle Accent Spinner while buffering */}
-        {isReady && !isPlaying && hasActivated && (
+        {/* Subtle Accent Spinner ONLY when actively buffering / stuttering */}
+        {isBuffering && (
           <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
             <Loader2 className="w-7 h-7 text-accent animate-spin opacity-70" />
           </div>
@@ -571,7 +584,7 @@ export const CustomYouTubePlayer = memo(function CustomYouTubePlayer({
       {hasActivated && (
         <div className={`shrink-0 select-none z-50 transition-all duration-300 ${
           isFullscreen 
-            ? 'absolute bottom-0 inset-x-0 w-full bg-gradient-to-t from-black via-black/95 to-black/50 border-t border-white/15 px-4 sm:px-8 md:px-12 py-3 sm:py-4 backdrop-blur-2xl' 
+            ? 'absolute bottom-0 inset-x-0 w-full bg-gradient-to-t from-background/95 via-background/90 to-background/40 dark:from-black/95 dark:via-black/90 dark:to-black/50 border-t border-foreground/10 dark:border-white/15 px-4 sm:px-8 md:px-12 py-3 sm:py-4 backdrop-blur-2xl' 
             : 'relative w-full max-w-full bg-panels/85 dark:bg-[#0F0F10]/85 border-t border-foreground/10 p-2 sm:p-2.5 sm:px-3 rounded-b-[3px] backdrop-blur-xl'
         } flex flex-col gap-1.5`}>
           
