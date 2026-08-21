@@ -9,6 +9,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://dieablo.com/privacy",
   },
+  openGraph: {
+    title: "Privacy Policy | DieabloFX",
+    description: "Official Privacy Policy for DieabloFX — details on how data, authentication, cookies, and analytics are handled.",
+    url: "https://dieablo.com/privacy",
+    siteName: "DieabloFX",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Privacy Policy | DieabloFX",
+    description: "Official Privacy Policy for DieabloFX — details on how data, authentication, cookies, and analytics are handled.",
+    creator: "@dieablofx",
+    site: "@dieablofx",
+  },
 };
 
 export default function PrivacyPolicyPage() {

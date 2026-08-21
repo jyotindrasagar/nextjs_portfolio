@@ -9,6 +9,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://dieablo.com/terms",
   },
+  openGraph: {
+    title: "Terms & Conditions | DieabloFX",
+    description: "Official Terms and Conditions of Service for DieabloFX creative studio, video editing, VFX commissions, and digital media.",
+    url: "https://dieablo.com/terms",
+    siteName: "DieabloFX",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Terms & Conditions | DieabloFX",
+    description: "Official Terms and Conditions of Service for DieabloFX creative studio, video editing, VFX commissions, and digital media.",
+    creator: "@dieablofx",
+    site: "@dieablofx",
+  },
 };
 
 export default function TermsAndConditionsPage() {
