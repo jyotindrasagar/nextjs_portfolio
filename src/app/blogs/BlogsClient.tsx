@@ -76,17 +76,18 @@ export function BlogsClient() {
     : blogs;
 
   return (
-    <>
-      <div className="fixed inset-0 z-0 pointer-events-none bg-background">
-        <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/0 to-background/0 dark:from-background/90 dark:via-background/0 dark:to-background/0" />
+    <div className="relative min-h-screen w-full bg-background text-foreground flex flex-col transition-colors duration-500 overflow-x-hidden selection:bg-accent selection:text-white">
+      {/* Ambient background glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-10 left-1/3 w-[450px] h-[450px] bg-accent/5 rounded-full blur-[140px]" />
+        <div className="absolute bottom-1/4 right-10 w-[350px] h-[350px] bg-foreground/5 rounded-full blur-[120px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(#ea879c_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.03] dark:opacity-[0.05]" />
       </div>
 
-      <div className="relative z-50 pointer-events-auto">
-        <Navigation theme={theme} toggleTheme={toggleTheme} compact={true} />
-      </div>
+      <Navigation theme={theme} toggleTheme={toggleTheme} compact={true} />
 
-      <div className="relative z-10 w-full bg-transparent text-foreground pt-12 transition-colors duration-500 overflow-x-hidden min-h-screen flex flex-col">
-        <main className="relative w-full max-w-7xl mx-auto flex flex-col gap-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pb-24 flex-1">
+      <div className="relative z-10 w-full flex-1 flex flex-col">
+        <main className="relative w-full max-w-7xl mx-auto flex flex-col gap-10 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-6 pb-24 flex-1">
           
           {/* Under Development Banner */}
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-4 py-3 rounded-md bg-foreground/[0.03] border border-foreground/10 text-foreground/80 font-mono text-[10px] md:text-[11px] tracking-wider uppercase">
@@ -219,11 +220,9 @@ export function BlogsClient() {
         </main>
         
         {/* Universal Footer */}
-        <div className="relative w-full bg-background/40 dark:bg-[#0F0F10]/50 backdrop-blur-[3px] border-t border-foreground/5 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
-          <Footer />
-        </div>
+        <Footer />
 
       </div>
-    </>
+    </div>
   );
 }

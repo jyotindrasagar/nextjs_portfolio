@@ -27,13 +27,21 @@ export const metadata: Metadata = {
 const blogsPageJsonLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
+  "@id": "https://dieablo.com/blogs#webpage",
   "name": "Articles, Case Studies & VFX Breakdowns | DieabloFX",
   "description": "Explore in-depth case studies, VFX breakdowns, 3D motion design workflows, and video editing insights by Dieablo (DieabloFX).",
   "url": "https://dieablo.com/blogs",
+  "isPartOf": {
+    "@id": "https://dieablo.com/#website"
+  },
+  "about": {
+    "@id": "https://dieablo.com/#brand"
+  },
+  "author": {
+    "@id": "https://dieablo.com/#person"
+  },
   "publisher": {
-    "@type": "Person",
-    "name": "Jyotindra Narayan Kalyani",
-    "url": "https://dieablo.com"
+    "@id": "https://dieablo.com/#brand"
   }
 };
 

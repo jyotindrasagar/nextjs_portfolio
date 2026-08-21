@@ -106,27 +106,27 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
+    "@id": `https://dieablo.com/breakdowns/${breakdown.slug || resolvedParams.id}#article`,
     "headline": breakdown.title,
     "description": breakdown.excerpt || breakdown.title,
     "image": breakdown.thumbnail_url || "https://dieablo.com/opengraph-image.jpg",
     "datePublished": breakdown.created_at,
     "dateModified": breakdown.updated_at || breakdown.created_at,
-    "author": {
-      "@type": "Person",
-      "name": "Jyotindra Narayan Kalyani",
-      "url": "https://dieablo.com"
-    },
-    "publisher": {
-      "@type": "Person",
-      "name": "DieabloFX",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://dieablo.com/dieablofx.svg"
-      }
-    },
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://dieablo.com/breakdowns/${breakdown.slug || resolvedParams.id}`
+    },
+    "author": {
+      "@id": "https://dieablo.com/#person"
+    },
+    "publisher": {
+      "@id": "https://dieablo.com/#brand"
+    },
+    "isPartOf": {
+      "@id": "https://dieablo.com/#website"
+    },
+    "about": {
+      "@id": "https://dieablo.com/#brand"
     }
   };
 

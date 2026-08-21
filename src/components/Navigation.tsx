@@ -1,8 +1,9 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon, Menu, X, Music } from 'lucide-react';
+import { Sun, Moon, Menu, X, Music, ArrowLeft } from 'lucide-react';
 import { ProfileHeaderButton } from './ProfileHeaderButton';
+import Link from 'next/link';
 const logoUrl = '/dieablofx.svg';
 
 interface NavigationProps {
@@ -127,8 +128,6 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
     };
   }, []);
 
-
-
   const handleScroll = (e: React.MouseEvent<HTMLElement>, id: string) => {
     if (compact) return;
     e.preventDefault();
@@ -152,24 +151,24 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
       <nav
         aria-label="Main Navigation"
         className={`${compact
-          ? 'relative w-full flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 bg-transparent select-none z-[60]'
+          ? 'sticky top-0 z-[60] w-full flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-4 bg-background/90 backdrop-blur-md border-b border-foreground/10 transition-colors duration-500 select-none'
           : 'fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 h-16 md:h-20 bg-background/95 border-b border-foreground/[0.06] transition-colors duration-500 select-none'
           }`}
       >
         {/* Brand logo */}
-        <div className="shrink-0 flex items-center gap-4 sm:gap-6">
+        <div className="shrink-0 flex items-center gap-3 sm:gap-5">
           {!compact && (
             <button
               aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
               aria-expanded={mobileMenuOpen}
-              className="lg:hidden mr-3 p-2 -ml-2 text-foreground/80 hover:text-foreground transition-colors"
+              className="lg:hidden mr-2 p-2 -ml-2 text-foreground/80 hover:text-foreground transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           )}
 
-          <a
+          <Link
             href="/"
             onClick={(e) => {
               if (compact) return;
@@ -187,7 +186,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 src={logoUrl}
                 alt="DieabloFX Logo"
-                className="h-[0.82em] w-auto object-contain logo-image invert dark:invert-0 mr-[0.1em] shrink-0"
+                className="h-[0.82em] w-auto object-contain logo-image mr-[0.1em] shrink-0"
               />
               <motion.div
                 initial={{ opacity: 0 }}
@@ -199,7 +198,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
                 <span className="text-accent">FX</span>
               </motion.div>
             </div>
-          </a>
+          </Link>
 
           {compact && (
             <div className="hidden sm:block h-4 w-[1px] bg-foreground/20"></div>
@@ -208,6 +207,15 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
             <span className="hidden sm:block font-mono text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-foreground/60">
               Project Blogs
             </span>
+          )}
+
+          {compact && (
+            <Link
+              href="/"
+              className="hidden lg:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-foreground/60 hover:text-accent transition-colors ml-3"
+            >
+              <ArrowLeft size={12} /> Return Home
+            </Link>
           )}
         </div>
 
@@ -246,34 +254,35 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
         )}
 
         {/* Action button & theme toggle */}
-        <div className="shrink-0 flex justify-end items-center gap-1.5 sm:gap-2 lg:gap-2.5 xl:gap-4 ml-auto z-10">
+        <div className="shrink-0 flex justify-end items-center gap-2 sm:gap-3 lg:gap-3.5 xl:gap-4 ml-auto z-10">
 
+          {/* Social Links on Compact / Blog page */}
           {compact && (
-            <div className="flex items-center gap-3 sm:gap-4 mr-2 sm:mr-3">
-              <div className="hidden md:flex items-center gap-3 sm:gap-4">
-                <a href="https://x.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Twitter (X)">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 4l11.733 16h4.267l-11.733 -16z"></path>
-                    <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path>
-                  </svg>
-                </a>
-                <a href="https://instagram.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Instagram">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                  </svg>
-                </a>
-                <a href="mailto:hello@dieablo.com" className="text-foreground/50 hover:text-foreground transition-colors" title="Email">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <rect width="20" height="16" x="2" y="4" rx="2" />
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                  </svg>
-                </a>
-              </div>
-              <ProfileHeaderButton />
+            <div className="hidden sm:flex items-center gap-3 mr-1">
+              <a href="https://x.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/60 hover:text-foreground hover:scale-110 transition-all p-1" title="Twitter (X)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4l11.733 16h4.267l-11.733 -16z"></path>
+                  <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path>
+                </svg>
+              </a>
+              <a href="https://instagram.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/60 hover:text-foreground hover:scale-110 transition-all p-1" title="Instagram">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </a>
+              <a href="mailto:hello@dieablo.com" className="text-foreground/60 hover:text-foreground hover:scale-110 transition-all p-1" title="Email">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+              </a>
             </div>
           )}
+
+          {/* Prominent Login / Sign In / Profile Button on ALL Navigation bars */}
+          <ProfileHeaderButton />
 
           {/* Watch Showreel Button */}
           {!compact && (
