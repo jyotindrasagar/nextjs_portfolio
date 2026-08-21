@@ -102,11 +102,14 @@ export function BlogsClient() {
           {/* Top Actions & Filters */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-foreground/10 pb-8">
             <div>
-              <h1 className="font-display font-black text-2xl md:text-3xl uppercase tracking-wider text-foreground">
-                Case Studies <span className="text-accent">&</span> Insights
+              <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-accent mb-2">
+                <span>❖ Official Publications</span>
+              </div>
+              <h1 className="font-display font-black text-2xl sm:text-3xl md:text-4xl uppercase tracking-wider text-foreground">
+                Dieablo<span className="text-accent">FX</span> Blog
               </h1>
-              <p className="font-mono text-[11px] text-foreground/50 tracking-widest uppercase mt-1">
-                Visual effects breakdowns, technical workflows & creative musings
+              <p className="font-sans text-xs sm:text-sm text-foreground/70 tracking-wide mt-2 max-w-2xl leading-relaxed">
+                Project breakdowns, VFX workflows, motion design, 3D animation, video editing, CGI and creative insights from DieabloFX.
               </p>
             </div>
 

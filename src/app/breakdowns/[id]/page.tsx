@@ -42,8 +42,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     };
   }
 
-  const title = `${breakdown.title} | Case Study & Breakdown | DieabloFX`;
-  const description = breakdown.excerpt || `Read the in-depth visual effects and motion design breakdown for ${breakdown.title} by Dieablo (DieabloFX).`;
+  const title = `${breakdown.title} | DieabloFX`;
+  const description = breakdown.excerpt || `Read the in-depth visual effects, motion design, 3D animation, CGI, and video editing breakdown for ${breakdown.title} by DieabloFX.`;
   const canonicalUrl = `https://dieablo.com/breakdowns/${breakdown.slug || resolvedParams.id}`;
   const ogImage = breakdown.thumbnail_url || 'https://dieablo.com/opengraph-image.jpg';
 
@@ -58,6 +58,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       description,
       url: canonicalUrl,
       type: 'article',
+      siteName: 'DieabloFX',
       publishedTime: breakdown.created_at,
       modifiedTime: breakdown.updated_at || breakdown.created_at,
       authors: ['https://dieablo.com'],
@@ -76,6 +77,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       description,
       images: [ogImage],
       creator: '@dieablofx',
+      site: '@dieablofx',
     },
   };
 }
@@ -104,18 +106,21 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
     sections = [];
   }
 
+  const canonicalUrl = `https://dieablo.com/breakdowns/${breakdown.slug || resolvedParams.id}`;
+  const ogImage = breakdown.thumbnail_url || 'https://dieablo.com/opengraph-image.jpg';
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "@id": `https://dieablo.com/breakdowns/${breakdown.slug || resolvedParams.id}#article`,
+    "@id": `${canonicalUrl}#article`,
     "headline": breakdown.title,
-    "description": breakdown.excerpt || breakdown.title,
-    "image": breakdown.thumbnail_url || "https://dieablo.com/opengraph-image.jpg",
+    "description": breakdown.excerpt || `Read the in-depth visual effects, motion design, 3D animation, CGI, and video editing breakdown for ${breakdown.title} by DieabloFX.`,
+    "image": ogImage,
     "datePublished": breakdown.created_at,
     "dateModified": breakdown.updated_at || breakdown.created_at,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://dieablo.com/breakdowns/${breakdown.slug || resolvedParams.id}`
+      "@id": canonicalUrl
     },
     "author": {
       "@id": "https://dieablo.com/#person"
@@ -131,33 +136,69 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
     }
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "@id": `${canonicalUrl}#breadcrumb`,
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://dieablo.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://dieablo.com/blogs"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": breakdown.title,
+        "item": canonicalUrl
+      }
+    ]
+  };
+
   return (
     <main className="min-h-screen bg-background pt-24 pb-32 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]) }}
       />
       <div className="max-w-5xl mx-auto">
-        {/* Top Bar Navigation */}
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-foreground/10">
-          <Link 
-            href="/blogs"
-            className="inline-flex items-center gap-2 font-mono text-xs font-bold tracking-widest uppercase text-foreground/60 hover:text-accent transition-colors group"
-          >
-            <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            Back to Blogs
-          </Link>
-          <div className="flex items-center gap-4">
+        {/* Breadcrumb Navigation & Top Actions */}
+        <nav aria-label="Breadcrumb" className="flex items-center justify-between mb-8 pb-4 border-b border-foreground/10">
+          <ol className="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] md:text-xs font-bold tracking-wider uppercase text-foreground/60">
+            <li>
+              <Link href="/" className="hover:text-accent transition-colors">
+                Home
+              </Link>
+            </li>
+            <li className="text-foreground/30">/</li>
+            <li>
+              <Link href="/blogs" className="hover:text-accent transition-colors">
+                Blog
+              </Link>
+            </li>
+            <li className="text-foreground/30">/</li>
+            <li className="text-foreground/90 truncate max-w-[140px] sm:max-w-xs md:max-w-md" aria-current="page">
+              {breakdown.title}
+            </li>
+          </ol>
+          <div className="flex items-center gap-3">
             <Link 
               href="/blogs"
-              className="font-mono text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase text-accent hover:text-white transition-colors hidden sm:flex items-center gap-2 bg-accent/10 hover:bg-accent border border-accent/20 px-4 py-1.5 rounded group"
+              className="font-mono text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase text-accent hover:text-white transition-colors hidden sm:flex items-center gap-2 bg-accent/10 hover:bg-accent border border-accent/20 px-3.5 py-1.5 rounded group"
             >
-              <span>Full Blogs Section</span>
+              <span>All Articles</span>
               <span className="group-hover:translate-x-1 transition-transform">→</span>
             </Link>
             <ProfileHeaderButton />
           </div>
-        </div>
+        </nav>
 
         <article className="flex flex-col gap-10">
           {/* Header Media (CDN Video or Image) */}

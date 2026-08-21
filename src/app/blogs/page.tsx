@@ -2,25 +2,34 @@ import type { Metadata } from 'next';
 import { BlogsClient } from './BlogsClient';
 
 export const metadata: Metadata = {
-  title: "Articles, Case Studies & VFX Breakdowns | DieabloFX",
-  description: "Explore in-depth case studies, VFX breakdowns, 3D motion design workflows, and video editing insights by Dieablo (DieabloFX).",
+  title: "DieabloFX Blog | VFX, Motion Design, 3D & Video Editing",
+  description: "Explore the DieabloFX blog featuring project breakdowns, VFX workflows, motion design, 3D animation, video editing, CGI and creative insights.",
   alternates: {
     canonical: "https://dieablo.com/blogs",
   },
   openGraph: {
-    title: "Articles, Case Studies & VFX Breakdowns | DieabloFX",
-    description: "Explore in-depth case studies, VFX breakdowns, 3D motion design workflows, and video editing insights by Dieablo (DieabloFX).",
+    title: "DieabloFX Blog | VFX, Motion Design, 3D & Video Editing",
+    description: "Explore the DieabloFX blog featuring project breakdowns, VFX workflows, motion design, 3D animation, video editing, CGI and creative insights.",
     url: "https://dieablo.com/blogs",
     siteName: "DieabloFX",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "https://dieablo.com/opengraph-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "DieabloFX Blog | VFX, Motion Design, 3D & Video Editing",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Articles, Case Studies & VFX Breakdowns | DieabloFX",
-    description: "Explore in-depth case studies, VFX breakdowns, 3D motion design workflows, and video editing insights by Dieablo (DieabloFX).",
+    title: "DieabloFX Blog | VFX, Motion Design, 3D & Video Editing",
+    description: "Explore the DieabloFX blog featuring project breakdowns, VFX workflows, motion design, 3D animation, video editing, CGI and creative insights.",
     creator: "@dieablofx",
     site: "@dieablofx",
+    images: ["https://dieablo.com/twitter-image.jpg"],
   },
 };
 
@@ -28,8 +37,8 @@ const blogsPageJsonLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   "@id": "https://dieablo.com/blogs#webpage",
-  "name": "Articles, Case Studies & VFX Breakdowns | DieabloFX",
-  "description": "Explore in-depth case studies, VFX breakdowns, 3D motion design workflows, and video editing insights by Dieablo (DieabloFX).",
+  "name": "DieabloFX Blog | VFX, Motion Design, 3D & Video Editing",
+  "description": "Explore the DieabloFX blog featuring project breakdowns, VFX workflows, motion design, 3D animation, video editing, CGI and creative insights.",
   "url": "https://dieablo.com/blogs",
   "isPartOf": {
     "@id": "https://dieablo.com/#website"
