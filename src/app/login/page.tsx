@@ -231,6 +231,19 @@ function LoginContent() {
           </button>
         </form>
       )}
+
+      <div className="mt-8 pt-6 border-t border-foreground/10 flex flex-col items-center gap-3">
+        <a href="/" className="font-mono text-[10px] text-foreground/50 hover:text-accent uppercase tracking-widest transition-colors">
+          ← Return to Main Site
+        </a>
+        <div className="flex gap-4 font-mono text-[9px] text-foreground/40 uppercase tracking-wider">
+          <a href="/privacy" className="hover:text-foreground transition-colors">Privacy</a>
+          <span>•</span>
+          <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
+          <span>•</span>
+          <a href="/support" className="hover:text-foreground transition-colors">Support</a>
+        </div>
+      </div>
     </div>
   );
 }

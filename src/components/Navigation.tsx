@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, Menu, X, Music } from 'lucide-react';
+import { ProfileHeaderButton } from './ProfileHeaderButton';
 const logoUrl = '/dieablofx.svg';
 
 interface NavigationProps {
@@ -248,31 +249,29 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
         <div className="shrink-0 flex justify-end items-center gap-1.5 sm:gap-2 lg:gap-2.5 xl:gap-4 ml-auto z-10">
 
           {compact && (
-            <div className="hidden sm:flex items-center gap-4 mr-4">
-              <a href="https://x.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Twitter (X)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 4l11.733 16h4.267l-11.733 -16z"></path>
-                  <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path>
-                </svg>
-              </a>
-              <a href="https://instagram.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Instagram">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
-              </a>
-              <a href="mailto:hello@dieablo.com" className="text-foreground/50 hover:text-foreground transition-colors" title="Email">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect width="20" height="16" x="2" y="4" rx="2" />
-                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                </svg>
-              </a>
-              <a href="https://discord.com/users/dieablo" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Discord">
-                <svg width="18" height="18" viewBox="0 0 127.14 96.36" fill="currentColor">
-                  <path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.08 0A72.37 72.37 0 0 0 45.67 0a105.14 105.14 0 0 0-26.22 8.09C2.79 32.65-1.73 56.6 .37 80.05a105.73 105.73 0 0 0 32.17 16.31 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.31c2.26-26.4-3.32-50-19.13-71.98zM42.49 65.16c-5.36 0-9.8-4.93-9.8-11s4.38-11 9.8-11 9.88 4.93 9.8 11-4.43 11-9.8 11zm42.16 0c-5.36 0-9.8-4.93-9.8-11s4.38-11 9.8-11 9.88 4.93 9.8 11-4.43 11-9.8 11z" />
-                </svg>
-              </a>
+            <div className="flex items-center gap-3 sm:gap-4 mr-2 sm:mr-3">
+              <div className="hidden md:flex items-center gap-3 sm:gap-4">
+                <a href="https://x.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Twitter (X)">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4l11.733 16h4.267l-11.733 -16z"></path>
+                    <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path>
+                  </svg>
+                </a>
+                <a href="https://instagram.com/dieablofx" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors" title="Instagram">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                  </svg>
+                </a>
+                <a href="mailto:hello@dieablo.com" className="text-foreground/50 hover:text-foreground transition-colors" title="Email">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                </a>
+              </div>
+              <ProfileHeaderButton />
             </div>
           )}
 

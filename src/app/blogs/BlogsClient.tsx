@@ -99,7 +99,16 @@ export function BlogsClient() {
           </div>
 
           {/* Top Actions & Filters */}
-          <div className="flex flex-col lg:flex-row justify-end items-start lg:items-center gap-6 border-b border-foreground/10 pb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-foreground/10 pb-8">
+            <div>
+              <h1 className="font-display font-black text-2xl md:text-3xl uppercase tracking-wider text-foreground">
+                Case Studies <span className="text-accent">&</span> Insights
+              </h1>
+              <p className="font-mono text-[11px] text-foreground/50 tracking-widest uppercase mt-1">
+                Visual effects breakdowns, technical workflows & creative musings
+              </p>
+            </div>
+
             {/* Tag Filters */}
             <div className="flex flex-wrap items-center gap-2">
               <button

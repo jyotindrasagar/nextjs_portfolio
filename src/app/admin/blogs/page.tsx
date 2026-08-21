@@ -45,8 +45,7 @@ export default function AdminBlogsPage() {
 
     const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
     if (adminEmail && user.email !== adminEmail) {
-      alert("Unauthorized: You must be the admin to view this page.");
-      router.push('/');
+      router.push('/access-denied');
       return;
     }
     
