@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { BreakdownInteraction } from '@/components/BreakdownInteraction';
 import { ProfileHeaderButton } from '@/components/ProfileHeaderButton';
+import { ShareBar } from '@/components/ShareBar';
 import { createClient } from '@/utils/supabase/server';
 import { createPublicClient } from '@/utils/supabase/public';
 import { cookies } from 'next/headers';
@@ -227,6 +228,11 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
                   ))}
                 </div>
               )}
+
+              {/* Top Share Bar */}
+              <div className="pt-2">
+                <ShareBar title={breakdown.title} slug={breakdown.slug || resolvedParams.id} />
+              </div>
             </div>
 
             {/* Dynamic Blog Sections from DB */}
@@ -267,6 +273,11 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
                 ))}
               </div>
             )}
+
+            {/* Bottom Share Bar */}
+            <div className="pt-6 border-t border-foreground/10">
+              <ShareBar title={breakdown.title} slug={breakdown.slug || resolvedParams.id} />
+            </div>
           </div>
         </article>
 
