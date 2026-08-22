@@ -9,37 +9,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1.0,
     },
     {
       url: `${baseUrl}/blogs`,
-      lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
       url: `${baseUrl}/terms`,
-      lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
       url: `${baseUrl}/cookies`,
-      lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.5,
     },
     {
       url: `${baseUrl}/support`,
-      lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
@@ -55,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (blogs && Array.isArray(blogs)) {
       const blogEntries: MetadataRoute.Sitemap = blogs.map((blog) => ({
         url: `${baseUrl}/breakdowns/${blog.slug || blog.id}`,
-        lastModified: blog.updated_at ? new Date(blog.updated_at) : (blog.created_at ? new Date(blog.created_at) : new Date()),
+        lastModified: blog.updated_at ? new Date(blog.updated_at) : (blog.created_at ? new Date(blog.created_at) : undefined),
         changeFrequency: 'monthly',
         priority: 0.8,
       }));

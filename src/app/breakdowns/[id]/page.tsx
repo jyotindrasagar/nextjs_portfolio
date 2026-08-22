@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { Calendar, Clock, Tag, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -17,8 +17,11 @@ export async function generateStaticParams() {
     
     const paramsList: { id: string }[] = [];
     blogs.forEach((b) => {
-      if (b.slug) paramsList.push({ id: b.slug });
-      if (b.id) paramsList.push({ id: b.id });
+      if (b.slug) {
+        paramsList.push({ id: b.slug });
+      } else if (b.id) {
+        paramsList.push({ id: b.id });
+      }
     });
     return paramsList;
   } catch {
@@ -97,6 +100,11 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
     notFound();
   }
 
+  // Canonical redirect: If accessed with database UUID when a slug exists, redirect to canonical slug URL
+  if (breakdown.slug && resolvedParams.id !== breakdown.slug) {
+    redirect(`/breakdowns/${breakdown.slug}`);
+  }
+
   // Parse sections
   let sections: any[] = [];
   try {
@@ -109,7 +117,7 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
   const canonicalUrl = `https://dieablo.com/breakdowns/${breakdown.slug || resolvedParams.id}`;
   const ogImage = breakdown.thumbnail_url || 'https://dieablo.com/opengraph-image.jpg';
 
-  const articleJsonLd = {
+  const articleJsonLd: any = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "@id": `${canonicalUrl}#article`,
@@ -126,7 +134,7 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
       "@id": "https://dieablo.com/#person"
     },
     "publisher": {
-      "@id": "https://dieablo.com/#brand"
+      "@id": "https://dieablo.com/#person"
     },
     "isPartOf": {
       "@id": "https://dieablo.com/#website"
@@ -135,6 +143,20 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
       "@id": "https://dieablo.com/#brand"
     }
   };
+
+  if (breakdown.video_url) {
+    articleJsonLd.video = {
+      "@type": "VideoObject",
+      "name": breakdown.title,
+      "description": breakdown.excerpt || `Video breakdown for ${breakdown.title} by DieabloFX`,
+      "thumbnailUrl": ogImage,
+      "contentUrl": breakdown.video_url,
+      "uploadDate": breakdown.created_at,
+      "creator": {
+        "@id": "https://dieablo.com/#person"
+      }
+    };
+  }
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -292,7 +314,7 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
                       <div className="my-4 w-full overflow-hidden rounded-lg border border-foreground/15 shadow-xl bg-black/60">
                         <img 
                           src={section.url} 
-                          alt="Blog media"
+                          alt={section.alt || section.caption || `${breakdown.title} visual breakdown image ${index + 1}`}
                           className="w-full h-auto object-contain hover:scale-[1.01] transition-transform duration-500 max-h-[80vh]" 
                         />
                       </div>
@@ -302,7 +324,7 @@ export default async function BreakdownPage({ params }: { params: Promise<{ id: 
                       <div className="my-4 w-full aspect-video rounded-lg border border-foreground/15 shadow-xl bg-black overflow-hidden">
                         <iframe 
                           src={section.url} 
-                          title="YouTube video player" 
+                          title={`${breakdown.title} — YouTube video`} 
                           frameBorder="0" 
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                           allowFullScreen

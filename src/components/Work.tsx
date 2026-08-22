@@ -230,9 +230,6 @@ export function Work() {
         {/* Subtitle, Category Filters & Top Pagination Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between border-b border-foreground/10 pb-6 mb-8 pt-2 gap-6">
               <div className="flex flex-col items-start text-left flex-1 min-w-0">
-                <p className="sr-only">
-                  Motion Designer and Video Editor specializing in high-end product advertisements, 3D animation, motion graphics, CGI, VFX compositing, documentaries, commercial videos, UI animation, camera tracking, and cinematic visual storytelling using Blender, After Effects, DaVinci Resolve, Premiere Pro, Unreal Engine, Substance 3D, SynthEyes, and Boris FX.
-                </p>
                 <p className="text-foreground/60 text-[12px] md:text-[14px] font-mono uppercase tracking-widest mb-4 text-left">
                   Selected projects &amp; visual stories
                 </p>

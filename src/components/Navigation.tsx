@@ -178,7 +178,7 @@ export function Navigation({ theme, toggleTheme, compact }: NavigationProps) {
             }}
             className="font-display font-bold tracking-[0.15em] lg:tracking-[0.18em] text-xs sm:text-sm uppercase hover:opacity-80 transition-opacity flex items-center"
           >
-            <span className="sr-only">DIEABLO FX</span>
+            <span className="sr-only">DieabloFX</span>
             <div aria-hidden="true" className="flex items-center flex-nowrap whitespace-nowrap">
               <motion.img
                 initial={{ opacity: 0 }}

@@ -43,43 +43,38 @@ export function About() {
   return (
     <section
       id="about"
-      className={`relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 z-20 border-t border-foreground/10 overflow-hidden transition-all duration-300 ${
-        isSectionOpen ? 'pt-16 md:pt-24 pb-16 md:pb-24 min-h-[100px]' : 'py-4 sm:py-5 md:py-6 min-h-0'
-      }`}
+      className={`relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 z-20 border-t border-foreground/10 overflow-hidden transition-all duration-300 ${isSectionOpen ? 'pt-16 md:pt-24 pb-16 md:pb-24 min-h-[100px]' : 'py-4 sm:py-5 md:py-6 min-h-0'
+        }`}
     >
       {/* Clickable Header Area: Compact when collapsed, full normal size when uncollapsed */}
-      <div 
+      <div
         onClick={() => setIsSectionOpen(!isSectionOpen)}
-        className={`relative cursor-pointer group select-none py-1 transition-all duration-300 ${
-          isSectionOpen ? 'mb-8' : 'mb-0'
-        }`}
+        className={`relative cursor-pointer group select-none py-1 transition-all duration-300 ${isSectionOpen ? 'mb-8' : 'mb-0'
+          }`}
       >
         <AnimatedSection className="flex flex-col items-start text-left">
           {/* CAD reference label */}
-          <div className={`flex items-center gap-1.5 font-mono font-bold text-accent uppercase text-left truncate max-w-full group-hover:text-accent/90 transition-all duration-300 ${
-            isSectionOpen 
-              ? 'text-[9px] min-[360px]:text-[11px] sm:text-[12px] md:text-[14px] tracking-[0.2em] sm:tracking-[0.25em] mb-3 sm:mb-4 md:mb-6' 
+          <div className={`flex items-center gap-1.5 font-mono font-bold text-accent uppercase text-left truncate max-w-full group-hover:text-accent/90 transition-all duration-300 ${isSectionOpen
+              ? 'text-[9px] min-[360px]:text-[11px] sm:text-[12px] md:text-[14px] tracking-[0.2em] sm:tracking-[0.25em] mb-3 sm:mb-4 md:mb-6'
               : 'text-[8px] sm:text-[9px] md:text-[10px] tracking-[0.2em] mb-1 sm:mb-1.5'
-          }`}>
+            }`}>
             <span>❖</span>
             <span className="truncate">SYS.ABOUT // PHILOSOPHY</span>
           </div>
 
           {/* Row: Title on Left, Button on Right */}
           <div className="flex items-center justify-between w-full gap-2 sm:gap-4">
-            <h2 className={`font-display font-bold tracking-tight text-foreground uppercase leading-none text-left transition-all duration-300 origin-left group-hover:scale-[1.01] ${
-              isSectionOpen 
-                ? 'text-[22px] min-[360px]:text-2xl min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl' 
+            <h2 className={`font-display font-bold tracking-tight text-foreground uppercase leading-none text-left transition-all duration-300 origin-left group-hover:scale-[1.01] ${isSectionOpen
+                ? 'text-[22px] min-[360px]:text-2xl min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl'
                 : 'text-base min-[360px]:text-lg sm:text-xl md:text-2xl lg:text-3xl'
-            }`}>
+              }`}>
               About <span className="text-accent group-hover:drop-shadow-[0_0_8px_rgba(234,135,156,0.25)] transition-all duration-300">Me</span>
             </h2>
 
             <button
               onClick={(e) => { e.stopPropagation(); setIsSectionOpen(!isSectionOpen); }}
-              className={`relative rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 group-hover:scale-105 group-hover:bg-accent/90 shadow-[0_2px_8px_rgba(234,135,156,0.2)] group-hover:shadow-[0_0_10px_rgba(234,135,156,0.28)] cursor-pointer ${
-                isSectionOpen ? 'w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14' : 'w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9'
-              }`}
+              className={`relative rounded-full flex items-center justify-center shrink-0 group focus:outline-none bg-accent text-white transition-all duration-300 group-hover:scale-105 group-hover:bg-accent/90 shadow-[0_2px_8px_rgba(234,135,156,0.2)] group-hover:shadow-[0_0_10px_rgba(234,135,156,0.28)] cursor-pointer ${isSectionOpen ? 'w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14' : 'w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9'
+                }`}
               title={isSectionOpen ? "Collapse Section" : "Expand Section"}
             >
               <motion.div
@@ -123,7 +118,7 @@ export function About() {
                     Hi 🫡
                   </p>
                   <p>
-                    I'm Dieablo, a 23 year old Video Editor and a Motion Designer working under the Creative identity <strong className="font-semibold text-foreground">DieabloFX</strong>.
+                    I'm Jyotindra Narayan Kalyani also known as <strong className="font-semibold text-foreground">Dieablo</strong>, a 23 year old Video Editor and a Motion Designer working under the Creative identity <strong className="font-semibold text-foreground">DieabloFX</strong>.
                   </p>
                   <p>
                     I personally enjoy stuff that involves heavy Graphical Input, As for the reason why? To be completely honest I do not know, I was just naturally attracted to them from early age I guess and that got me in to making Commercials and advertisement based contents.
@@ -251,7 +246,7 @@ export function About() {
               </AnimatedSection>
 
               {/* Right Portrait/Conceptual Video Block with smooth entrance animation */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.96, y: 15 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
@@ -286,9 +281,8 @@ export function About() {
                   preload="auto"
                   onLoadedData={() => setIsVideoLoaded(true)}
                   onPlaying={() => setIsVideoLoaded(true)}
-                  className={`w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 ${
-                    isVideoLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.98]'
-                  }`}
+                  className={`w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 ${isVideoLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.98]'
+                    }`}
                 />
               </motion.div>
             </div>

@@ -50,7 +50,7 @@ const blogsPageJsonLd = {
     "@id": "https://dieablo.com/#person"
   },
   "publisher": {
-    "@id": "https://dieablo.com/#brand"
+    "@id": "https://dieablo.com/#person"
   }
 };
 
